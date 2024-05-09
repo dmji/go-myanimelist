@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nstratos/go-myanimelist/mal"
-	"github.com/nstratos/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal"
+	"github.com/dmji/go-myanimelist/mal/common"
 )
 
 func TestAnimeServiceDetails(t *testing.T) {

@@ -1,11 +1,11 @@
 # go-myanimelist
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/nstratos/go-myanimelist/mal.svg)](https://pkg.go.dev/github.com/nstratos/go-myanimelist/mal)
+[![Go Reference](https://pkg.go.dev/badge/github.com/dmji/go-myanimelist/mal.svg)](https://pkg.go.dev/github.com/dmji/go-myanimelist/mal)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Go Report Card](https://goreportcard.com/badge/github.com/nstratos/go-myanimelist)](https://goreportcard.com/report/github.com/nstratos/go-myanimelist)
+[![Go Report Card](https://goreportcard.com/badge/github.com/dmji/go-myanimelist)](https://goreportcard.com/report/github.com/dmji/go-myanimelist)
 [![Coverage Status](https://coveralls.io/repos/github/nstratos/go-myanimelist/badge.svg?branch=main)](https://coveralls.io/github/nstratos/go-myanimelist?branch=main)
-[![Test Status](https://github.com/nstratos/go-myanimelist/workflows/tests/badge.svg)](https://github.com/nstratos/go-myanimelist/actions?query=workflow%3Atests)
-[![Integration Status](https://github.com/nstratos/go-myanimelist/workflows/integration/badge.svg)](https://github.com/nstratos/go-myanimelist/actions?query=workflow%3Aintegration)
+[![Test Status](https://github.com/dmji/go-myanimelist/workflows/tests/badge.svg)](https://github.com/dmji/go-myanimelist/actions?query=workflow%3Atests)
+[![Integration Status](https://github.com/dmji/go-myanimelist/workflows/integration/badge.svg)](https://github.com/dmji/go-myanimelist/actions?query=workflow%3Aintegration)
 
 go-myanimelist is a Go client library for accessing the [MyAnimeList API v2](https://myanimelist.net/apiconfig/references/api/v2).
 
@@ -20,14 +20,14 @@ As of March 2017, this package is featured in
 
 This package can be installed using:
 
-	go get github.com/nstratos/go-myanimelist/mal
+	go get github.com/dmji/go-myanimelist/mal
 
 ## Usage
 
 Import the package using:
 
 ```go
-import "github.com/nstratos/go-myanimelist/mal"
+import "github.com/dmji/go-myanimelist/mal"
 ```
 
 First construct a new mal client:
@@ -139,7 +139,7 @@ ID and client secret through flags:
 
 	or 
 
-    go install github.com/nstratos/go-myanimelist/example/malauth
+    go install github.com/dmji/go-myanimelist/example/malauth
     malauth --client-id=... --client-secret=...
 
 After you perform a successful authentication once, the oauth2 token will be
@@ -349,7 +349,7 @@ Official docs:
 ## More Examples
 
 See package examples:
-https://pkg.go.dev/github.com/nstratos/go-myanimelist/mal#pkg-examples
+https://pkg.go.dev/github.com/dmji/go-myanimelist/mal#pkg-examples
 
 ## Unit Testing
 

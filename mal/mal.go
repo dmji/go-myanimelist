@@ -12,8 +12,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nstratos/go-myanimelist/mal/common"
-	"github.com/nstratos/go-myanimelist/mal/util"
+	"github.com/dmji/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/util"
 )
 
 const (

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/nstratos/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/common"
 )
 
 // AnimeSeason is the airing season of the anime.

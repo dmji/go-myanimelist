@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/nstratos/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/common"
 )
 
 // MangaService handles communication with the manga related methods of the

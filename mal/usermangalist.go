@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/nstratos/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/common"
 )
 
 // MangaListOption are options specific to the UserService.MangaList method.

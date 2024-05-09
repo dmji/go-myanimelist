@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/nstratos/go-myanimelist/mal"
-	"github.com/nstratos/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal"
+	"github.com/dmji/go-myanimelist/mal/common"
 )
 
 func ExampleForumService_Boards() {

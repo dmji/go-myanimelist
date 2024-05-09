@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/url"
 
-	"github.com/nstratos/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/common"
 )
 
 // AnimeRanking allows to choose how the anime will be ranked.

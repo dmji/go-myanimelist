@@ -7,8 +7,8 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/nstratos/go-myanimelist/mal"
-	"github.com/nstratos/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal"
+	"github.com/dmji/go-myanimelist/mal/common"
 )
 
 func ExampleAnimeService_List() {

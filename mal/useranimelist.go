@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/nstratos/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/common"
 )
 
 // AnimeListOption are options specific to the UserService.AnimeList method.

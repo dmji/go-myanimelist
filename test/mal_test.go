@@ -12,8 +12,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/nstratos/go-myanimelist/mal"
-	"github.com/nstratos/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal"
+	"github.com/dmji/go-myanimelist/mal/common"
 )
 
 // setup sets up a test HTTP server along with a mal.Client that is

@@ -12,7 +12,7 @@ import (
 	"os/exec"
 	"runtime"
 
-	"github.com/nstratos/go-myanimelist/mal"
+	"github.com/dmji/go-myanimelist/mal"
 	"golang.org/x/oauth2"
 )
 

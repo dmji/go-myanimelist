@@ -1,4 +1,4 @@
-module github.com/nstratos/go-myanimelist
+module github.com/dmji/go-myanimelist
 
 go 1.22.3
 

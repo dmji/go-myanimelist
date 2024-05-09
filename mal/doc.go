@@ -6,13 +6,13 @@ https://myanimelist.net/apiconfig/references/api/v2.
 
 This package can be installed using:
 
-	go get github.com/nstratos/go-myanimelist/mal
+	go get github.com/dmji/go-myanimelist/mal
 
 # Usage
 
 Import the package using:
 
-	import "github.com/nstratos/go-myanimelist/mal"
+	import "github.com/dmji/go-myanimelist/mal"
 
 First construct a new mal client:
 
@@ -117,7 +117,7 @@ ID and client secret through flags:
 
 	or
 
-	go install github.com/nstratos/go-myanimelist/example/malauth
+	go install github.com/dmji/go-myanimelist/example/malauth
 	malauth --client-id=... --client-secret=...
 
 After you perform a successful authentication once, the oauth2 token will be
@@ -313,7 +313,7 @@ Official docs:
 # More Examples
 
 See package examples:
-https://pkg.go.dev/github.com/nstratos/go-myanimelist/mal#pkg-examples
+https://pkg.go.dev/github.com/dmji/go-myanimelist/mal#pkg-examples
 
 # Unit Testing
 

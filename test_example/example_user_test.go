@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/nstratos/go-myanimelist/mal"
+	"github.com/dmji/go-myanimelist/mal"
 )
 
 func ExampleUserService_MyInfo() {

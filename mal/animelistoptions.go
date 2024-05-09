@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nstratos/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/common"
 )
 
 // MARK: AnimeStatus

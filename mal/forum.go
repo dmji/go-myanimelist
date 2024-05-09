@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/nstratos/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/common"
 )
 
 // ForumService handles communication with the forum related methods of the

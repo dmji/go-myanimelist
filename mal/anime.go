@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/nstratos/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/common"
 )
 
 // AnimeService handles communication with the anime related methods of the
