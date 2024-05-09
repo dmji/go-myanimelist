@@ -7,24 +7,25 @@ import (
 	"time"
 
 	"github.com/dmji/go-myanimelist/mal"
-	"github.com/dmji/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/prm"
 )
 
 func ExampleUserService_AnimeList() {
 	ctx := context.Background()
 
-	c := mal.NewClient(nil)
+	c := mal.NewSite(nil)
 
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	c.BaseURL, _ = url.Parse(server.URL)
+	baseURL, _ := url.Parse(server.URL)
+	c.SetBaseURL(baseURL)
 
 	anime, _, err := c.User.AnimeList(ctx, "@me",
-		common.Fields{"list_status"},
-		mal.SortAnimeListByListUpdatedAt,
-		common.Limit(5),
+		prm.Fields{"list_status"},
+		prm.SortAnimeListByListUpdatedAt,
+		prm.Limit(5),
 	)
 	if err != nil {
 		fmt.Printf("User.AnimeList error: %v", err)
@@ -44,21 +45,22 @@ func ExampleUserService_AnimeList() {
 func ExampleAnimeService_UpdateMyListStatus() {
 	ctx := context.Background()
 
-	c := mal.NewClient(nil)
+	c := mal.NewSite(nil)
 
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	c.BaseURL, _ = url.Parse(server.URL)
+	baseURL, _ := url.Parse(server.URL)
+	c.SetBaseURL(baseURL)
 
 	s, _, err := c.Anime.UpdateMyListStatus(ctx, 967,
-		mal.AnimeStatusWatching,
-		mal.NumEpisodesWatched(73),
-		mal.Score(8),
-		mal.Comments("You wa shock!"),
-		mal.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
-		mal.FinishDate(time.Time{}), // Remove an existing date.
+		prm.AnimeStatusWatching,
+		prm.NumEpisodesWatched(73),
+		prm.Score(8),
+		prm.Comments("You wa shock!"),
+		prm.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
+		prm.FinishDate(time.Time{}), // Remove an existing date.
 	)
 	if err != nil {
 		fmt.Printf("Anime.UpdateMyListStatus error: %v", err)

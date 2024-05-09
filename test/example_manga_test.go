@@ -4,27 +4,29 @@ import (
 	"context"
 	"fmt"
 	"net/url"
-	"strings"
 
 	"github.com/dmji/go-myanimelist/mal"
-	"github.com/dmji/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/prm"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 func ExampleMangaService_List() {
 	ctx := context.Background()
 
-	c := mal.NewClient(nil)
+	c := mal.NewSite(nil)
 
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	c.BaseURL, _ = url.Parse(server.URL)
+	baseURL, _ := url.Parse(server.URL)
+	c.SetBaseURL(baseURL)
 
 	manga, _, err := c.Manga.List(ctx, "parasyte",
-		common.Fields{"num_volumes", "num_chapters", "alternative_titles"},
-		common.Limit(3),
-		common.Offset(0),
+		prm.Fields{"num_volumes", "num_chapters", "alternative_titles"},
+		prm.Limit(3),
+		prm.Offset(0),
 	)
 	if err != nil {
 		fmt.Printf("Manga.List error: %v", err)
@@ -42,16 +44,17 @@ func ExampleMangaService_List() {
 func ExampleMangaService_Details() {
 	ctx := context.Background()
 
-	c := mal.NewClient(nil)
+	c := mal.NewSite(nil)
 
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	c.BaseURL, _ = url.Parse(server.URL)
+	baseURL, _ := url.Parse(server.URL)
+	c.SetBaseURL(baseURL)
 
 	m, _, err := c.Manga.Details(ctx, 401,
-		common.Fields{
+		prm.Fields{
 			"alternative_titles",
 			"media_type",
 			"num_volumes",
@@ -66,10 +69,11 @@ func ExampleMangaService_Details() {
 		return
 	}
 
+	title := cases.Title(language.Und)
 	fmt.Printf("%s\n", m.Title)
 	fmt.Printf("ID: %d\n", m.ID)
 	fmt.Printf("English: %s\n", m.AlternativeTitles.En)
-	fmt.Printf("Type: %s\n", strings.Title(m.MediaType))
+	fmt.Printf("Type: %s\n", title.String(m.MediaType))
 	fmt.Printf("Volumes: %d\n", m.NumVolumes)
 	fmt.Printf("Chapters: %d\n", m.NumChapters)
 	fmt.Print("Studios: ")
@@ -86,7 +90,7 @@ func ExampleMangaService_Details() {
 		delim = " "
 	}
 	fmt.Println()
-	fmt.Printf("Status: %s\n", strings.Title(m.Status))
+	fmt.Printf("Status: %s\n", title.String(m.Status))
 	// Output:
 	// Kiseijuu
 	// ID: 401
@@ -102,18 +106,19 @@ func ExampleMangaService_Details() {
 func ExampleMangaService_Ranking() {
 	ctx := context.Background()
 
-	c := mal.NewClient(nil)
+	c := mal.NewSite(nil)
 
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	c.BaseURL, _ = url.Parse(server.URL)
+	baseURL, _ := url.Parse(server.URL)
+	c.SetBaseURL(baseURL)
 
 	manga, _, err := c.Manga.Ranking(ctx,
-		mal.MangaRankingByPopularity,
-		common.Fields{"rank", "popularity"},
-		common.Limit(6),
+		prm.MangaRankingByPopularity,
+		prm.Fields{"rank", "popularity"},
+		prm.Limit(6),
 	)
 	if err != nil {
 		fmt.Printf("Manga.Ranking error: %v", err)
@@ -134,13 +139,14 @@ func ExampleMangaService_Ranking() {
 func ExampleMangaService_DeleteMyListItem() {
 	ctx := context.Background()
 
-	c := mal.NewClient(nil)
+	c := mal.NewSite(nil)
 
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	c.BaseURL, _ = url.Parse(server.URL)
+	baseURL, _ := url.Parse(server.URL)
+	c.SetBaseURL(baseURL)
 
 	resp, err := c.Manga.DeleteMyListItem(ctx, 401)
 	if err != nil {

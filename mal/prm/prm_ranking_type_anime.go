@@ -1,11 +1,4 @@
-package mal
-
-import (
-	"context"
-	"net/url"
-
-	"github.com/dmji/go-myanimelist/mal/common"
-)
+package prm
 
 // AnimeRanking allows to choose how the anime will be ranked.
 type AnimeRanking string
@@ -30,16 +23,3 @@ const (
 	// AnimeRankingFavorite returns the top favorite Anime.
 	AnimeRankingFavorite AnimeRanking = "favorite"
 )
-
-func optionFromAnimeRanking(r AnimeRanking) common.OptionFunc {
-	return common.OptionFunc(func(v *url.Values) {
-		v.Set("ranking_type", string(r))
-	})
-}
-
-// Ranking allows an authenticated user to receive the top anime based on a
-// certain ranking.
-func (s *AnimeService) Ranking(ctx context.Context, ranking AnimeRanking, options ...common.OptionalParam) ([]Anime, *Response, error) {
-	options = append(options, optionFromAnimeRanking(ranking))
-	return s.list(ctx, "anime/ranking", options...)
-}

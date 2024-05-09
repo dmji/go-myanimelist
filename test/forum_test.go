@@ -7,8 +7,9 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/dmji/go-myanimelist/mal"
 	"github.com/dmji/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/containers"
+	"github.com/dmji/go-myanimelist/mal/prm"
 )
 
 func TestForumServiceBoards(t *testing.T) {
@@ -43,16 +44,16 @@ func TestForumServiceBoards(t *testing.T) {
 	if err != nil {
 		t.Errorf("Forum.Boards returned error: %v", err)
 	}
-	want := &mal.Forum{
-		Categories: []mal.ForumCategory{
+	want := &containers.Forum{
+		Categories: []containers.ForumCategory{
 			{
 				Title: "MyAnimeList",
-				Boards: []mal.ForumBoard{
+				Boards: []containers.ForumBoard{
 					{
 						ID:          17,
 						Title:       "MAL Guidelines",
 						Description: "Site rules.",
-						Subboards:   []mal.ForumSubboard{{ID: 2, Title: "Anime DB"}},
+						Subboards:   []containers.ForumSubboard{{ID: 2, Title: "Anime DB"}},
 					},
 				},
 			},
@@ -106,15 +107,15 @@ func TestForumServiceTopicDetails(t *testing.T) {
 
 	ctx := context.Background()
 	got, resp, err := client.Forum.TopicDetails(ctx, 1,
-		common.Limit(10),
-		common.Offset(0),
+		prm.Limit(10),
+		prm.Offset(0),
 	)
 	if err != nil {
 		t.Errorf("Forum.TopicDetails returned error: %v", err)
 	}
-	want := mal.TopicDetails{
+	want := containers.TopicDetails{
 		Title: "Best posts",
-		Posts: []mal.Post{{ID: 1}, {ID: 2}},
+		Posts: []containers.Post{{ID: 1}, {ID: 2}},
 	}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("Forum.TopicDetails returned\nhave: %+v\n\nwant: %+v", got, want)
@@ -169,19 +170,19 @@ func TestForumServiceTopics(t *testing.T) {
 
 	ctx := context.Background()
 	got, resp, err := client.Forum.Topics(ctx,
-		mal.BoardID(1),
-		mal.SubboardID(1),
-		common.Limit(10),
-		common.Offset(0),
-		mal.SortTopicsRecent,
-		mal.Query("foo"),
-		mal.TopicUserName("bar"),
-		mal.UserName("baz"),
+		prm.BoardID(1),
+		prm.SubboardID(1),
+		prm.Limit(10),
+		prm.Offset(0),
+		prm.SortTopicsRecent,
+		prm.Query("foo"),
+		prm.TopicUserName("bar"),
+		prm.UserName("baz"),
 	)
 	if err != nil {
 		t.Errorf("Forum.Topics returned error: %v", err)
 	}
-	want := []mal.Topic{{ID: 1}, {ID: 2}}
+	want := []containers.Topic{{ID: 1}, {ID: 2}}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("Forum.Topics returned\nhave: %+v\n\nwant: %+v", got, want)
 	}

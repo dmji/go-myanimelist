@@ -8,8 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dmji/go-myanimelist/mal"
 	"github.com/dmji/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/containers"
+	"github.com/dmji/go-myanimelist/mal/prm"
 )
 
 func TestUserServiceMangaList(t *testing.T) {
@@ -52,24 +53,24 @@ func TestUserServiceMangaList(t *testing.T) {
 
 	ctx := context.Background()
 	got, resp, err := client.User.MangaList(ctx, "foo",
-		mal.MangaStatusCompleted,
-		mal.SortMangaListByMangaID,
-		common.Fields{"foo", "bar"},
-		common.Limit(10),
-		common.Offset(0),
-		common.NSFW(true),
+		prm.MangaStatusCompleted,
+		prm.SortMangaListByMangaID,
+		prm.Fields{"foo", "bar"},
+		prm.Limit(10),
+		prm.Offset(0),
+		prm.NSFW(true),
 	)
 	if err != nil {
 		t.Errorf("User.MangaList returned error: %v", err)
 	}
-	want := []mal.UserManga{
+	want := []containers.UserManga{
 		{
-			Manga:  mal.Manga{ID: 1},
-			Status: mal.MangaListStatus{Status: "plan_to_read"},
+			Manga:  containers.Manga{ID: 1},
+			Status: containers.MangaListStatus{Status: "plan_to_read"},
 		},
 		{
-			Manga:  mal.Manga{ID: 2},
-			Status: mal.MangaListStatus{Status: "reading"},
+			Manga:  containers.Manga{ID: 2},
+			Status: containers.MangaListStatus{Status: "reading"},
 		},
 	}
 	if !reflect.DeepEqual(got, want) {
@@ -123,25 +124,25 @@ func TestMangaServiceUpdateMyListStatus(t *testing.T) {
 
 	ctx := context.Background()
 	got, _, err := client.Manga.UpdateMyListStatus(ctx, 1,
-		mal.MangaStatusCompleted,
-		mal.IsRereading(true),
-		mal.Score(8),
-		mal.NumVolumesRead(3),
-		mal.NumChaptersRead(3),
-		mal.Priority(2),
-		mal.NumTimesReread(2),
-		mal.RereadValue(1),
-		mal.Tags{"foo", "bar"},
-		mal.Comments("comments"),
-		mal.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
-		mal.FinishDate(time.Time{}),
+		prm.MangaStatusCompleted,
+		prm.IsRereading(true),
+		prm.Score(8),
+		prm.NumVolumesRead(3),
+		prm.NumChaptersRead(3),
+		prm.Priority(2),
+		prm.NumTimesReread(2),
+		prm.RereadValue(1),
+		prm.Tags{"foo", "bar"},
+		prm.Comments("comments"),
+		prm.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
+		prm.FinishDate(time.Time{}),
 	)
 	if err != nil {
 		t.Errorf("Manga.UpdateMyListStatus returned error: %v", err)
 	}
 
-	want := &mal.MangaListStatus{
-		Status:          mal.MangaStatusCompleted,
+	want := &containers.MangaListStatus{
+		Status:          prm.MangaStatusCompleted,
 		IsRereading:     true,
 		Score:           8,
 		NumVolumesRead:  3,

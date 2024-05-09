@@ -155,14 +155,14 @@ To search and get anime and manga data:
 
 ```go
 list, _, err := c.Anime.List(ctx, "hokuto no ken",
-	common.Fields{"rank", "popularity", "my_list_status"},
-	common.Limit(5),
+	prm.Fields{"rank", "popularity", "my_list_status"},
+	prm.Limit(5),
 )
 // ...
 
 list, _, err := c.Manga.List(ctx, "hokuto no ken",
-	common.Fields{"rank", "popularity", "my_list_status"},
-	common.Limit(5),
+	prm.Fields{"rank", "popularity", "my_list_status"},
+	prm.Limit(5),
 )
 // ...
 ```
@@ -184,10 +184,10 @@ To get the anime or manga list of a user:
 // Get the authenticated user's anime list, filter only watching anime, sort by
 // last updated, include list status.
 anime, _, err := c.User.AnimeList(ctx, "@me",
-    common.Fields{"list_status"},
+    prm.Fields{"list_status"},
     mal.AnimeStatusWatching,
     mal.SortAnimeListByListUpdatedAt,
-    common.Limit(5),
+    prm.Limit(5),
 )
 // ...
 
@@ -195,9 +195,9 @@ anime, _, err := c.User.AnimeList(ctx, "@me",
 // include list status, comments and tags.
 manga, _, err := c.User.MangaList(ctx, "@me",
     mal.SortMangaListByListScore,
-    common.Fields{"list_status{comments, tags}"},
-    common.Limit(5),
-    common.Offset(1),
+    prm.Fields{"list_status{comments, tags}"},
+    prm.Limit(5),
+    prm.Offset(1),
 )
 // ...
 ```
@@ -233,7 +233,7 @@ To get details for a certain anime or manga:
 
 ```go
 a, _, err := c.Anime.Details(ctx, 967,
-	common.Fields{
+	prm.Fields{
 		"alternative_titles",
 		"media_type",
 		"num_episodes",
@@ -247,7 +247,7 @@ a, _, err := c.Anime.Details(ctx, 967,
 // ...
 
 m, _, err := c.Manga.Details(ctx, 401,
-	common.Fields{
+	prm.Fields{
 		"alternative_titles",
 		"media_type",
 		"num_volumes",
@@ -276,15 +276,15 @@ To get anime or manga based on a certain ranking:
 ```go
 anime, _, err := c.Anime.Ranking(ctx,
 	mal.AnimeRankingAiring,
-	common.Fields{"rank", "popularity"},
-	common.Limit(6),
+	prm.Fields{"rank", "popularity"},
+	prm.Limit(6),
 )
 // ...
 
 manga, _, err := c.Manga.Ranking(ctx,
 	mal.MangaRankingByPopularity,
-	common.Fields{"rank", "popularity"},
-	common.Limit(6),
+	prm.Fields{"rank", "popularity"},
+	prm.Limit(6),
 )
 // ...
 ```

@@ -8,24 +8,27 @@ import (
 	"strings"
 
 	"github.com/dmji/go-myanimelist/mal"
-	"github.com/dmji/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/prm"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 func ExampleAnimeService_List() {
 	ctx := context.Background()
 
-	c := mal.NewClient(nil)
+	c := mal.NewSite(nil)
 
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	c.BaseURL, _ = url.Parse(server.URL)
+	baseURL, _ := url.Parse(server.URL)
+	c.SetBaseURL(baseURL)
 
 	anime, _, err := c.Anime.List(ctx, "hokuto no ken",
-		common.Fields{"rank", "popularity", "start_season"},
-		common.Limit(5),
-		common.Offset(0),
+		prm.Fields{"rank", "popularity", "start_season"},
+		prm.Limit(5),
+		prm.Offset(0),
 	)
 	if err != nil {
 		fmt.Printf("Anime.List error: %v", err)
@@ -43,16 +46,17 @@ func ExampleAnimeService_List() {
 func ExampleAnimeService_Details() {
 	ctx := context.Background()
 
-	c := mal.NewClient(nil)
+	c := mal.NewSite(nil)
 
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	c.BaseURL, _ = url.Parse(server.URL)
+	baseURL, _ := url.Parse(server.URL)
+	c.SetBaseURL(baseURL)
 
 	a, _, err := c.Anime.Details(ctx, 967,
-		common.Fields{
+		prm.Fields{
 			"alternative_titles",
 			"media_type",
 			"num_episodes",
@@ -68,12 +72,13 @@ func ExampleAnimeService_Details() {
 		return
 	}
 
+	title := cases.Title(language.Und)
 	fmt.Printf("%s\n", a.Title)
 	fmt.Printf("ID: %d\n", a.ID)
 	fmt.Printf("English: %s\n", a.AlternativeTitles.En)
 	fmt.Printf("Type: %s\n", strings.ToUpper(a.MediaType))
 	fmt.Printf("Episodes: %d\n", a.NumEpisodes)
-	fmt.Printf("Premiered: %s %d\n", strings.Title(a.StartSeason.Season), a.StartSeason.Year)
+	fmt.Printf("Premiered: %s %d\n", title.String(a.StartSeason.Season), a.StartSeason.Year)
 	fmt.Print("Studios: ")
 	delim := ""
 	for _, s := range a.Studios {
@@ -81,7 +86,7 @@ func ExampleAnimeService_Details() {
 		delim = " "
 	}
 	fmt.Println()
-	fmt.Printf("Source: %s\n", strings.Title(a.Source))
+	fmt.Printf("Source: %s\n", title.String(a.Source))
 	fmt.Print("Genres: ")
 	delim = ""
 	for _, g := range a.Genres {
@@ -106,18 +111,19 @@ func ExampleAnimeService_Details() {
 func ExampleAnimeService_Ranking() {
 	ctx := context.Background()
 
-	c := mal.NewClient(nil)
+	c := mal.NewSite(nil)
 
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	c.BaseURL, _ = url.Parse(server.URL)
+	baseURL, _ := url.Parse(server.URL)
+	c.SetBaseURL(baseURL)
 
 	anime, _, err := c.Anime.Ranking(ctx,
-		mal.AnimeRankingAiring,
-		common.Fields{"rank", "popularity"},
-		common.Limit(6),
+		prm.AnimeRankingAiring,
+		prm.Fields{"rank", "popularity"},
+		prm.Limit(6),
 	)
 	if err != nil {
 		fmt.Printf("Anime.Ranking error: %v", err)
@@ -138,19 +144,20 @@ func ExampleAnimeService_Ranking() {
 func ExampleAnimeService_Seasonal() {
 	ctx := context.Background()
 
-	c := mal.NewClient(nil)
+	c := mal.NewSite(nil)
 
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	c.BaseURL, _ = url.Parse(server.URL)
+	baseURL, _ := url.Parse(server.URL)
+	c.SetBaseURL(baseURL)
 
-	anime, _, err := c.Anime.Seasonal(ctx, 2020, mal.AnimeSeasonFall,
-		common.Fields{"rank", "popularity"},
-		mal.SortSeasonalByAnimeNumListUsers,
-		common.Limit(3),
-		common.Offset(0),
+	anime, _, err := c.Anime.Seasonal(ctx, 2020, prm.AnimeSeasonFall,
+		prm.Fields{"rank", "popularity"},
+		prm.SortSeasonalByAnimeNumListUsers,
+		prm.Limit(3),
+		prm.Offset(0),
 	)
 	if err != nil {
 		fmt.Printf("Anime.Seasonal error: %v", err)
@@ -168,17 +175,18 @@ func ExampleAnimeService_Seasonal() {
 func ExampleAnimeService_Suggested() {
 	ctx := context.Background()
 
-	c := mal.NewClient(nil)
+	c := mal.NewSite(nil)
 
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	c.BaseURL, _ = url.Parse(server.URL)
+	baseURL, _ := url.Parse(server.URL)
+	c.SetBaseURL(baseURL)
 
 	anime, _, err := c.Anime.Suggested(ctx,
-		common.Limit(10),
-		common.Fields{"rank", "popularity"},
+		prm.Limit(10),
+		prm.Fields{"rank", "popularity"},
 	)
 	if err != nil {
 		fmt.Printf("Anime.Suggested error: %v", err)
@@ -196,13 +204,14 @@ func ExampleAnimeService_Suggested() {
 func ExampleAnimeService_DeleteMyListItem() {
 	ctx := context.Background()
 
-	c := mal.NewClient(nil)
+	c := mal.NewSite(nil)
 
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	c.BaseURL, _ = url.Parse(server.URL)
+	baseURL, _ := url.Parse(server.URL)
+	c.SetBaseURL(baseURL)
 
 	resp, err := c.Anime.DeleteMyListItem(ctx, 967)
 	if err != nil {

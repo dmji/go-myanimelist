@@ -6,19 +6,20 @@ import (
 	"net/url"
 
 	"github.com/dmji/go-myanimelist/mal"
-	"github.com/dmji/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/prm"
 )
 
 func ExampleForumService_Boards() {
 	ctx := context.Background()
 
-	c := mal.NewClient(nil)
+	c := mal.NewSite(nil)
 
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	c.BaseURL, _ = url.Parse(server.URL)
+	baseURL, _ := url.Parse(server.URL)
+	c.SetBaseURL(baseURL)
 
 	forum, _, err := c.Forum.Boards(ctx)
 	if err != nil {
@@ -70,18 +71,19 @@ func ExampleForumService_Boards() {
 func ExampleForumService_Topics() {
 	ctx := context.Background()
 
-	c := mal.NewClient(nil)
+	c := mal.NewSite(nil)
 
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	c.BaseURL, _ = url.Parse(server.URL)
+	baseURL, _ := url.Parse(server.URL)
+	c.SetBaseURL(baseURL)
 
 	topics, _, err := c.Forum.Topics(ctx,
-		mal.Query("JoJo opening"),
-		mal.SortTopicsRecent,
-		common.Limit(2),
+		prm.Query("JoJo opening"),
+		prm.SortTopicsRecent,
+		prm.Limit(2),
 	)
 	if err != nil {
 		fmt.Printf("Forum.Topics error: %v", err)
@@ -98,15 +100,16 @@ func ExampleForumService_Topics() {
 func ExampleForumService_TopicDetails() {
 	ctx := context.Background()
 
-	c := mal.NewClient(nil)
+	c := mal.NewSite(nil)
 
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	c.BaseURL, _ = url.Parse(server.URL)
+	baseURL, _ := url.Parse(server.URL)
+	c.SetBaseURL(baseURL)
 
-	topicDetails, _, err := c.Forum.TopicDetails(ctx, 1877721, common.Limit(3), common.Offset(0))
+	topicDetails, _, err := c.Forum.TopicDetails(ctx, 1877721, prm.Limit(3), prm.Offset(0))
 	if err != nil {
 		fmt.Printf("Forum.TopicDetails error: %v", err)
 		return

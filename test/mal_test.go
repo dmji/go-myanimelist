@@ -19,7 +19,7 @@ import (
 // setup sets up a test HTTP server along with a mal.Client that is
 // configured to talk to that test server. Tests should register handlers on
 // mux which provide mock responses for the API method being tested.
-func setup(cls ...*http.Client) (client *mal.Client, mux *http.ServeMux, teardown func()) {
+func setup(cls ...*http.Client) (client *mal.Site, mux *http.ServeMux, teardown func()) {
 	// mux is the HTTP request multiplexer that the test HTTP server will use
 	// to mock API responses.
 	mux = http.NewServeMux()
@@ -34,8 +34,9 @@ func setup(cls ...*http.Client) (client *mal.Client, mux *http.ServeMux, teardow
 		httpClient = cls[0]
 	}
 
-	client = mal.NewClient(httpClient)
-	client.BaseURL, _ = url.Parse(server.URL + "/")
+	client = mal.NewSite(httpClient)
+	baseURL, _ := url.Parse(server.URL + "/")
+	client.SetBaseURL(baseURL)
 
 	return client, mux, server.Close
 }
@@ -92,7 +93,7 @@ func testErrorResponse(t *testing.T, err error, want common.ErrorResponse) {
 	}
 }
 
-func testResponseOffset(t *testing.T, resp *mal.Response, next, prev int, prefix string) {
+func testResponseOffset(t *testing.T, resp *common.Response, next, prev int, prefix string) {
 	t.Helper()
 	if resp == nil {
 		t.Fatalf("%s resp is nil, want NextOffset=%d and PrevOffset=%d", prefix, next, prev)
@@ -105,7 +106,7 @@ func testResponseOffset(t *testing.T, resp *mal.Response, next, prev int, prefix
 	}
 }
 
-func testResponseStatusCode(t *testing.T, resp *mal.Response, code int, prefix string) {
+func testResponseStatusCode(t *testing.T, resp *common.Response, code int, prefix string) {
 	t.Helper()
 	if resp == nil {
 		t.Fatalf("%s resp is nil, want StatusCode=%d", prefix, code)
@@ -116,10 +117,10 @@ func testResponseStatusCode(t *testing.T, resp *mal.Response, code int, prefix s
 }
 
 func TestNewClient(t *testing.T) {
-	c := mal.NewClient(nil)
+	c := mal.NewSite(nil)
 
 	// test default base URL
-	if got, want := c.BaseURL.String(), mal.DefaultBaseURL; got != want {
+	if got, want := c.BaseURL(), mal.DefaultBaseURL; got != want {
 		t.Errorf("NewClient.BaseURL = %v, want %v", got, want)
 	}
 }
@@ -145,12 +146,12 @@ func TestErrorResponse(t *testing.T) {
 }
 
 func TestNewRequest(t *testing.T) {
-	c := mal.NewClient(nil)
+	c := mal.NewSite(nil)
 
 	inURL, outURL := "foo", mal.DefaultBaseURL+"foo"
 	inBody, outBody := func(v *url.Values) { v.Set("name", "bar") }, "name=bar"
 
-	req, err := c.NewRequest("GET", inURL, inBody)
+	req, err := c.DirectRequest().NewRequest("GET", inURL, inBody)
 	if err != nil {
 		t.Fatalf("NewRequest(%q) returned error: %v", inURL, err)
 	}
@@ -173,17 +174,17 @@ func TestNewRequest(t *testing.T) {
 }
 
 func TestNewRequestInvalidMethod(t *testing.T) {
-	c := mal.NewClient(nil)
-	_, err := c.NewRequest("invalid method", "/foo")
+	c := mal.NewSite(nil)
+	_, err := c.DirectRequest().NewRequest("invalid method", "/foo")
 	if err == nil {
 		t.Error("NewRequest with invalid method expected to return err")
 	}
 }
 
 func TestNewRequestBadEndpoint(t *testing.T) {
-	c := mal.NewClient(nil)
+	c := mal.NewSite(nil)
 	inURL := "%foo"
-	_, err := c.NewRequest("GET", inURL)
+	_, err := c.DirectRequest().NewRequest("GET", inURL)
 	if err == nil {
 		t.Errorf("NewRequest(%q) should return parse err", inURL)
 	}
@@ -204,11 +205,11 @@ func TestDo(t *testing.T) {
 		fmt.Fprint(w, `{"bar":"&bull; foobar"}`)
 	})
 
-	req, _ := client.NewRequest("GET", "/")
+	req, _ := client.DirectRequest().NewRequest("GET", "/")
 
 	body := new(foo)
 	ctx := context.Background()
-	_, err := client.Do(ctx, req, body)
+	_, err := client.DirectRequest().Do(ctx, req, body)
 	if err != nil {
 		t.Fatalf("Do() returned err = %v", err)
 	}
@@ -227,10 +228,10 @@ func TestDoHTTPError(t *testing.T) {
 		http.Error(w, "Bad request", http.StatusBadRequest)
 	})
 
-	req, _ := client.NewRequest("GET", "/")
+	req, _ := client.DirectRequest().NewRequest("GET", "/")
 
 	ctx := context.Background()
-	resp, err := client.Do(ctx, req, nil)
+	resp, err := client.DirectRequest().Do(ctx, req, nil)
 	if err == nil {
 		t.Fatal("Expected HTTP 400 error, got no error.")
 	}
@@ -258,9 +259,9 @@ func TestDoRoundTripError(t *testing.T) {
 		w.WriteHeader(200)
 	})
 
-	req, _ := client.NewRequest("GET", "/")
+	req, _ := client.DirectRequest().NewRequest("GET", "/")
 	ctx := context.Background()
-	_, err := client.Do(ctx, req, nil)
+	_, err := client.DirectRequest().Do(ctx, req, nil)
 	if err == nil {
 		t.Error("Expected connection refused error.")
 	}
@@ -276,9 +277,9 @@ func TestDoNoContent(t *testing.T) {
 
 	var body json.RawMessage
 
-	req, _ := client.NewRequest("GET", ".")
+	req, _ := client.DirectRequest().NewRequest("GET", ".")
 	ctx := context.Background()
-	_, err := client.Do(ctx, req, &body)
+	_, err := client.DirectRequest().Do(ctx, req, &body)
 	if err != nil {
 		t.Fatalf("Do returned unexpected error: %v", err)
 	}
@@ -295,9 +296,9 @@ func TestDoDecodeError(t *testing.T) {
 
 	var body json.RawMessage
 
-	req, _ := client.NewRequest("GET", ".")
+	req, _ := client.DirectRequest().NewRequest("GET", ".")
 	ctx := context.Background()
-	_, err := client.Do(ctx, req, &body)
+	_, err := client.DirectRequest().Do(ctx, req, &body)
 	if err == nil {
 		t.Fatal("Expected JSON decode error.")
 	}
@@ -307,9 +308,9 @@ func TestDoNilContext(t *testing.T) {
 	client, _, teardown := setup()
 	defer teardown()
 
-	req, _ := client.NewRequest("GET", ".")
+	req, _ := client.DirectRequest().NewRequest("GET", ".")
 	var ctx context.Context = nil
-	_, err := client.Do(ctx, req, nil)
+	_, err := client.DirectRequest().Do(ctx, req, nil)
 	if err == nil {
 		t.Errorf("Do should return error when we pass nil context.")
 	}

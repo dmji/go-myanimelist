@@ -8,8 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dmji/go-myanimelist/mal"
 	"github.com/dmji/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/containers"
+	"github.com/dmji/go-myanimelist/mal/prm"
 )
 
 func TestUserServiceAnimeList(t *testing.T) {
@@ -52,24 +53,24 @@ func TestUserServiceAnimeList(t *testing.T) {
 
 	ctx := context.Background()
 	got, resp, err := client.User.AnimeList(ctx, "foo",
-		mal.AnimeStatusCompleted,
-		mal.SortAnimeListByAnimeID,
-		common.Fields{"foo", "bar"},
-		common.Limit(10),
-		common.Offset(0),
-		common.NSFW(true),
+		prm.AnimeStatusCompleted,
+		prm.SortAnimeListByAnimeID,
+		prm.Fields{"foo", "bar"},
+		prm.Limit(10),
+		prm.Offset(0),
+		prm.NSFW(true),
 	)
 	if err != nil {
 		t.Errorf("User.AnimeList returned error: %v", err)
 	}
-	want := []mal.UserAnime{
+	want := []containers.UserAnime{
 		{
-			Anime:  mal.Anime{ID: 1},
-			Status: mal.AnimeListStatus{Status: "plan_to_watch"},
+			Anime:  containers.Anime{ID: 1},
+			Status: containers.AnimeListStatus{Status: "plan_to_watch"},
 		},
 		{
-			Anime:  mal.Anime{ID: 2},
-			Status: mal.AnimeListStatus{Status: "watching"},
+			Anime:  containers.Anime{ID: 2},
+			Status: containers.AnimeListStatus{Status: "watching"},
 		},
 	}
 	if !reflect.DeepEqual(got, want) {
@@ -89,11 +90,11 @@ func TestUserServiceAnimeListError(t *testing.T) {
 
 	ctx := context.Background()
 	_, resp, err := client.User.AnimeList(ctx, "foo",
-		mal.AnimeStatusCompleted,
-		mal.SortAnimeListByAnimeID,
-		common.Fields{"foo", "bar"},
-		common.Limit(10),
-		common.Offset(0),
+		prm.AnimeStatusCompleted,
+		prm.SortAnimeListByAnimeID,
+		prm.Fields{"foo", "bar"},
+		prm.Limit(10),
+		prm.Offset(0),
 	)
 	if err == nil {
 		t.Fatal("User.AnimeList expected internal error, got no error.")
@@ -129,24 +130,24 @@ func TestAnimeServiceUpdateMyListStatus(t *testing.T) {
 
 	ctx := context.Background()
 	got, _, err := client.Anime.UpdateMyListStatus(ctx, 1,
-		mal.AnimeStatusCompleted,
-		mal.IsRewatching(true),
-		mal.Score(8),
-		mal.NumEpisodesWatched(3),
-		mal.Priority(2),
-		mal.NumTimesRewatched(2),
-		mal.RewatchValue(1),
-		mal.Tags{"foo", "bar"},
-		mal.Comments("comments"),
-		mal.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
-		mal.FinishDate(time.Time{}),
+		prm.AnimeStatusCompleted,
+		prm.IsRewatching(true),
+		prm.Score(8),
+		prm.NumEpisodesWatched(3),
+		prm.Priority(2),
+		prm.NumTimesRewatched(2),
+		prm.RewatchValue(1),
+		prm.Tags{"foo", "bar"},
+		prm.Comments("comments"),
+		prm.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
+		prm.FinishDate(time.Time{}),
 	)
 	if err != nil {
 		t.Errorf("Anime.UpdateMyListStatus returned error: %v", err)
 	}
 
-	want := &mal.AnimeListStatus{
-		Status:             mal.AnimeStatusCompleted,
+	want := &containers.AnimeListStatus{
+		Status:             prm.AnimeStatusCompleted,
 		IsRewatching:       true,
 		Score:              8,
 		NumEpisodesWatched: 3,

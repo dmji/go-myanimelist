@@ -54,7 +54,7 @@ func Example_oAuth2() {
 	ctx := context.Background()
 	oauth2Client := newOAuth2Client(ctx)
 
-	c := mal.NewClient(oauth2Client)
+	c := mal.NewSite(oauth2Client)
 
 	user, _, err := c.User.MyInfo(ctx)
 	if err != nil {

@@ -1,21 +1,8 @@
-package mal
+package containers
 
 import (
-	"context"
-	"net/http"
-	"net/url"
 	"time"
 )
-
-// UserService handles communication with the user related methods of the
-// MyAnimeList API:
-//
-// https://myanimelist.net/apiconfig/references/api/v2#tag/user
-// https://myanimelist.net/apiconfig/references/api/v2#operation/users_user_id_animelist_get
-// https://myanimelist.net/apiconfig/references/api/v2#operation/users_user_id_mangalist_get
-type UserService struct {
-	client *Client
-}
 
 // User represents a MyAnimeList user.
 type User struct {
@@ -48,30 +35,4 @@ type AnimeStatistics struct {
 	NumEpisodes         int     `json:"num_episodes"`
 	NumTimesRewatched   int     `json:"num_times_rewatched"`
 	MeanScore           float64 `json:"mean_score"`
-}
-
-// MyInfoOption are options specific to the User.MyInfo method.
-type MyInfoOption interface {
-	MyInfoApply(v *url.Values)
-}
-
-// MyInfo returns information about the authenticated user.
-func (s *UserService) MyInfo(ctx context.Context, options ...MyInfoOption) (*User, *Response, error) {
-	req, err := s.client.NewRequest(http.MethodGet, "users/@me")
-	if err != nil {
-		return nil, nil, err
-	}
-	q := req.URL.Query()
-	for _, o := range options {
-		o.MyInfoApply(&q)
-	}
-	req.URL.RawQuery = q.Encode()
-
-	u := new(User)
-	resp, err := s.client.Do(ctx, req, u)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return u, resp, nil
 }

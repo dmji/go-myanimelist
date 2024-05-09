@@ -6,21 +6,11 @@ import (
 	"time"
 )
 
-// MARK: List / Pagination template
-type ListWithPagination[T any] struct {
-	Data   T      `json:"data"`
-	Paging Paging `json:"paging"`
-}
-
 // Paging provides access to the next and previous page URLs when there are
 // pages of results.
 type Paging struct {
 	Next     string `json:"next"`
 	Previous string `json:"previous"`
-}
-
-type Pagination interface {
-	Pagination() Paging
 }
 
 // MARK: Date / Time format

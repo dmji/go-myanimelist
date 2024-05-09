@@ -7,8 +7,9 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/dmji/go-myanimelist/mal"
 	"github.com/dmji/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/containers"
+	"github.com/dmji/go-myanimelist/mal/prm"
 )
 
 func TestUserServiceMyInfo(t *testing.T) {
@@ -25,12 +26,12 @@ func TestUserServiceMyInfo(t *testing.T) {
 
 	ctx := context.Background()
 	u, _, err := client.User.MyInfo(ctx,
-		common.Fields{"time_zone", "is_supporter"},
+		prm.Fields{"time_zone", "is_supporter"},
 	)
 	if err != nil {
 		t.Errorf("User.MyInfo returned error: %v", err)
 	}
-	want := &mal.User{ID: 1}
+	want := &containers.User{ID: 1}
 	if got := u; !reflect.DeepEqual(got, want) {
 		t.Errorf("User.MyInfo returned\nhave: %+v\n\nwant: %+v", got, want)
 	}

@@ -11,13 +11,14 @@ import (
 func ExampleUserService_MyInfo() {
 	ctx := context.Background()
 
-	c := mal.NewClient(nil)
+	c := mal.NewSite(nil)
 
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	c.BaseURL, _ = url.Parse(server.URL)
+	baseURL, _ := url.Parse(server.URL)
+	c.SetBaseURL(baseURL)
 
 	user, _, err := c.User.MyInfo(ctx)
 	if err != nil {

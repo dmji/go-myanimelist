@@ -7,7 +7,9 @@ import (
 	"time"
 
 	"github.com/dmji/go-myanimelist/mal"
-	"github.com/dmji/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/prm"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 // demoClient has methods showcasing the usage of the different MyAnimeList API
@@ -17,7 +19,7 @@ import (
 // This pattern is used for convenience and should not be used in concurrent
 // code without guarding the error.
 type demoClient struct {
-	*mal.Client
+	*mal.Site
 	err error
 }
 
@@ -71,9 +73,9 @@ func (c *demoClient) animeList(ctx context.Context) {
 		return
 	}
 	anime, _, err := c.Anime.List(ctx, "hokuto no ken",
-		common.Fields{"rank", "popularity", "start_season"},
-		common.Limit(3),
-		common.Offset(0),
+		prm.Fields{"rank", "popularity", "start_season"},
+		prm.Limit(3),
+		prm.Offset(0),
 	)
 	if err != nil {
 		c.err = err
@@ -89,9 +91,9 @@ func (c *demoClient) mangaList(ctx context.Context) {
 		return
 	}
 	manga, _, err := c.Manga.List(ctx, "parasyte",
-		common.Fields{"num_volumes", "num_chapters", "alternative_titles"},
-		common.Limit(3),
-		common.Offset(0),
+		prm.Fields{"num_volumes", "num_chapters", "alternative_titles"},
+		prm.Limit(3),
+		prm.Offset(0),
 	)
 	if err != nil {
 		c.err = err
@@ -107,7 +109,7 @@ func (c *demoClient) animeDetails(ctx context.Context) {
 		return
 	}
 	a, _, err := c.Anime.Details(ctx, 967,
-		common.Fields{
+		prm.Fields{
 			"alternative_titles",
 			"media_type",
 			"num_episodes",
@@ -123,12 +125,13 @@ func (c *demoClient) animeDetails(ctx context.Context) {
 		c.err = err
 		return
 	}
+	title := cases.Title(language.Und)
 	fmt.Printf("%s\n", a.Title)
 	fmt.Printf("ID: %d\n", a.ID)
 	fmt.Printf("English: %s\n", a.AlternativeTitles.En)
 	fmt.Printf("Type: %s\n", strings.ToUpper(a.MediaType))
 	fmt.Printf("Episodes: %d\n", a.NumEpisodes)
-	fmt.Printf("Premiered: %s %d\n", strings.Title(a.StartSeason.Season), a.StartSeason.Year)
+	fmt.Printf("Premiered: %s %d\n", title.String(a.StartSeason.Season), a.StartSeason.Year)
 	fmt.Print("Studios: ")
 	delim := ""
 	for _, s := range a.Studios {
@@ -136,7 +139,7 @@ func (c *demoClient) animeDetails(ctx context.Context) {
 		delim = " "
 	}
 	fmt.Println()
-	fmt.Printf("Source: %s\n", strings.Title(a.Source))
+	fmt.Printf("Source: %s\n", title.String(a.Source))
 	fmt.Print("Genres: ")
 	delim = ""
 	for _, g := range a.Genres {
@@ -152,7 +155,7 @@ func (c *demoClient) mangaDetails(ctx context.Context) {
 		return
 	}
 	m, _, err := c.Manga.Details(ctx, 401,
-		common.Fields{
+		prm.Fields{
 			"alternative_titles",
 			"media_type",
 			"num_volumes",
@@ -166,10 +169,11 @@ func (c *demoClient) mangaDetails(ctx context.Context) {
 		c.err = err
 		return
 	}
+	title := cases.Title(language.Und)
 	fmt.Printf("%s\n", m.Title)
 	fmt.Printf("ID: %d\n", m.ID)
 	fmt.Printf("English: %s\n", m.AlternativeTitles.En)
-	fmt.Printf("Type: %s\n", strings.Title(m.MediaType))
+	fmt.Printf("Type: %s\n", title.String(m.MediaType))
 	fmt.Printf("Volumes: %d\n", m.NumVolumes)
 	fmt.Printf("Chapters: %d\n", m.NumChapters)
 	fmt.Print("Studios: ")
@@ -186,7 +190,7 @@ func (c *demoClient) mangaDetails(ctx context.Context) {
 		delim = " "
 	}
 	fmt.Println()
-	fmt.Printf("Status: %s\n", strings.Title(m.Status))
+	fmt.Printf("Status: %s\n", title.String(m.Status))
 }
 
 func (c *demoClient) animeListForLoop(ctx context.Context) {
@@ -196,9 +200,9 @@ func (c *demoClient) animeListForLoop(ctx context.Context) {
 	offset := 0
 	for {
 		anime, resp, err := c.Anime.List(ctx, "kiseijuu",
-			common.Fields{"rank", "popularity", "start_season"},
-			common.Limit(100),
-			common.Offset(offset),
+			prm.Fields{"rank", "popularity", "start_season"},
+			prm.Limit(100),
+			prm.Offset(offset),
 		)
 		if err != nil {
 			c.err = err
@@ -221,10 +225,10 @@ func (c *demoClient) userAnimeList(ctx context.Context) {
 		return
 	}
 	anime, _, err := c.User.AnimeList(ctx, "@me",
-		common.Fields{"list_status"},
-		mal.AnimeStatusWatching,
-		mal.SortAnimeListByListUpdatedAt,
-		common.Limit(5),
+		prm.Fields{"list_status"},
+		prm.AnimeStatusWatching,
+		prm.SortAnimeListByListUpdatedAt,
+		prm.Limit(5),
 	)
 	if err != nil {
 		c.err = err
@@ -240,10 +244,10 @@ func (c *demoClient) userMangaList(ctx context.Context) {
 		return
 	}
 	manga, _, err := c.User.MangaList(ctx, "@me",
-		mal.SortMangaListByListScore,
-		common.Fields{"list_status{comments, tags}"},
-		common.Limit(5),
-		common.Offset(0),
+		prm.SortMangaListByListScore,
+		prm.Fields{"list_status{comments, tags}"},
+		prm.Limit(5),
+		prm.Offset(0),
 	)
 	if err != nil {
 		c.err = err
@@ -259,12 +263,12 @@ func (c *demoClient) updateMyAnimeListStatus(ctx context.Context) {
 		return
 	}
 	s, _, err := c.Anime.UpdateMyListStatus(ctx, 967,
-		mal.AnimeStatusWatching,
-		mal.NumEpisodesWatched(73),
-		mal.Score(8),
-		mal.Comments("You wa shock!"),
-		mal.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
-		mal.FinishDate(time.Time{}), // Remove an existing date.
+		prm.AnimeStatusWatching,
+		prm.NumEpisodesWatched(73),
+		prm.Score(8),
+		prm.Comments("You wa shock!"),
+		prm.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
+		prm.FinishDate(time.Time{}), // Remove an existing date.
 	)
 	if err != nil {
 		c.err = err
@@ -278,12 +282,12 @@ func (c *demoClient) updateMyMangaListStatus(ctx context.Context) {
 		return
 	}
 	s, _, err := c.Manga.UpdateMyListStatus(ctx, 401,
-		mal.MangaStatusReading,
-		mal.NumVolumesRead(1),
-		mal.NumChaptersRead(5),
-		mal.Comments("Migi"),
-		mal.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
-		mal.FinishDate(time.Time{}), // Remove an existing date.
+		prm.MangaStatusReading,
+		prm.NumVolumesRead(1),
+		prm.NumChaptersRead(5),
+		prm.Comments("Migi"),
+		prm.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
+		prm.FinishDate(time.Time{}), // Remove an existing date.
 	)
 	if err != nil {
 		c.err = err
@@ -318,15 +322,15 @@ func (c *demoClient) animeRanking(ctx context.Context) {
 	if c.err != nil {
 		return
 	}
-	rankings := []mal.AnimeRanking{
-		mal.AnimeRankingAiring,
-		mal.AnimeRankingAll,
-		mal.AnimeRankingByPopularity,
+	rankings := []prm.AnimeRanking{
+		prm.AnimeRankingAiring,
+		prm.AnimeRankingAll,
+		prm.AnimeRankingByPopularity,
 	}
 	for _, r := range rankings {
 		fmt.Println("Ranking:", r)
 		anime, _, err := c.Anime.Ranking(ctx, r,
-			common.Fields{"rank", "popularity"},
+			prm.Fields{"rank", "popularity"},
 		)
 		if err != nil {
 			c.err = err
@@ -344,9 +348,9 @@ func (c *demoClient) mangaRanking(ctx context.Context) {
 		return
 	}
 	manga, _, err := c.Manga.Ranking(ctx,
-		mal.MangaRankingByPopularity,
-		common.Fields{"rank", "popularity"},
-		common.Limit(6),
+		prm.MangaRankingByPopularity,
+		prm.Fields{"rank", "popularity"},
+		prm.Limit(6),
 	)
 	if err != nil {
 		c.err = err
@@ -361,11 +365,11 @@ func (c *demoClient) animeSeasonal(ctx context.Context) {
 	if c.err != nil {
 		return
 	}
-	anime, _, err := c.Anime.Seasonal(ctx, 2020, mal.AnimeSeasonFall,
-		common.Fields{"rank", "popularity"},
-		mal.SortSeasonalByAnimeNumListUsers,
-		common.Limit(3),
-		common.Offset(0),
+	anime, _, err := c.Anime.Seasonal(ctx, 2020, prm.AnimeSeasonFall,
+		prm.Fields{"rank", "popularity"},
+		prm.SortSeasonalByAnimeNumListUsers,
+		prm.Limit(3),
+		prm.Offset(0),
 	)
 	if err != nil {
 		c.err = err
@@ -381,8 +385,8 @@ func (c *demoClient) animeSuggested(ctx context.Context) {
 		return
 	}
 	anime, _, err := c.Anime.Suggested(ctx,
-		common.Limit(3),
-		common.Fields{"rank", "popularity"},
+		prm.Limit(3),
+		prm.Fields{"rank", "popularity"},
 	)
 	if err != nil {
 		c.err = err
@@ -419,9 +423,9 @@ func (c *demoClient) forumTopics(ctx context.Context) {
 		return
 	}
 	topics, _, err := c.Forum.Topics(ctx,
-		mal.Query("JoJo opening"),
-		mal.SortTopicsRecent,
-		common.Limit(2),
+		prm.Query("JoJo opening"),
+		prm.SortTopicsRecent,
+		prm.Limit(2),
 	)
 	if err != nil {
 		c.err = err
@@ -436,7 +440,7 @@ func (c *demoClient) forumTopicDetails(ctx context.Context) {
 	if c.err != nil {
 		return
 	}
-	topicDetails, _, err := c.Forum.TopicDetails(ctx, 1877721, common.Limit(3), common.Offset(0))
+	topicDetails, _, err := c.Forum.TopicDetails(ctx, 1877721, prm.Limit(3), prm.Offset(0))
 	if err != nil {
 		c.err = err
 		return

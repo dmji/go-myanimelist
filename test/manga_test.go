@@ -7,8 +7,9 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/dmji/go-myanimelist/mal"
 	"github.com/dmji/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/containers"
+	"github.com/dmji/go-myanimelist/mal/prm"
 )
 
 func TestMangaServiceDetails(t *testing.T) {
@@ -25,11 +26,11 @@ func TestMangaServiceDetails(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	a, _, err := client.Manga.Details(ctx, 1, common.Fields{"foo,bar"})
+	a, _, err := client.Manga.Details(ctx, 1, prm.Fields{"foo,bar"})
 	if err != nil {
 		t.Errorf("Manga.Details returned error: %v", err)
 	}
-	want := &mal.Manga{ID: 1}
+	want := &containers.Manga{ID: 1}
 	if got := a; !reflect.DeepEqual(got, want) {
 		t.Errorf("Manga.Details returned\nhave: %+v\n\nwant: %+v", got, want)
 	}
@@ -85,15 +86,15 @@ func TestMangaServiceList(t *testing.T) {
 
 	ctx := context.Background()
 	got, resp, err := client.Manga.List(ctx, "query",
-		common.Fields{"foo", "bar"},
-		common.Limit(10),
-		common.Offset(0),
-		common.NSFW(true),
+		prm.Fields{"foo", "bar"},
+		prm.Limit(10),
+		prm.Offset(0),
+		prm.NSFW(true),
 	)
 	if err != nil {
 		t.Errorf("Manga.List returned error: %v", err)
 	}
-	want := []mal.Manga{{ID: 1}, {ID: 2}}
+	want := []containers.Manga{{ID: 1}, {ID: 2}}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("Manga.List returned\nhave: %+v\n\nwant: %+v", got, want)
 	}
@@ -150,15 +151,15 @@ func TestMangaServiceRanking(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	got, resp, err := client.Manga.Ranking(ctx, mal.MangaRankingAll,
-		common.Fields{"foo", "bar"},
-		common.Limit(10),
-		common.Offset(0),
+	got, resp, err := client.Manga.Ranking(ctx, prm.MangaRankingAll,
+		prm.Fields{"foo", "bar"},
+		prm.Limit(10),
+		prm.Offset(0),
 	)
 	if err != nil {
 		t.Errorf("Manga.Ranking returned error: %v", err)
 	}
-	want := []mal.Manga{{ID: 1}, {ID: 2}}
+	want := []containers.Manga{{ID: 1}, {ID: 2}}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("Manga.Ranking returned\nhave: %+v\n\nwant: %+v", got, want)
 	}

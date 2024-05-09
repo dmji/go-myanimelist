@@ -7,24 +7,25 @@ import (
 	"time"
 
 	"github.com/dmji/go-myanimelist/mal"
-	"github.com/dmji/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/prm"
 )
 
 func ExampleUserService_MangaList() {
 	ctx := context.Background()
 
-	c := mal.NewClient(nil)
+	c := mal.NewSite(nil)
 
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	c.BaseURL, _ = url.Parse(server.URL)
+	baseURL, _ := url.Parse(server.URL)
+	c.SetBaseURL(baseURL)
 
 	manga, _, err := c.User.MangaList(ctx, "@me",
-		common.Fields{"list_status"},
-		mal.SortMangaListByListUpdatedAt,
-		common.Limit(2),
+		prm.Fields{"list_status"},
+		prm.SortMangaListByListUpdatedAt,
+		prm.Limit(2),
 	)
 	if err != nil {
 		fmt.Printf("User.MangaList error: %v", err)
@@ -41,21 +42,22 @@ func ExampleUserService_MangaList() {
 func ExampleMangaService_UpdateMyListStatus() {
 	ctx := context.Background()
 
-	c := mal.NewClient(nil)
+	c := mal.NewSite(nil)
 
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	c.BaseURL, _ = url.Parse(server.URL)
+	baseURL, _ := url.Parse(server.URL)
+	c.SetBaseURL(baseURL)
 
 	s, _, err := c.Manga.UpdateMyListStatus(ctx, 401,
-		mal.MangaStatusReading,
-		mal.NumVolumesRead(1),
-		mal.NumChaptersRead(5),
-		mal.Comments("Migi"),
-		mal.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
-		mal.FinishDate(time.Time{}), // Remove an existing date.
+		prm.MangaStatusReading,
+		prm.NumVolumesRead(1),
+		prm.NumChaptersRead(5),
+		prm.Comments("Migi"),
+		prm.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
+		prm.FinishDate(time.Time{}), // Remove an existing date.
 	)
 	if err != nil {
 		fmt.Printf("Manga.UpdateMyListStatus error: %v", err)

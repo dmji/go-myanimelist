@@ -9,7 +9,8 @@ import (
 	"time"
 
 	"github.com/dmji/go-myanimelist/mal"
-	"github.com/dmji/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/containers"
+	"github.com/dmji/go-myanimelist/mal/prm"
 	"golang.org/x/oauth2"
 )
 
@@ -19,14 +20,15 @@ var (
 	clientSecret = flag.String("client-secret", "", "your registered MyAnimeList.net application client secret; optional if you chose App Type 'other'")
 )
 
-func setupIntegration(ctx context.Context, t *testing.T) *mal.Client {
+func setupIntegration(ctx context.Context, t *testing.T) *mal.Site {
 	const tokenFormat = `
 	{
 		"token_type": "Bearer",
 		"access_token": "yourAccessToken",
 		"refresh_token": "yourRefreshToken",
 		"expiry": "2021-06-01T16:12:56.1319122Z"
-	}`
+		}`
+
 	if *oauth2Token == "" || *clientID == "" {
 		t.Log("No oauth2 token or client ID provided.")
 		t.Log("The integration tests are meant to be run with a dedicated test account with empty lists.")
@@ -55,7 +57,7 @@ func setupIntegration(ctx context.Context, t *testing.T) *mal.Client {
 		},
 	}
 
-	return mal.NewClient(conf.Client(ctx, token))
+	return mal.NewSite(conf.Client(ctx, token))
 }
 
 func TestIntegration(t *testing.T) {
@@ -80,7 +82,7 @@ func TestIntegration(t *testing.T) {
 	})
 }
 
-func testGetUserInfo(ctx context.Context, t *testing.T, client *mal.Client) (username string) {
+func testGetUserInfo(ctx context.Context, t *testing.T, client *mal.Site) (username string) {
 	t.Helper()
 	// Get user info to find the username.
 	info, _, err := client.User.MyInfo(ctx)
@@ -93,7 +95,7 @@ func testGetUserInfo(ctx context.Context, t *testing.T, client *mal.Client) (use
 	return username
 }
 
-func testUpdateUserAnimeList(ctx context.Context, t *testing.T, client *mal.Client, username string) {
+func testUpdateUserAnimeList(ctx context.Context, t *testing.T, client *mal.Site, username string) {
 	// Get anime list for test account.
 	const me = "@me"
 	list, _, err := client.User.AnimeList(ctx, me)
@@ -119,17 +121,17 @@ func testUpdateUserAnimeList(ctx context.Context, t *testing.T, client *mal.Clie
 	// Test adding some anime.
 	for _, id := range testAnimeIDs {
 		if _, _, err := client.Anime.UpdateMyListStatus(ctx, id,
-			mal.AnimeStatusWatching,
-			mal.Comments("test comment"),
-			mal.IsRewatching(true),
-			mal.NumEpisodesWatched(1),
-			mal.NumTimesRewatched(1),
-			mal.Priority(1),
-			mal.RewatchValue(1),
-			mal.Score(1),
-			mal.Tags{"foo", "bar"},
-			mal.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
-			mal.FinishDate(time.Time{}),
+			prm.AnimeStatusWatching,
+			prm.Comments("test comment"),
+			prm.IsRewatching(true),
+			prm.NumEpisodesWatched(1),
+			prm.NumTimesRewatched(1),
+			prm.Priority(1),
+			prm.RewatchValue(1),
+			prm.Score(1),
+			prm.Tags{"foo", "bar"},
+			prm.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
+			prm.FinishDate(time.Time{}),
 		); err != nil {
 			t.Fatalf("Anime.UpdateMyListStatus(%d) returned err: %v", id, err)
 		}
@@ -137,7 +139,7 @@ func testUpdateUserAnimeList(ctx context.Context, t *testing.T, client *mal.Clie
 
 	// Get anime list of test account for a second time.
 	list, _, err = client.User.AnimeList(ctx, me,
-		common.Fields{"list_status{num_times_rewatched, rewatch_value, priority, comments, tags}"},
+		prm.Fields{"list_status{num_times_rewatched, rewatch_value, priority, comments, tags}"},
 	)
 	if err != nil {
 		t.Fatalf("User.AnimeList(%q) after additions returned err: %s", me, err)
@@ -150,8 +152,8 @@ func testUpdateUserAnimeList(ctx context.Context, t *testing.T, client *mal.Clie
 
 	// And that they all have been updated appropriately.
 	for _, a := range list {
-		want := mal.AnimeListStatus{
-			Status:             mal.AnimeStatusWatching,
+		want := containers.AnimeListStatus{
+			Status:             prm.AnimeStatusWatching,
 			Score:              1,
 			NumEpisodesWatched: 1,
 			IsRewatching:       true,
@@ -170,7 +172,7 @@ func testUpdateUserAnimeList(ctx context.Context, t *testing.T, client *mal.Clie
 	}
 }
 
-func testUpdateUserMangaList(ctx context.Context, t *testing.T, client *mal.Client, username string) {
+func testUpdateUserMangaList(ctx context.Context, t *testing.T, client *mal.Site, username string) {
 	// Get manga list for test account.
 	const me = "@me"
 	list, _, err := client.User.MangaList(ctx, me)
@@ -196,18 +198,18 @@ func testUpdateUserMangaList(ctx context.Context, t *testing.T, client *mal.Clie
 	// Test adding some manga.
 	for _, id := range testMangaIDs {
 		if _, _, err := client.Manga.UpdateMyListStatus(ctx, id,
-			mal.MangaStatusReading,
-			mal.Comments("test comment"),
-			mal.IsRereading(true),
-			mal.NumChaptersRead(1),
-			mal.NumVolumesRead(1),
-			mal.NumTimesReread(1),
-			mal.Priority(1),
-			mal.RereadValue(1),
-			mal.Score(1),
-			mal.Tags{"foo", "bar"},
-			mal.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
-			mal.FinishDate(time.Time{}),
+			prm.MangaStatusReading,
+			prm.Comments("test comment"),
+			prm.IsRereading(true),
+			prm.NumChaptersRead(1),
+			prm.NumVolumesRead(1),
+			prm.NumTimesReread(1),
+			prm.Priority(1),
+			prm.RereadValue(1),
+			prm.Score(1),
+			prm.Tags{"foo", "bar"},
+			prm.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
+			prm.FinishDate(time.Time{}),
 		); err != nil {
 			t.Fatalf("Manga.UpdateMyListStatus(%d) returned err: %v", id, err)
 		}
@@ -215,7 +217,7 @@ func testUpdateUserMangaList(ctx context.Context, t *testing.T, client *mal.Clie
 
 	// Get manga list of test account for a second time.
 	list, _, err = client.User.MangaList(ctx, me,
-		common.Fields{"list_status{num_times_reread, reread_value, priority, comments, tags}"},
+		prm.Fields{"list_status{num_times_reread, reread_value, priority, comments, tags}"},
 	)
 	if err != nil {
 		t.Fatalf("User.MangaList(%q) after additions returned err: %s", me, err)
@@ -228,8 +230,8 @@ func testUpdateUserMangaList(ctx context.Context, t *testing.T, client *mal.Clie
 
 	// And that they all have been updated appropriately.
 	for _, a := range list {
-		want := mal.MangaListStatus{
-			Status:          mal.MangaStatusReading,
+		want := containers.MangaListStatus{
+			Status:          prm.MangaStatusReading,
 			Score:           1,
 			NumChaptersRead: 1,
 			NumVolumesRead:  1,
@@ -249,8 +251,8 @@ func testUpdateUserMangaList(ctx context.Context, t *testing.T, client *mal.Clie
 	}
 }
 
-func testAnimeMethods(ctx context.Context, t *testing.T, client *mal.Client) {
-	list, _, err := client.Anime.List(ctx, "kiseijuu", common.Limit(2))
+func testAnimeMethods(ctx context.Context, t *testing.T, client *mal.Site) {
+	list, _, err := client.Anime.List(ctx, "kiseijuu", prm.Limit(2))
 	if err != nil {
 		t.Errorf("Anime.List returned error: %v", err)
 	}
@@ -263,24 +265,24 @@ func testAnimeMethods(ctx context.Context, t *testing.T, client *mal.Client) {
 		t.Errorf("Anime.Details returned error: %v", err)
 	}
 
-	_, _, err = client.Anime.Ranking(ctx, mal.AnimeRankingAll, common.Limit(2))
+	_, _, err = client.Anime.Ranking(ctx, prm.AnimeRankingAll, prm.Limit(2))
 	if err != nil {
 		t.Errorf("Anime.Ranking returned error: %v", err)
 	}
 
-	_, _, err = client.Anime.Seasonal(ctx, 2020, mal.AnimeSeasonWinter, mal.SortSeasonalByAnimeNumListUsers, common.Limit(2))
+	_, _, err = client.Anime.Seasonal(ctx, 2020, prm.AnimeSeasonWinter, prm.SortSeasonalByAnimeNumListUsers, prm.Limit(2))
 	if err != nil {
 		t.Errorf("Anime.Seasonal returned error: %v", err)
 	}
 
-	_, _, err = client.Anime.Suggested(ctx, common.Fields{"rank", "popularity"}, common.Limit(2))
+	_, _, err = client.Anime.Suggested(ctx, prm.Fields{"rank", "popularity"}, prm.Limit(2))
 	if err != nil {
 		t.Errorf("Anime.Suggested returned error: %v", err)
 	}
 }
 
-func testMangaMethods(ctx context.Context, t *testing.T, client *mal.Client) {
-	list, _, err := client.Manga.List(ctx, "kiseijuu", common.Limit(2))
+func testMangaMethods(ctx context.Context, t *testing.T, client *mal.Site) {
+	list, _, err := client.Manga.List(ctx, "kiseijuu", prm.Limit(2))
 	if err != nil {
 		t.Errorf("Manga.List returned error: %v", err)
 	}
@@ -293,19 +295,19 @@ func testMangaMethods(ctx context.Context, t *testing.T, client *mal.Client) {
 		t.Errorf("Manga.Details returned error: %v", err)
 	}
 
-	_, _, err = client.Manga.Ranking(ctx, mal.MangaRankingAll, common.Limit(2))
+	_, _, err = client.Manga.Ranking(ctx, prm.MangaRankingAll, prm.Limit(2))
 	if err != nil {
 		t.Errorf("Manga.Ranking returned error: %v", err)
 	}
 }
 
-func testForumMethods(ctx context.Context, t *testing.T, client *mal.Client) {
+func testForumMethods(ctx context.Context, t *testing.T, client *mal.Site) {
 	_, _, err := client.Forum.Boards(ctx)
 	if err != nil {
 		t.Errorf("Forum.Boards returned error: %v", err)
 	}
 
-	topics, _, err := client.Forum.Topics(ctx, mal.Query("kiseijuu"), common.Limit(2))
+	topics, _, err := client.Forum.Topics(ctx, prm.Query("kiseijuu"), prm.Limit(2))
 	if err != nil {
 		t.Errorf("Forum.Topics returned error: %v", err)
 	}
@@ -313,7 +315,7 @@ func testForumMethods(ctx context.Context, t *testing.T, client *mal.Client) {
 		t.Fatal("Forum.Topics returned 0 topics")
 	}
 
-	_, _, err = client.Forum.TopicDetails(ctx, topics[0].ID, common.Limit(2))
+	_, _, err = client.Forum.TopicDetails(ctx, topics[0].ID, prm.Limit(2))
 	if err != nil {
 		t.Errorf("Forum.TopicDetails returned error: %v", err)
 	}
