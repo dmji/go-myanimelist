@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/nstratos/go-myanimelist/mal"
+	"github.com/nstratos/go-myanimelist/mal/common"
 	"golang.org/x/oauth2"
 )
 
@@ -136,7 +137,7 @@ func testUpdateUserAnimeList(ctx context.Context, t *testing.T, client *mal.Clie
 
 	// Get anime list of test account for a second time.
 	list, _, err = client.User.AnimeList(ctx, me,
-		mal.Fields{"list_status{num_times_rewatched, rewatch_value, priority, comments, tags}"},
+		common.Fields{"list_status{num_times_rewatched, rewatch_value, priority, comments, tags}"},
 	)
 	if err != nil {
 		t.Fatalf("User.AnimeList(%q) after additions returned err: %s", me, err)
@@ -214,7 +215,7 @@ func testUpdateUserMangaList(ctx context.Context, t *testing.T, client *mal.Clie
 
 	// Get manga list of test account for a second time.
 	list, _, err = client.User.MangaList(ctx, me,
-		mal.Fields{"list_status{num_times_reread, reread_value, priority, comments, tags}"},
+		common.Fields{"list_status{num_times_reread, reread_value, priority, comments, tags}"},
 	)
 	if err != nil {
 		t.Fatalf("User.MangaList(%q) after additions returned err: %s", me, err)
@@ -249,7 +250,7 @@ func testUpdateUserMangaList(ctx context.Context, t *testing.T, client *mal.Clie
 }
 
 func testAnimeMethods(ctx context.Context, t *testing.T, client *mal.Client) {
-	list, _, err := client.Anime.List(ctx, "kiseijuu", mal.Limit(2))
+	list, _, err := client.Anime.List(ctx, "kiseijuu", common.Limit(2))
 	if err != nil {
 		t.Errorf("Anime.List returned error: %v", err)
 	}
@@ -262,24 +263,24 @@ func testAnimeMethods(ctx context.Context, t *testing.T, client *mal.Client) {
 		t.Errorf("Anime.Details returned error: %v", err)
 	}
 
-	_, _, err = client.Anime.Ranking(ctx, mal.AnimeRankingAll, mal.Limit(2))
+	_, _, err = client.Anime.Ranking(ctx, mal.AnimeRankingAll, common.Limit(2))
 	if err != nil {
 		t.Errorf("Anime.Ranking returned error: %v", err)
 	}
 
-	_, _, err = client.Anime.Seasonal(ctx, 2020, mal.AnimeSeasonWinter, mal.SortSeasonalByAnimeNumListUsers, mal.Limit(2))
+	_, _, err = client.Anime.Seasonal(ctx, 2020, mal.AnimeSeasonWinter, mal.SortSeasonalByAnimeNumListUsers, common.Limit(2))
 	if err != nil {
 		t.Errorf("Anime.Seasonal returned error: %v", err)
 	}
 
-	_, _, err = client.Anime.Suggested(ctx, mal.Fields{"rank", "popularity"}, mal.Limit(2))
+	_, _, err = client.Anime.Suggested(ctx, common.Fields{"rank", "popularity"}, common.Limit(2))
 	if err != nil {
 		t.Errorf("Anime.Suggested returned error: %v", err)
 	}
 }
 
 func testMangaMethods(ctx context.Context, t *testing.T, client *mal.Client) {
-	list, _, err := client.Manga.List(ctx, "kiseijuu", mal.Limit(2))
+	list, _, err := client.Manga.List(ctx, "kiseijuu", common.Limit(2))
 	if err != nil {
 		t.Errorf("Manga.List returned error: %v", err)
 	}
@@ -292,7 +293,7 @@ func testMangaMethods(ctx context.Context, t *testing.T, client *mal.Client) {
 		t.Errorf("Manga.Details returned error: %v", err)
 	}
 
-	_, _, err = client.Manga.Ranking(ctx, mal.MangaRankingAll, mal.Limit(2))
+	_, _, err = client.Manga.Ranking(ctx, mal.MangaRankingAll, common.Limit(2))
 	if err != nil {
 		t.Errorf("Manga.Ranking returned error: %v", err)
 	}
@@ -304,7 +305,7 @@ func testForumMethods(ctx context.Context, t *testing.T, client *mal.Client) {
 		t.Errorf("Forum.Boards returned error: %v", err)
 	}
 
-	topics, _, err := client.Forum.Topics(ctx, mal.Query("kiseijuu"), mal.Limit(2))
+	topics, _, err := client.Forum.Topics(ctx, mal.Query("kiseijuu"), common.Limit(2))
 	if err != nil {
 		t.Errorf("Forum.Topics returned error: %v", err)
 	}
@@ -312,7 +313,7 @@ func testForumMethods(ctx context.Context, t *testing.T, client *mal.Client) {
 		t.Fatal("Forum.Topics returned 0 topics")
 	}
 
-	_, _, err = client.Forum.TopicDetails(ctx, topics[0].ID, mal.Limit(2))
+	_, _, err = client.Forum.TopicDetails(ctx, topics[0].ID, common.Limit(2))
 	if err != nil {
 		t.Errorf("Forum.TopicDetails returned error: %v", err)
 	}

@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/nstratos/go-myanimelist/mal"
+	"github.com/nstratos/go-myanimelist/mal/common"
 )
 
 func TestAnimeServiceDetails(t *testing.T) {
@@ -25,7 +26,7 @@ func TestAnimeServiceDetails(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	a, _, err := client.Anime.Details(ctx, 1, mal.Fields{"foo,bar"})
+	a, _, err := client.Anime.Details(ctx, 1, common.Fields{"foo,bar"})
 	if err != nil {
 		t.Errorf("Anime.Details returned error: %v", err)
 	}
@@ -49,7 +50,7 @@ func TestAnimeServiceDetailsError(t *testing.T) {
 	if err == nil {
 		t.Fatal("Anime.Details expected not found error, got no error.")
 	}
-	testErrorResponse(t, err, mal.ErrorResponse{Message: "anime deleted", Err: "not_found"})
+	testErrorResponse(t, err, common.ErrorResponse{Message: "anime deleted", Err: "not_found"})
 }
 
 func TestAnimeServiceList(t *testing.T) {
@@ -85,10 +86,10 @@ func TestAnimeServiceList(t *testing.T) {
 
 	ctx := context.Background()
 	got, resp, err := client.Anime.List(ctx, "query",
-		mal.Fields{"foo", "bar"},
-		mal.Limit(10),
-		mal.Offset(0),
-		mal.NSFW(true),
+		common.Fields{"foo", "bar"},
+		common.Limit(10),
+		common.Offset(0),
+		common.NSFW(true),
 	)
 	if err != nil {
 		t.Errorf("Anime.List returned error: %v", err)
@@ -172,7 +173,7 @@ func TestAnimeServiceListError(t *testing.T) {
 		t.Fatal("Anime.List expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "Anime.List")
-	testErrorResponse(t, err, mal.ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, common.ErrorResponse{Message: "mal is down", Err: "internal"})
 }
 
 func TestAnimeServiceRanking(t *testing.T) {
@@ -208,9 +209,9 @@ func TestAnimeServiceRanking(t *testing.T) {
 
 	ctx := context.Background()
 	got, resp, err := client.Anime.Ranking(ctx, mal.AnimeRankingAll,
-		mal.Fields{"foo", "bar"},
-		mal.Limit(10),
-		mal.Offset(0),
+		common.Fields{"foo", "bar"},
+		common.Limit(10),
+		common.Offset(0),
 	)
 	if err != nil {
 		t.Errorf("Anime.Ranking returned error: %v", err)
@@ -259,10 +260,10 @@ func TestAnimeServiceSeasonal(t *testing.T) {
 	ctx := context.Background()
 	got, resp, err := client.Anime.Seasonal(ctx, 2020, mal.AnimeSeasonSummer,
 		mal.SortSeasonalByAnimeNumListUsers,
-		mal.Fields{"foo", "bar"},
-		mal.Limit(10),
-		mal.Offset(0),
-		mal.NSFW(false),
+		common.Fields{"foo", "bar"},
+		common.Limit(10),
+		common.Offset(0),
+		common.NSFW(false),
 	)
 	if err != nil {
 		t.Errorf("Anime.Seasonal returned error: %v", err)
@@ -305,9 +306,9 @@ func TestAnimeServiceSuggested(t *testing.T) {
 
 	ctx := context.Background()
 	got, resp, err := client.Anime.Suggested(ctx,
-		mal.Fields{"foo", "bar"},
-		mal.Limit(10),
-		mal.Offset(0),
+		common.Fields{"foo", "bar"},
+		common.Limit(10),
+		common.Offset(0),
 	)
 	if err != nil {
 		t.Errorf("Anime.Suggested returned error: %v", err)

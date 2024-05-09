@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/nstratos/go-myanimelist/mal"
+	"github.com/nstratos/go-myanimelist/mal/common"
 )
 
 // demoClient has methods showcasing the usage of the different MyAnimeList API
@@ -70,9 +71,9 @@ func (c *demoClient) animeList(ctx context.Context) {
 		return
 	}
 	anime, _, err := c.Anime.List(ctx, "hokuto no ken",
-		mal.Fields{"rank", "popularity", "start_season"},
-		mal.Limit(3),
-		mal.Offset(0),
+		common.Fields{"rank", "popularity", "start_season"},
+		common.Limit(3),
+		common.Offset(0),
 	)
 	if err != nil {
 		c.err = err
@@ -88,9 +89,9 @@ func (c *demoClient) mangaList(ctx context.Context) {
 		return
 	}
 	manga, _, err := c.Manga.List(ctx, "parasyte",
-		mal.Fields{"num_volumes", "num_chapters", "alternative_titles"},
-		mal.Limit(3),
-		mal.Offset(0),
+		common.Fields{"num_volumes", "num_chapters", "alternative_titles"},
+		common.Limit(3),
+		common.Offset(0),
 	)
 	if err != nil {
 		c.err = err
@@ -106,7 +107,7 @@ func (c *demoClient) animeDetails(ctx context.Context) {
 		return
 	}
 	a, _, err := c.Anime.Details(ctx, 967,
-		mal.Fields{
+		common.Fields{
 			"alternative_titles",
 			"media_type",
 			"num_episodes",
@@ -151,7 +152,7 @@ func (c *demoClient) mangaDetails(ctx context.Context) {
 		return
 	}
 	m, _, err := c.Manga.Details(ctx, 401,
-		mal.Fields{
+		common.Fields{
 			"alternative_titles",
 			"media_type",
 			"num_volumes",
@@ -195,9 +196,9 @@ func (c *demoClient) animeListForLoop(ctx context.Context) {
 	offset := 0
 	for {
 		anime, resp, err := c.Anime.List(ctx, "kiseijuu",
-			mal.Fields{"rank", "popularity", "start_season"},
-			mal.Limit(100),
-			mal.Offset(offset),
+			common.Fields{"rank", "popularity", "start_season"},
+			common.Limit(100),
+			common.Offset(offset),
 		)
 		if err != nil {
 			c.err = err
@@ -220,10 +221,10 @@ func (c *demoClient) userAnimeList(ctx context.Context) {
 		return
 	}
 	anime, _, err := c.User.AnimeList(ctx, "@me",
-		mal.Fields{"list_status"},
+		common.Fields{"list_status"},
 		mal.AnimeStatusWatching,
 		mal.SortAnimeListByListUpdatedAt,
-		mal.Limit(5),
+		common.Limit(5),
 	)
 	if err != nil {
 		c.err = err
@@ -240,9 +241,9 @@ func (c *demoClient) userMangaList(ctx context.Context) {
 	}
 	manga, _, err := c.User.MangaList(ctx, "@me",
 		mal.SortMangaListByListScore,
-		mal.Fields{"list_status{comments, tags}"},
-		mal.Limit(5),
-		mal.Offset(0),
+		common.Fields{"list_status{comments, tags}"},
+		common.Limit(5),
+		common.Offset(0),
 	)
 	if err != nil {
 		c.err = err
@@ -325,7 +326,7 @@ func (c *demoClient) animeRanking(ctx context.Context) {
 	for _, r := range rankings {
 		fmt.Println("Ranking:", r)
 		anime, _, err := c.Anime.Ranking(ctx, r,
-			mal.Fields{"rank", "popularity"},
+			common.Fields{"rank", "popularity"},
 		)
 		if err != nil {
 			c.err = err
@@ -344,8 +345,8 @@ func (c *demoClient) mangaRanking(ctx context.Context) {
 	}
 	manga, _, err := c.Manga.Ranking(ctx,
 		mal.MangaRankingByPopularity,
-		mal.Fields{"rank", "popularity"},
-		mal.Limit(6),
+		common.Fields{"rank", "popularity"},
+		common.Limit(6),
 	)
 	if err != nil {
 		c.err = err
@@ -361,10 +362,10 @@ func (c *demoClient) animeSeasonal(ctx context.Context) {
 		return
 	}
 	anime, _, err := c.Anime.Seasonal(ctx, 2020, mal.AnimeSeasonFall,
-		mal.Fields{"rank", "popularity"},
+		common.Fields{"rank", "popularity"},
 		mal.SortSeasonalByAnimeNumListUsers,
-		mal.Limit(3),
-		mal.Offset(0),
+		common.Limit(3),
+		common.Offset(0),
 	)
 	if err != nil {
 		c.err = err
@@ -380,8 +381,8 @@ func (c *demoClient) animeSuggested(ctx context.Context) {
 		return
 	}
 	anime, _, err := c.Anime.Suggested(ctx,
-		mal.Limit(3),
-		mal.Fields{"rank", "popularity"},
+		common.Limit(3),
+		common.Fields{"rank", "popularity"},
 	)
 	if err != nil {
 		c.err = err
@@ -420,7 +421,7 @@ func (c *demoClient) forumTopics(ctx context.Context) {
 	topics, _, err := c.Forum.Topics(ctx,
 		mal.Query("JoJo opening"),
 		mal.SortTopicsRecent,
-		mal.Limit(2),
+		common.Limit(2),
 	)
 	if err != nil {
 		c.err = err
@@ -435,7 +436,7 @@ func (c *demoClient) forumTopicDetails(ctx context.Context) {
 	if c.err != nil {
 		return
 	}
-	topicDetails, _, err := c.Forum.TopicDetails(ctx, 1877721, mal.Limit(3), mal.Offset(0))
+	topicDetails, _, err := c.Forum.TopicDetails(ctx, 1877721, common.Limit(3), common.Offset(0))
 	if err != nil {
 		c.err = err
 		return

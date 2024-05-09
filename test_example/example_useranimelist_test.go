@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/nstratos/go-myanimelist/mal"
+	"github.com/nstratos/go-myanimelist/mal/common"
 )
 
 func ExampleUserService_AnimeList() {
@@ -21,9 +22,9 @@ func ExampleUserService_AnimeList() {
 	c.BaseURL, _ = url.Parse(server.URL)
 
 	anime, _, err := c.User.AnimeList(ctx, "@me",
-		mal.Fields{"list_status"},
+		common.Fields{"list_status"},
 		mal.SortAnimeListByListUpdatedAt,
-		mal.Limit(5),
+		common.Limit(5),
 	)
 	if err != nil {
 		fmt.Printf("User.AnimeList error: %v", err)

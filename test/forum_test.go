@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/nstratos/go-myanimelist/mal"
+	"github.com/nstratos/go-myanimelist/mal/common"
 )
 
 func TestForumServiceBoards(t *testing.T) {
@@ -76,7 +77,7 @@ func TestForumServiceBoardsError(t *testing.T) {
 	if err == nil {
 		t.Fatal("Forum.Boards expected not found error, got no error.")
 	}
-	testErrorResponse(t, err, mal.ErrorResponse{Message: "forum deleted", Err: "not_found"})
+	testErrorResponse(t, err, common.ErrorResponse{Message: "forum deleted", Err: "not_found"})
 }
 
 func TestForumServiceTopicDetails(t *testing.T) {
@@ -105,8 +106,8 @@ func TestForumServiceTopicDetails(t *testing.T) {
 
 	ctx := context.Background()
 	got, resp, err := client.Forum.TopicDetails(ctx, 1,
-		mal.Limit(10),
-		mal.Offset(0),
+		common.Limit(10),
+		common.Offset(0),
 	)
 	if err != nil {
 		t.Errorf("Forum.TopicDetails returned error: %v", err)
@@ -136,7 +137,7 @@ func TestForumServiceTopicDetailsError(t *testing.T) {
 		t.Fatal("Forum.TopicDetails expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "Forum.TopicDetails")
-	testErrorResponse(t, err, mal.ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, common.ErrorResponse{Message: "mal is down", Err: "internal"})
 }
 
 func TestForumServiceTopics(t *testing.T) {
@@ -170,8 +171,8 @@ func TestForumServiceTopics(t *testing.T) {
 	got, resp, err := client.Forum.Topics(ctx,
 		mal.BoardID(1),
 		mal.SubboardID(1),
-		mal.Limit(10),
-		mal.Offset(0),
+		common.Limit(10),
+		common.Offset(0),
 		mal.SortTopicsRecent,
 		mal.Query("foo"),
 		mal.TopicUserName("bar"),
@@ -202,5 +203,5 @@ func TestForumServiceTopicsError(t *testing.T) {
 		t.Fatal("Forum.Topics expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "Forum.Topics")
-	testErrorResponse(t, err, mal.ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, common.ErrorResponse{Message: "mal is down", Err: "internal"})
 }

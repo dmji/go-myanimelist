@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/nstratos/go-myanimelist/mal"
+	"github.com/nstratos/go-myanimelist/mal/common"
 )
 
 func TestUserServiceMyInfo(t *testing.T) {
@@ -24,7 +25,7 @@ func TestUserServiceMyInfo(t *testing.T) {
 
 	ctx := context.Background()
 	u, _, err := client.User.MyInfo(ctx,
-		mal.Fields{"time_zone", "is_supporter"},
+		common.Fields{"time_zone", "is_supporter"},
 	)
 	if err != nil {
 		t.Errorf("User.MyInfo returned error: %v", err)
@@ -49,5 +50,5 @@ func TestUserServiceMyInfoError(t *testing.T) {
 	if err == nil {
 		t.Fatal("User.MyInfo expected not found error, got no error.")
 	}
-	testErrorResponse(t, err, mal.ErrorResponse{Err: "not_found"})
+	testErrorResponse(t, err, common.ErrorResponse{Err: "not_found"})
 }

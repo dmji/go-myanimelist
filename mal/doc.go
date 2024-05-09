@@ -132,14 +132,14 @@ https://myanimelist.net/apiconfig/references/authorization
 To search and get anime and manga data:
 
 	list, _, err := c.Anime.List(ctx, "hokuto no ken",
-		mal.Fields{"rank", "popularity", "my_list_status"},
-		mal.Limit(5),
+		common.Fields{"rank", "popularity", "my_list_status"},
+		common.Limit(5),
 	)
 	// ...
 
 	list, _, err := c.Manga.List(ctx, "hokuto no ken",
-		mal.Fields{"rank", "popularity", "my_list_status"},
-		mal.Limit(5),
+		common.Fields{"rank", "popularity", "my_list_status"},
+		common.Limit(5),
 	)
 	// ...
 
@@ -159,10 +159,10 @@ To get the anime or manga list of a user:
 	// Get the authenticated user's anime list, filter only watching anime, sort by
 	// last updated, include list status.
 	anime, _, err := c.User.AnimeList(ctx, "@me",
-	    mal.Fields{"list_status"},
+	    common.Fields{"list_status"},
 	    mal.AnimeStatusWatching,
 	    mal.SortAnimeListByListUpdatedAt,
-	    mal.Limit(5),
+	    common.Limit(5),
 	)
 	// ...
 
@@ -170,9 +170,9 @@ To get the anime or manga list of a user:
 	// include list status, comments and tags.
 	manga, _, err := c.User.MangaList(ctx, "@me",
 	    mal.SortMangaListByListScore,
-	    mal.Fields{"list_status{comments, tags}"},
-	    mal.Limit(5),
-	    mal.Offset(1),
+	    common.Fields{"list_status{comments, tags}"},
+	    common.Limit(5),
+	    common.Offset(1),
 	)
 	// ...
 
@@ -204,7 +204,7 @@ Official docs:
 To get details for a certain anime or manga:
 
 	a, _, err := c.Anime.Details(ctx, 967,
-		mal.Fields{
+		common.Fields{
 			"alternative_titles",
 			"media_type",
 			"num_episodes",
@@ -218,7 +218,7 @@ To get details for a certain anime or manga:
 	// ...
 
 	m, _, err := c.Manga.Details(ctx, 401,
-		mal.Fields{
+		common.Fields{
 			"alternative_titles",
 			"media_type",
 			"num_volumes",
@@ -245,15 +245,15 @@ To get anime or manga based on a certain ranking:
 
 	anime, _, err := c.Anime.Ranking(ctx,
 		mal.AnimeRankingAiring,
-		mal.Fields{"rank", "popularity"},
-		mal.Limit(6),
+		common.Fields{"rank", "popularity"},
+		common.Limit(6),
 	)
 	// ...
 
 	manga, _, err := c.Manga.Ranking(ctx,
 		mal.MangaRankingByPopularity,
-		mal.Fields{"rank", "popularity"},
-		mal.Limit(6),
+		common.Fields{"rank", "popularity"},
+		common.Limit(6),
 	)
 	// ...
 

@@ -7,11 +7,13 @@ import (
 	"net/url"
 	"strconv"
 	"time"
+
+	"github.com/nstratos/go-myanimelist/mal/common"
 )
 
 // MangaListOption are options specific to the UserService.MangaList method.
 type MangaListOption interface {
-	mangaListApply(v *url.Values)
+	MangaListApply(v *url.Values)
 }
 
 // UpdateMyMangaListStatusOption are options specific to the
@@ -50,12 +52,9 @@ type MangaListStatus struct {
 }
 
 // mangaList represents the anime list of a user.
-type mangaList struct {
-	Data   []UserManga `json:"data"`
-	Paging Paging      `json:"paging"`
-}
+type mangaList common.ListWithPagination[[]UserManga]
 
-func (m mangaList) pagination() Paging { return m.Paging }
+func (m mangaList) Pagination() common.Paging { return m.Paging }
 
 // MangaStatus is an option that allows to filter the returned manga list by the
 // specified status when using the UserService.MangaList method. It can also be
@@ -80,7 +79,7 @@ const (
 	MangaStatusPlanToRead MangaStatus = "plan_to_read"
 )
 
-func (s MangaStatus) mangaListApply(v *url.Values)               { v.Set("status", string(s)) }
+func (s MangaStatus) MangaListApply(v *url.Values)               { v.Set("status", string(s)) }
 func (s MangaStatus) updateMyMangaListStatusApply(v *url.Values) { v.Set("status", string(s)) }
 
 // SortMangaList is an option that sorts the results when getting the user's
@@ -105,13 +104,13 @@ const (
 	SortMangaListByMangaID SortMangaList = "manga_id"
 )
 
-func (s SortMangaList) mangaListApply(v *url.Values) { v.Set("sort", string(s)) }
+func (s SortMangaList) MangaListApply(v *url.Values) { v.Set("sort", string(s)) }
 
 // MangaList gets the manga list of the user indicated by username (or use @me).
 // The manga can be sorted and filtered using the MangaStatus and SortMangaList
 // option functions respectively.
 func (s *UserService) MangaList(ctx context.Context, username string, options ...MangaListOption) ([]UserManga, *Response, error) {
-	oo := make([]Option, len(options))
+	oo := make([]common.OptionalParam, len(options))
 	for i := range options {
 		oo[i] = optionFromMangaListOption(options[i])
 	}
@@ -123,9 +122,9 @@ func (s *UserService) MangaList(ctx context.Context, username string, options ..
 	return list.Data, resp, nil
 }
 
-func optionFromMangaListOption(o MangaListOption) optionFunc {
-	return optionFunc(func(v *url.Values) {
-		o.mangaListApply(v)
+func optionFromMangaListOption(o MangaListOption) common.OptionFunc {
+	return common.OptionFunc(func(v *url.Values) {
+		o.MangaListApply(v)
 	})
 }
 

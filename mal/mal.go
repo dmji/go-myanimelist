@@ -12,6 +12,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/nstratos/go-myanimelist/mal/common"
 	"github.com/nstratos/go-myanimelist/mal/util"
 )
 
@@ -109,6 +110,22 @@ func (c *Client) NewRequest(method, urlStr string, urlOptions ...func(v *url.Val
 	return req, nil
 }
 
+func checkResponse(r *http.Response) error {
+	if c := r.StatusCode; 200 <= c && c <= 299 {
+		return nil
+	}
+	errorResponse := &common.ErrorResponse{Response: r}
+	data, err := io.ReadAll(r.Body)
+	if err == nil && data != nil {
+		// Ignore unmarshal error for undocumented error formats or HTML.
+		_ = json.Unmarshal(data, errorResponse)
+	}
+	// Re-populate error response body in case JSON unmarshal fails.
+	r.Body = io.NopCloser(bytes.NewBuffer(data))
+
+	return errorResponse
+}
+
 // Do sends an API request and returns the API response. The API response is
 // JSON decoded and stored in the value pointed to by v. If v implements the
 // io.Writer interface, the raw response body will be written to v, without
@@ -147,37 +164,6 @@ func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) (*Res
 	return response, err
 }
 
-// An ErrorResponse reports an error caused by an API request.
-//
-// https://myanimelist.net/apiconfig/references/api/v2#section/Common-formats
-type ErrorResponse struct {
-	Response *http.Response // HTTP response that caused this error
-	Message  string         `json:"message"`
-	Err      string         `json:"error"`
-}
-
-func (r *ErrorResponse) Error() string {
-	return fmt.Sprintf("%v %v: %d %v %v",
-		r.Response.Request.Method, r.Response.Request.URL,
-		r.Response.StatusCode, r.Message, r.Err)
-}
-
-func checkResponse(r *http.Response) error {
-	if c := r.StatusCode; 200 <= c && c <= 299 {
-		return nil
-	}
-	errorResponse := &ErrorResponse{Response: r}
-	data, err := io.ReadAll(r.Body)
-	if err == nil && data != nil {
-		// Ignore unmarshal error for undocumented error formats or HTML.
-		_ = json.Unmarshal(data, errorResponse)
-	}
-	// Re-populate error response body in case JSON unmarshal fails.
-	r.Body = io.NopCloser(bytes.NewBuffer(data))
-
-	return errorResponse
-}
-
 func (c *Client) details(ctx context.Context, path string, v interface{}, options ...DetailsOption) (*Response, error) {
 	req, err := c.NewRequest(http.MethodGet, path)
 	if err != nil {
@@ -185,7 +171,7 @@ func (c *Client) details(ctx context.Context, path string, v interface{}, option
 	}
 	q := req.URL.Query()
 	for _, o := range options {
-		o.detailsApply(&q)
+		o.DetailsApply(&q)
 	}
 	req.URL.RawQuery = q.Encode()
 
@@ -197,25 +183,14 @@ func (c *Client) details(ctx context.Context, path string, v interface{}, option
 	return resp, nil
 }
 
-// Paging provides access to the next and previous page URLs when there are
-// pages of results.
-type Paging struct {
-	Next     string `json:"next"`
-	Previous string `json:"previous"`
-}
-
-type pagination interface {
-	pagination() Paging
-}
-
-func (c *Client) list(ctx context.Context, path string, p pagination, options ...Option) (*Response, error) {
+func (c *Client) list(ctx context.Context, path string, p common.Pagination, options ...common.OptionalParam) (*Response, error) {
 	req, err := c.NewRequest(http.MethodGet, path)
 	if err != nil {
 		return nil, err
 	}
 	q := req.URL.Query()
 	for _, o := range options {
-		o.apply(&q)
+		o.Apply(&q)
 	}
 	req.URL.RawQuery = q.Encode()
 
@@ -224,7 +199,7 @@ func (c *Client) list(ctx context.Context, path string, p pagination, options ..
 		return resp, err
 	}
 
-	prev, next, err := parsePaging(p.pagination())
+	prev, next, err := parsePaging(p.Pagination())
 	if err != nil {
 		return resp, err
 	}
@@ -234,7 +209,7 @@ func (c *Client) list(ctx context.Context, path string, p pagination, options ..
 	return resp, nil
 }
 
-func parsePaging(p Paging) (prev, next int, err error) {
+func parsePaging(p common.Paging) (prev, next int, err error) {
 	if p.Previous != "" {
 		offset, err := parseOffset(p.Previous)
 		if err != nil {

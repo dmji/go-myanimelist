@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/nstratos/go-myanimelist/mal"
+	"github.com/nstratos/go-myanimelist/mal/common"
 )
 
 func TestUserServiceMangaList(t *testing.T) {
@@ -53,10 +54,10 @@ func TestUserServiceMangaList(t *testing.T) {
 	got, resp, err := client.User.MangaList(ctx, "foo",
 		mal.MangaStatusCompleted,
 		mal.SortMangaListByMangaID,
-		mal.Fields{"foo", "bar"},
-		mal.Limit(10),
-		mal.Offset(0),
-		mal.NSFW(true),
+		common.Fields{"foo", "bar"},
+		common.Limit(10),
+		common.Offset(0),
+		common.NSFW(true),
 	)
 	if err != nil {
 		t.Errorf("User.MangaList returned error: %v", err)
@@ -92,7 +93,7 @@ func TestUserServiceMangaListError(t *testing.T) {
 		t.Fatal("User.MangaList expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "User.MangaList")
-	testErrorResponse(t, err, mal.ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, common.ErrorResponse{Message: "mal is down", Err: "internal"})
 }
 func TestMangaServiceUpdateMyListStatus(t *testing.T) {
 	client, mux, teardown := setup()
@@ -174,7 +175,7 @@ func TestMangaServiceUpdateMyListStatusError(t *testing.T) {
 		t.Fatal("Manga.UpdateMyListStatus expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "Manga.UpdateMyListStatus")
-	testErrorResponse(t, err, mal.ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, common.ErrorResponse{Message: "mal is down", Err: "internal"})
 }
 
 func TestMangaServiceDeleteMyListItem(t *testing.T) {
@@ -208,5 +209,5 @@ func TestMangaServiceDeleteMyListItemError(t *testing.T) {
 		t.Fatal("Manga.DeleteMyListItem expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusNotFound, "Manga.DeleteMyListItem")
-	testErrorResponse(t, err, mal.ErrorResponse{Message: "manga not found", Err: "not_found"})
+	testErrorResponse(t, err, common.ErrorResponse{Message: "manga not found", Err: "not_found"})
 }

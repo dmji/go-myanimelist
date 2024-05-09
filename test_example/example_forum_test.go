@@ -6,6 +6,7 @@ import (
 	"net/url"
 
 	"github.com/nstratos/go-myanimelist/mal"
+	"github.com/nstratos/go-myanimelist/mal/common"
 )
 
 func ExampleForumService_Boards() {
@@ -80,7 +81,7 @@ func ExampleForumService_Topics() {
 	topics, _, err := c.Forum.Topics(ctx,
 		mal.Query("JoJo opening"),
 		mal.SortTopicsRecent,
-		mal.Limit(2),
+		common.Limit(2),
 	)
 	if err != nil {
 		fmt.Printf("Forum.Topics error: %v", err)
@@ -105,7 +106,7 @@ func ExampleForumService_TopicDetails() {
 	defer server.Close()
 	c.BaseURL, _ = url.Parse(server.URL)
 
-	topicDetails, _, err := c.Forum.TopicDetails(ctx, 1877721, mal.Limit(3), mal.Offset(0))
+	topicDetails, _, err := c.Forum.TopicDetails(ctx, 1877721, common.Limit(3), common.Offset(0))
 	if err != nil {
 		fmt.Printf("Forum.TopicDetails error: %v", err)
 		return

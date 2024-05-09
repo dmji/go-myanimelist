@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/nstratos/go-myanimelist/mal"
+	"github.com/nstratos/go-myanimelist/mal/common"
 )
 
 func ExampleMangaService_List() {
@@ -21,9 +22,9 @@ func ExampleMangaService_List() {
 	c.BaseURL, _ = url.Parse(server.URL)
 
 	manga, _, err := c.Manga.List(ctx, "parasyte",
-		mal.Fields{"num_volumes", "num_chapters", "alternative_titles"},
-		mal.Limit(3),
-		mal.Offset(0),
+		common.Fields{"num_volumes", "num_chapters", "alternative_titles"},
+		common.Limit(3),
+		common.Offset(0),
 	)
 	if err != nil {
 		fmt.Printf("Manga.List error: %v", err)
@@ -50,7 +51,7 @@ func ExampleMangaService_Details() {
 	c.BaseURL, _ = url.Parse(server.URL)
 
 	m, _, err := c.Manga.Details(ctx, 401,
-		mal.Fields{
+		common.Fields{
 			"alternative_titles",
 			"media_type",
 			"num_volumes",
@@ -111,8 +112,8 @@ func ExampleMangaService_Ranking() {
 
 	manga, _, err := c.Manga.Ranking(ctx,
 		mal.MangaRankingByPopularity,
-		mal.Fields{"rank", "popularity"},
-		mal.Limit(6),
+		common.Fields{"rank", "popularity"},
+		common.Limit(6),
 	)
 	if err != nil {
 		fmt.Printf("Manga.Ranking error: %v", err)

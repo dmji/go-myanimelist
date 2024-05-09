@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/url"
 	"time"
+
+	"github.com/nstratos/go-myanimelist/mal/common"
 )
 
 // ForumService handles communication with the forum related methods of the
@@ -50,12 +52,9 @@ func (s *ForumService) Boards(ctx context.Context) (*Forum, *Response, error) {
 	return f, resp, nil
 }
 
-type topicDetail struct {
-	Data   TopicDetails `json:"data"`
-	Paging Paging       `json:"paging"`
-}
+type topicDetail common.ListWithPagination[TopicDetails]
 
-func (t topicDetail) pagination() Paging { return t.Paging }
+func (t topicDetail) Pagination() common.Paging { return t.Paging }
 
 // TopicDetails contain the posts of a forum topic and an optional poll.
 type TopicDetails struct {
@@ -99,12 +98,12 @@ type PollOption struct {
 // A PagingOption includes the Limit and Offset options which are used for
 // controlling pagination in results.
 type PagingOption interface {
-	pagingApply(v *url.Values)
+	PagingApply(v *url.Values)
 }
 
 // TopicDetails returns details about the forum topic specified by topicID.
 func (s *ForumService) TopicDetails(ctx context.Context, topicID int, options ...PagingOption) (TopicDetails, *Response, error) {
-	oo := make([]Option, len(options))
+	oo := make([]common.OptionalParam, len(options))
 	for i := range options {
 		oo[i] = optionFromPagingOption(options[i])
 	}
@@ -116,18 +115,15 @@ func (s *ForumService) TopicDetails(ctx context.Context, topicID int, options ..
 	return d.Data, resp, nil
 }
 
-func optionFromPagingOption(o PagingOption) optionFunc {
-	return optionFunc(func(v *url.Values) {
-		o.pagingApply(v)
+func optionFromPagingOption(o PagingOption) common.OptionFunc {
+	return common.OptionFunc(func(v *url.Values) {
+		o.PagingApply(v)
 	})
 }
 
-type topics struct {
-	Data   []Topic `json:"data"`
-	Paging Paging  `json:"paging"`
-}
+type topics common.ListWithPagination[[]Topic]
 
-func (t topics) pagination() Paging { return t.Paging }
+func (t topics) Pagination() common.Paging { return t.Paging }
 
 // A Topic of the forum.
 type Topic struct {
@@ -143,18 +139,18 @@ type Topic struct {
 
 // TopicsOption are options specific to the ForumService.Topics method.
 type TopicsOption interface {
-	topicsApply(v *url.Values)
+	TopicsApply(v *url.Values)
 }
 
 // BoardID is an option that filters topics based on the board ID.
 type BoardID int
 
-func (id BoardID) topicsApply(v *url.Values) { v.Set("board_id", itoa(int(id))) }
+func (id BoardID) TopicsApply(v *url.Values) { v.Set("board_id", itoa(int(id))) }
 
 // SubboardID is an option that filters topics based on the subboard ID.
 type SubboardID int
 
-func (id SubboardID) topicsApply(v *url.Values) { v.Set("subboard_id", itoa(int(id))) }
+func (id SubboardID) TopicsApply(v *url.Values) { v.Set("subboard_id", itoa(int(id))) }
 
 // sortTopics is an option that sorts the returned topics.
 type sortTopics string
@@ -162,27 +158,27 @@ type sortTopics string
 // SortTopicsRecent is the default and only sorting value for topics.
 const SortTopicsRecent sortTopics = "recent"
 
-func (s sortTopics) topicsApply(v *url.Values) { v.Set("sort", string(s)) }
+func (s sortTopics) TopicsApply(v *url.Values) { v.Set("sort", string(s)) }
 
 // Query is an option that allows to search for a term.
 type Query string
 
-func (q Query) topicsApply(v *url.Values) { v.Set("q", string(q)) }
+func (q Query) TopicsApply(v *url.Values) { v.Set("q", string(q)) }
 
 // TopicUserName is an option that filters topics based on the topic username.
 type TopicUserName string
 
-func (n TopicUserName) topicsApply(v *url.Values) { v.Set("topic_user_name", string(n)) }
+func (n TopicUserName) TopicsApply(v *url.Values) { v.Set("topic_user_name", string(n)) }
 
 // UserName is an option that filters topics based on a username.
 type UserName string
 
-func (n UserName) topicsApply(v *url.Values) { v.Set("user_name", string(n)) }
+func (n UserName) TopicsApply(v *url.Values) { v.Set("user_name", string(n)) }
 
 // Topics returns the forum's topics. Make sure to pass at least the Query
 // option or you will get an API error.
 func (s *ForumService) Topics(ctx context.Context, options ...TopicsOption) ([]Topic, *Response, error) {
-	oo := make([]Option, len(options))
+	oo := make([]common.OptionalParam, len(options))
 	for i := range options {
 		oo[i] = optionFromTopicsOption(options[i])
 	}
@@ -194,8 +190,8 @@ func (s *ForumService) Topics(ctx context.Context, options ...TopicsOption) ([]T
 	return t.Data, resp, nil
 }
 
-func optionFromTopicsOption(o TopicsOption) optionFunc {
-	return optionFunc(func(v *url.Values) {
-		o.topicsApply(v)
+func optionFromTopicsOption(o TopicsOption) common.OptionFunc {
+	return common.OptionFunc(func(v *url.Values) {
+		o.TopicsApply(v)
 	})
 }

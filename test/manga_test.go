@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/nstratos/go-myanimelist/mal"
+	"github.com/nstratos/go-myanimelist/mal/common"
 )
 
 func TestMangaServiceDetails(t *testing.T) {
@@ -24,7 +25,7 @@ func TestMangaServiceDetails(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	a, _, err := client.Manga.Details(ctx, 1, mal.Fields{"foo,bar"})
+	a, _, err := client.Manga.Details(ctx, 1, common.Fields{"foo,bar"})
 	if err != nil {
 		t.Errorf("Manga.Details returned error: %v", err)
 	}
@@ -48,7 +49,7 @@ func TestMangaServiceDetailsError(t *testing.T) {
 	if err == nil {
 		t.Fatal("Manga.Details expected not found error, got no error.")
 	}
-	testErrorResponse(t, err, mal.ErrorResponse{Message: "manga deleted", Err: "not_found"})
+	testErrorResponse(t, err, common.ErrorResponse{Message: "manga deleted", Err: "not_found"})
 }
 
 func TestMangaServiceList(t *testing.T) {
@@ -84,10 +85,10 @@ func TestMangaServiceList(t *testing.T) {
 
 	ctx := context.Background()
 	got, resp, err := client.Manga.List(ctx, "query",
-		mal.Fields{"foo", "bar"},
-		mal.Limit(10),
-		mal.Offset(0),
-		mal.NSFW(true),
+		common.Fields{"foo", "bar"},
+		common.Limit(10),
+		common.Offset(0),
+		common.NSFW(true),
 	)
 	if err != nil {
 		t.Errorf("Manga.List returned error: %v", err)
@@ -114,7 +115,7 @@ func TestMangaServiceListError(t *testing.T) {
 		t.Fatal("Manga.List expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "Manga.List")
-	testErrorResponse(t, err, mal.ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, common.ErrorResponse{Message: "mal is down", Err: "internal"})
 }
 
 func TestMangaServiceRanking(t *testing.T) {
@@ -150,9 +151,9 @@ func TestMangaServiceRanking(t *testing.T) {
 
 	ctx := context.Background()
 	got, resp, err := client.Manga.Ranking(ctx, mal.MangaRankingAll,
-		mal.Fields{"foo", "bar"},
-		mal.Limit(10),
-		mal.Offset(0),
+		common.Fields{"foo", "bar"},
+		common.Limit(10),
+		common.Offset(0),
 	)
 	if err != nil {
 		t.Errorf("Manga.Ranking returned error: %v", err)

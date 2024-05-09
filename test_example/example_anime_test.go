@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/nstratos/go-myanimelist/mal"
+	"github.com/nstratos/go-myanimelist/mal/common"
 )
 
 func ExampleAnimeService_List() {
@@ -22,9 +23,9 @@ func ExampleAnimeService_List() {
 	c.BaseURL, _ = url.Parse(server.URL)
 
 	anime, _, err := c.Anime.List(ctx, "hokuto no ken",
-		mal.Fields{"rank", "popularity", "start_season"},
-		mal.Limit(5),
-		mal.Offset(0),
+		common.Fields{"rank", "popularity", "start_season"},
+		common.Limit(5),
+		common.Offset(0),
 	)
 	if err != nil {
 		fmt.Printf("Anime.List error: %v", err)
@@ -51,7 +52,7 @@ func ExampleAnimeService_Details() {
 	c.BaseURL, _ = url.Parse(server.URL)
 
 	a, _, err := c.Anime.Details(ctx, 967,
-		mal.Fields{
+		common.Fields{
 			"alternative_titles",
 			"media_type",
 			"num_episodes",
@@ -115,8 +116,8 @@ func ExampleAnimeService_Ranking() {
 
 	anime, _, err := c.Anime.Ranking(ctx,
 		mal.AnimeRankingAiring,
-		mal.Fields{"rank", "popularity"},
-		mal.Limit(6),
+		common.Fields{"rank", "popularity"},
+		common.Limit(6),
 	)
 	if err != nil {
 		fmt.Printf("Anime.Ranking error: %v", err)
@@ -146,10 +147,10 @@ func ExampleAnimeService_Seasonal() {
 	c.BaseURL, _ = url.Parse(server.URL)
 
 	anime, _, err := c.Anime.Seasonal(ctx, 2020, mal.AnimeSeasonFall,
-		mal.Fields{"rank", "popularity"},
+		common.Fields{"rank", "popularity"},
 		mal.SortSeasonalByAnimeNumListUsers,
-		mal.Limit(3),
-		mal.Offset(0),
+		common.Limit(3),
+		common.Offset(0),
 	)
 	if err != nil {
 		fmt.Printf("Anime.Seasonal error: %v", err)
@@ -176,8 +177,8 @@ func ExampleAnimeService_Suggested() {
 	c.BaseURL, _ = url.Parse(server.URL)
 
 	anime, _, err := c.Anime.Suggested(ctx,
-		mal.Limit(10),
-		mal.Fields{"rank", "popularity"},
+		common.Limit(10),
+		common.Fields{"rank", "popularity"},
 	)
 	if err != nil {
 		fmt.Printf("Anime.Suggested error: %v", err)

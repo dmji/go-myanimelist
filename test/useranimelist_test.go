@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/nstratos/go-myanimelist/mal"
+	"github.com/nstratos/go-myanimelist/mal/common"
 )
 
 func TestUserServiceAnimeList(t *testing.T) {
@@ -53,10 +54,10 @@ func TestUserServiceAnimeList(t *testing.T) {
 	got, resp, err := client.User.AnimeList(ctx, "foo",
 		mal.AnimeStatusCompleted,
 		mal.SortAnimeListByAnimeID,
-		mal.Fields{"foo", "bar"},
-		mal.Limit(10),
-		mal.Offset(0),
-		mal.NSFW(true),
+		common.Fields{"foo", "bar"},
+		common.Limit(10),
+		common.Offset(0),
+		common.NSFW(true),
 	)
 	if err != nil {
 		t.Errorf("User.AnimeList returned error: %v", err)
@@ -90,15 +91,15 @@ func TestUserServiceAnimeListError(t *testing.T) {
 	_, resp, err := client.User.AnimeList(ctx, "foo",
 		mal.AnimeStatusCompleted,
 		mal.SortAnimeListByAnimeID,
-		mal.Fields{"foo", "bar"},
-		mal.Limit(10),
-		mal.Offset(0),
+		common.Fields{"foo", "bar"},
+		common.Limit(10),
+		common.Offset(0),
 	)
 	if err == nil {
 		t.Fatal("User.AnimeList expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "User.AnimeList")
-	testErrorResponse(t, err, mal.ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, common.ErrorResponse{Message: "mal is down", Err: "internal"})
 }
 
 func TestAnimeServiceUpdateMyListStatus(t *testing.T) {
@@ -178,7 +179,7 @@ func TestAnimeServiceUpdateMyListStatusError(t *testing.T) {
 		t.Fatal("Anime.UpdateMyListStatus expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "Anime.UpdateMyListStatus")
-	testErrorResponse(t, err, mal.ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, common.ErrorResponse{Message: "mal is down", Err: "internal"})
 }
 
 func TestAnimeServiceDeleteMyListItem(t *testing.T) {
@@ -212,5 +213,5 @@ func TestAnimeServiceDeleteMyListItemError(t *testing.T) {
 		t.Fatal("Anime.DeleteMyListItem expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusNotFound, "Anime.DeleteMyListItem")
-	testErrorResponse(t, err, mal.ErrorResponse{Message: "anime not found", Err: "not_found"})
+	testErrorResponse(t, err, common.ErrorResponse{Message: "anime not found", Err: "not_found"})
 }

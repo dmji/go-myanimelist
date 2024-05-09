@@ -13,6 +13,7 @@ import (
 	"testing"
 
 	"github.com/nstratos/go-myanimelist/mal"
+	"github.com/nstratos/go-myanimelist/mal/common"
 )
 
 // setup sets up a test HTTP server along with a mal.Client that is
@@ -77,9 +78,9 @@ func testContentType(t *testing.T, r *http.Request, want string) {
 	}
 }
 
-func testErrorResponse(t *testing.T, err error, want mal.ErrorResponse) {
+func testErrorResponse(t *testing.T, err error, want common.ErrorResponse) {
 	t.Helper()
-	errResp := &mal.ErrorResponse{}
+	errResp := &common.ErrorResponse{}
 	if !errors.As(err, &errResp) {
 		t.Fatalf("err is type %T, want type *ErrorResponse.", err)
 	}
@@ -124,7 +125,7 @@ func TestNewClient(t *testing.T) {
 }
 
 func TestErrorResponse(t *testing.T) {
-	errResp := &mal.ErrorResponse{
+	errResp := &common.ErrorResponse{
 		Response: &http.Response{
 			Request: &http.Request{
 				Method: http.MethodGet,

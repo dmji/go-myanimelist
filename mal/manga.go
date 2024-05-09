@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/url"
 	"time"
+
+	"github.com/nstratos/go-myanimelist/mal/common"
 )
 
 // MangaService handles communication with the manga related methods of the
@@ -98,12 +100,12 @@ func (s *MangaService) Details(ctx context.Context, mangaID int, options ...Deta
 
 // List allows an authenticated user to search and list manga data. You may get
 // user specific data by using the optional field "my_list_status".
-func (s *MangaService) List(ctx context.Context, search string, options ...Option) ([]Manga, *Response, error) {
-	options = append(options, optionFromQuery(search))
+func (s *MangaService) List(ctx context.Context, search string, options ...common.OptionalParam) ([]Manga, *Response, error) {
+	options = append(options, common.OptionFromQuery(search))
 	return s.list(ctx, "manga", options...)
 }
 
-func (s *MangaService) list(ctx context.Context, path string, options ...Option) ([]Manga, *Response, error) {
+func (s *MangaService) list(ctx context.Context, path string, options ...common.OptionalParam) ([]Manga, *Response, error) {
 	list := new(mangaList)
 	resp, err := s.client.list(ctx, path, list, options...)
 	if err != nil {
@@ -142,15 +144,15 @@ const (
 	MangaRankingFavorite MangaRanking = "favorite"
 )
 
-func optionFromMangaRanking(r MangaRanking) optionFunc {
-	return optionFunc(func(v *url.Values) {
+func optionFromMangaRanking(r MangaRanking) common.OptionFunc {
+	return common.OptionFunc(func(v *url.Values) {
 		v.Set("ranking_type", string(r))
 	})
 }
 
 // Ranking allows an authenticated user to receive the top manga based on a
 // certain ranking.
-func (s *MangaService) Ranking(ctx context.Context, ranking MangaRanking, options ...Option) ([]Manga, *Response, error) {
+func (s *MangaService) Ranking(ctx context.Context, ranking MangaRanking, options ...common.OptionalParam) ([]Manga, *Response, error) {
 	options = append(options, optionFromMangaRanking(ranking))
 	return s.list(ctx, "manga/ranking", options...)
 }

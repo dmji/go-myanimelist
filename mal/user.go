@@ -52,7 +52,7 @@ type AnimeStatistics struct {
 
 // MyInfoOption are options specific to the User.MyInfo method.
 type MyInfoOption interface {
-	myInfoApply(v *url.Values)
+	MyInfoApply(v *url.Values)
 }
 
 // MyInfo returns information about the authenticated user.
@@ -63,7 +63,7 @@ func (s *UserService) MyInfo(ctx context.Context, options ...MyInfoOption) (*Use
 	}
 	q := req.URL.Query()
 	for _, o := range options {
-		o.myInfoApply(&q)
+		o.MyInfoApply(&q)
 	}
 	req.URL.RawQuery = q.Encode()
 
