@@ -1,4 +1,4 @@
-package mal
+package mal_test
 
 import (
 	"context"
@@ -7,6 +7,8 @@ import (
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/nstratos/go-myanimelist/mal"
 )
 
 func TestUserServiceAnimeList(t *testing.T) {
@@ -49,24 +51,24 @@ func TestUserServiceAnimeList(t *testing.T) {
 
 	ctx := context.Background()
 	got, resp, err := client.User.AnimeList(ctx, "foo",
-		AnimeStatusCompleted,
-		SortAnimeListByAnimeID,
-		Fields{"foo", "bar"},
-		Limit(10),
-		Offset(0),
-		NSFW(true),
+		mal.AnimeStatusCompleted,
+		mal.SortAnimeListByAnimeID,
+		mal.Fields{"foo", "bar"},
+		mal.Limit(10),
+		mal.Offset(0),
+		mal.NSFW(true),
 	)
 	if err != nil {
 		t.Errorf("User.AnimeList returned error: %v", err)
 	}
-	want := []UserAnime{
+	want := []mal.UserAnime{
 		{
-			Anime:  Anime{ID: 1},
-			Status: AnimeListStatus{Status: "plan_to_watch"},
+			Anime:  mal.Anime{ID: 1},
+			Status: mal.AnimeListStatus{Status: "plan_to_watch"},
 		},
 		{
-			Anime:  Anime{ID: 2},
-			Status: AnimeListStatus{Status: "watching"},
+			Anime:  mal.Anime{ID: 2},
+			Status: mal.AnimeListStatus{Status: "watching"},
 		},
 	}
 	if !reflect.DeepEqual(got, want) {
@@ -86,17 +88,17 @@ func TestUserServiceAnimeListError(t *testing.T) {
 
 	ctx := context.Background()
 	_, resp, err := client.User.AnimeList(ctx, "foo",
-		AnimeStatusCompleted,
-		SortAnimeListByAnimeID,
-		Fields{"foo", "bar"},
-		Limit(10),
-		Offset(0),
+		mal.AnimeStatusCompleted,
+		mal.SortAnimeListByAnimeID,
+		mal.Fields{"foo", "bar"},
+		mal.Limit(10),
+		mal.Offset(0),
 	)
 	if err == nil {
 		t.Fatal("User.AnimeList expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "User.AnimeList")
-	testErrorResponse(t, err, ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, mal.ErrorResponse{Message: "mal is down", Err: "internal"})
 }
 
 func TestAnimeServiceUpdateMyListStatus(t *testing.T) {
@@ -126,24 +128,24 @@ func TestAnimeServiceUpdateMyListStatus(t *testing.T) {
 
 	ctx := context.Background()
 	got, _, err := client.Anime.UpdateMyListStatus(ctx, 1,
-		AnimeStatusCompleted,
-		IsRewatching(true),
-		Score(8),
-		NumEpisodesWatched(3),
-		Priority(2),
-		NumTimesRewatched(2),
-		RewatchValue(1),
-		Tags{"foo", "bar"},
-		Comments("comments"),
-		StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
-		FinishDate(time.Time{}),
+		mal.AnimeStatusCompleted,
+		mal.IsRewatching(true),
+		mal.Score(8),
+		mal.NumEpisodesWatched(3),
+		mal.Priority(2),
+		mal.NumTimesRewatched(2),
+		mal.RewatchValue(1),
+		mal.Tags{"foo", "bar"},
+		mal.Comments("comments"),
+		mal.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
+		mal.FinishDate(time.Time{}),
 	)
 	if err != nil {
 		t.Errorf("Anime.UpdateMyListStatus returned error: %v", err)
 	}
 
-	want := &AnimeListStatus{
-		Status:             AnimeStatusCompleted,
+	want := &mal.AnimeListStatus{
+		Status:             mal.AnimeStatusCompleted,
 		IsRewatching:       true,
 		Score:              8,
 		NumEpisodesWatched: 3,
@@ -176,7 +178,7 @@ func TestAnimeServiceUpdateMyListStatusError(t *testing.T) {
 		t.Fatal("Anime.UpdateMyListStatus expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "Anime.UpdateMyListStatus")
-	testErrorResponse(t, err, ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, mal.ErrorResponse{Message: "mal is down", Err: "internal"})
 }
 
 func TestAnimeServiceDeleteMyListItem(t *testing.T) {
@@ -210,5 +212,5 @@ func TestAnimeServiceDeleteMyListItemError(t *testing.T) {
 		t.Fatal("Anime.DeleteMyListItem expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusNotFound, "Anime.DeleteMyListItem")
-	testErrorResponse(t, err, ErrorResponse{Message: "anime not found", Err: "not_found"})
+	testErrorResponse(t, err, mal.ErrorResponse{Message: "anime not found", Err: "not_found"})
 }

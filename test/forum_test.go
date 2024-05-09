@@ -1,4 +1,4 @@
-package mal
+package mal_test
 
 import (
 	"context"
@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"reflect"
 	"testing"
+
+	"github.com/nstratos/go-myanimelist/mal"
 )
 
 func TestForumServiceBoards(t *testing.T) {
@@ -40,16 +42,16 @@ func TestForumServiceBoards(t *testing.T) {
 	if err != nil {
 		t.Errorf("Forum.Boards returned error: %v", err)
 	}
-	want := &Forum{
-		Categories: []ForumCategory{
+	want := &mal.Forum{
+		Categories: []mal.ForumCategory{
 			{
 				Title: "MyAnimeList",
-				Boards: []ForumBoard{
+				Boards: []mal.ForumBoard{
 					{
 						ID:          17,
 						Title:       "MAL Guidelines",
 						Description: "Site rules.",
-						Subboards:   []ForumSubboard{{ID: 2, Title: "Anime DB"}},
+						Subboards:   []mal.ForumSubboard{{ID: 2, Title: "Anime DB"}},
 					},
 				},
 			},
@@ -74,7 +76,7 @@ func TestForumServiceBoardsError(t *testing.T) {
 	if err == nil {
 		t.Fatal("Forum.Boards expected not found error, got no error.")
 	}
-	testErrorResponse(t, err, ErrorResponse{Message: "forum deleted", Err: "not_found"})
+	testErrorResponse(t, err, mal.ErrorResponse{Message: "forum deleted", Err: "not_found"})
 }
 
 func TestForumServiceTopicDetails(t *testing.T) {
@@ -103,15 +105,15 @@ func TestForumServiceTopicDetails(t *testing.T) {
 
 	ctx := context.Background()
 	got, resp, err := client.Forum.TopicDetails(ctx, 1,
-		Limit(10),
-		Offset(0),
+		mal.Limit(10),
+		mal.Offset(0),
 	)
 	if err != nil {
 		t.Errorf("Forum.TopicDetails returned error: %v", err)
 	}
-	want := TopicDetails{
+	want := mal.TopicDetails{
 		Title: "Best posts",
-		Posts: []Post{{ID: 1}, {ID: 2}},
+		Posts: []mal.Post{{ID: 1}, {ID: 2}},
 	}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("Forum.TopicDetails returned\nhave: %+v\n\nwant: %+v", got, want)
@@ -134,7 +136,7 @@ func TestForumServiceTopicDetailsError(t *testing.T) {
 		t.Fatal("Forum.TopicDetails expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "Forum.TopicDetails")
-	testErrorResponse(t, err, ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, mal.ErrorResponse{Message: "mal is down", Err: "internal"})
 }
 
 func TestForumServiceTopics(t *testing.T) {
@@ -166,19 +168,19 @@ func TestForumServiceTopics(t *testing.T) {
 
 	ctx := context.Background()
 	got, resp, err := client.Forum.Topics(ctx,
-		BoardID(1),
-		SubboardID(1),
-		Limit(10),
-		Offset(0),
-		SortTopicsRecent,
-		Query("foo"),
-		TopicUserName("bar"),
-		UserName("baz"),
+		mal.BoardID(1),
+		mal.SubboardID(1),
+		mal.Limit(10),
+		mal.Offset(0),
+		mal.SortTopicsRecent,
+		mal.Query("foo"),
+		mal.TopicUserName("bar"),
+		mal.UserName("baz"),
 	)
 	if err != nil {
 		t.Errorf("Forum.Topics returned error: %v", err)
 	}
-	want := []Topic{{ID: 1}, {ID: 2}}
+	want := []mal.Topic{{ID: 1}, {ID: 2}}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("Forum.Topics returned\nhave: %+v\n\nwant: %+v", got, want)
 	}
@@ -200,5 +202,5 @@ func TestForumServiceTopicsError(t *testing.T) {
 		t.Fatal("Forum.Topics expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "Forum.Topics")
-	testErrorResponse(t, err, ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, mal.ErrorResponse{Message: "mal is down", Err: "internal"})
 }

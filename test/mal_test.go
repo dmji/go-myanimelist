@@ -1,4 +1,4 @@
-package mal
+package mal_test
 
 import (
 	"context"
@@ -11,12 +11,14 @@ import (
 	"net/url"
 	"reflect"
 	"testing"
+
+	"github.com/nstratos/go-myanimelist/mal"
 )
 
 // setup sets up a test HTTP server along with a mal.Client that is
 // configured to talk to that test server. Tests should register handlers on
 // mux which provide mock responses for the API method being tested.
-func setup() (client *Client, mux *http.ServeMux, teardown func()) {
+func setup(cls ...*http.Client) (client *mal.Client, mux *http.ServeMux, teardown func()) {
 	// mux is the HTTP request multiplexer that the test HTTP server will use
 	// to mock API responses.
 	mux = http.NewServeMux()
@@ -26,7 +28,12 @@ func setup() (client *Client, mux *http.ServeMux, teardown func()) {
 
 	// client is the MyAnimeList client being tested and is configured to use
 	// test server.
-	client = NewClient(nil)
+	var httpClient *http.Client = nil
+	if len(cls) > 0 {
+		httpClient = cls[0]
+	}
+
+	client = mal.NewClient(httpClient)
 	client.BaseURL, _ = url.Parse(server.URL + "/")
 
 	return client, mux, server.Close
@@ -70,9 +77,9 @@ func testContentType(t *testing.T, r *http.Request, want string) {
 	}
 }
 
-func testErrorResponse(t *testing.T, err error, want ErrorResponse) {
+func testErrorResponse(t *testing.T, err error, want mal.ErrorResponse) {
 	t.Helper()
-	errResp := &ErrorResponse{}
+	errResp := &mal.ErrorResponse{}
 	if !errors.As(err, &errResp) {
 		t.Fatalf("err is type %T, want type *ErrorResponse.", err)
 	}
@@ -84,7 +91,7 @@ func testErrorResponse(t *testing.T, err error, want ErrorResponse) {
 	}
 }
 
-func testResponseOffset(t *testing.T, resp *Response, next, prev int, prefix string) {
+func testResponseOffset(t *testing.T, resp *mal.Response, next, prev int, prefix string) {
 	t.Helper()
 	if resp == nil {
 		t.Fatalf("%s resp is nil, want NextOffset=%d and PrevOffset=%d", prefix, next, prev)
@@ -97,7 +104,7 @@ func testResponseOffset(t *testing.T, resp *Response, next, prev int, prefix str
 	}
 }
 
-func testResponseStatusCode(t *testing.T, resp *Response, code int, prefix string) {
+func testResponseStatusCode(t *testing.T, resp *mal.Response, code int, prefix string) {
 	t.Helper()
 	if resp == nil {
 		t.Fatalf("%s resp is nil, want StatusCode=%d", prefix, code)
@@ -108,16 +115,16 @@ func testResponseStatusCode(t *testing.T, resp *Response, code int, prefix strin
 }
 
 func TestNewClient(t *testing.T) {
-	c := NewClient(nil)
+	c := mal.NewClient(nil)
 
 	// test default base URL
-	if got, want := c.BaseURL.String(), defaultBaseURL; got != want {
+	if got, want := c.BaseURL.String(), mal.DefaultBaseURL; got != want {
 		t.Errorf("NewClient.BaseURL = %v, want %v", got, want)
 	}
 }
 
 func TestErrorResponse(t *testing.T) {
-	errResp := &ErrorResponse{
+	errResp := &mal.ErrorResponse{
 		Response: &http.Response{
 			Request: &http.Request{
 				Method: http.MethodGet,
@@ -137,9 +144,9 @@ func TestErrorResponse(t *testing.T) {
 }
 
 func TestNewRequest(t *testing.T) {
-	c := NewClient(nil)
+	c := mal.NewClient(nil)
 
-	inURL, outURL := "foo", defaultBaseURL+"foo"
+	inURL, outURL := "foo", mal.DefaultBaseURL+"foo"
 	inBody, outBody := func(v *url.Values) { v.Set("name", "bar") }, "name=bar"
 
 	req, err := c.NewRequest("GET", inURL, inBody)
@@ -165,7 +172,7 @@ func TestNewRequest(t *testing.T) {
 }
 
 func TestNewRequestInvalidMethod(t *testing.T) {
-	c := NewClient(nil)
+	c := mal.NewClient(nil)
 	_, err := c.NewRequest("invalid method", "/foo")
 	if err == nil {
 		t.Error("NewRequest with invalid method expected to return err")
@@ -173,7 +180,7 @@ func TestNewRequestInvalidMethod(t *testing.T) {
 }
 
 func TestNewRequestBadEndpoint(t *testing.T) {
-	c := NewClient(nil)
+	c := mal.NewClient(nil)
 	inURL := "%foo"
 	_, err := c.NewRequest("GET", inURL)
 	if err == nil {
@@ -239,11 +246,12 @@ func (e errTransport) RoundTrip(*http.Request) (*http.Response, error) {
 }
 
 func TestDoRoundTripError(t *testing.T) {
-	client, mux, teardown := setup()
+	client, mux, teardown := setup(
+		&http.Client{
+			Transport: &errTransport{},
+		},
+	)
 	defer teardown()
-	client.client = &http.Client{
-		Transport: &errTransport{},
-	}
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)

@@ -1,4 +1,4 @@
-package mal
+package mal_test
 
 import (
 	"context"
@@ -7,6 +7,8 @@ import (
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/nstratos/go-myanimelist/mal"
 )
 
 func TestUserServiceMangaList(t *testing.T) {
@@ -49,24 +51,24 @@ func TestUserServiceMangaList(t *testing.T) {
 
 	ctx := context.Background()
 	got, resp, err := client.User.MangaList(ctx, "foo",
-		MangaStatusCompleted,
-		SortMangaListByMangaID,
-		Fields{"foo", "bar"},
-		Limit(10),
-		Offset(0),
-		NSFW(true),
+		mal.MangaStatusCompleted,
+		mal.SortMangaListByMangaID,
+		mal.Fields{"foo", "bar"},
+		mal.Limit(10),
+		mal.Offset(0),
+		mal.NSFW(true),
 	)
 	if err != nil {
 		t.Errorf("User.MangaList returned error: %v", err)
 	}
-	want := []UserManga{
+	want := []mal.UserManga{
 		{
-			Manga:  Manga{ID: 1},
-			Status: MangaListStatus{Status: "plan_to_read"},
+			Manga:  mal.Manga{ID: 1},
+			Status: mal.MangaListStatus{Status: "plan_to_read"},
 		},
 		{
-			Manga:  Manga{ID: 2},
-			Status: MangaListStatus{Status: "reading"},
+			Manga:  mal.Manga{ID: 2},
+			Status: mal.MangaListStatus{Status: "reading"},
 		},
 	}
 	if !reflect.DeepEqual(got, want) {
@@ -90,7 +92,7 @@ func TestUserServiceMangaListError(t *testing.T) {
 		t.Fatal("User.MangaList expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "User.MangaList")
-	testErrorResponse(t, err, ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, mal.ErrorResponse{Message: "mal is down", Err: "internal"})
 }
 func TestMangaServiceUpdateMyListStatus(t *testing.T) {
 	client, mux, teardown := setup()
@@ -120,25 +122,25 @@ func TestMangaServiceUpdateMyListStatus(t *testing.T) {
 
 	ctx := context.Background()
 	got, _, err := client.Manga.UpdateMyListStatus(ctx, 1,
-		MangaStatusCompleted,
-		IsRereading(true),
-		Score(8),
-		NumVolumesRead(3),
-		NumChaptersRead(3),
-		Priority(2),
-		NumTimesReread(2),
-		RereadValue(1),
-		Tags{"foo", "bar"},
-		Comments("comments"),
-		StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
-		FinishDate(time.Time{}),
+		mal.MangaStatusCompleted,
+		mal.IsRereading(true),
+		mal.Score(8),
+		mal.NumVolumesRead(3),
+		mal.NumChaptersRead(3),
+		mal.Priority(2),
+		mal.NumTimesReread(2),
+		mal.RereadValue(1),
+		mal.Tags{"foo", "bar"},
+		mal.Comments("comments"),
+		mal.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
+		mal.FinishDate(time.Time{}),
 	)
 	if err != nil {
 		t.Errorf("Manga.UpdateMyListStatus returned error: %v", err)
 	}
 
-	want := &MangaListStatus{
-		Status:          MangaStatusCompleted,
+	want := &mal.MangaListStatus{
+		Status:          mal.MangaStatusCompleted,
 		IsRereading:     true,
 		Score:           8,
 		NumVolumesRead:  3,
@@ -172,7 +174,7 @@ func TestMangaServiceUpdateMyListStatusError(t *testing.T) {
 		t.Fatal("Manga.UpdateMyListStatus expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "Manga.UpdateMyListStatus")
-	testErrorResponse(t, err, ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, mal.ErrorResponse{Message: "mal is down", Err: "internal"})
 }
 
 func TestMangaServiceDeleteMyListItem(t *testing.T) {
@@ -206,5 +208,5 @@ func TestMangaServiceDeleteMyListItemError(t *testing.T) {
 		t.Fatal("Manga.DeleteMyListItem expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusNotFound, "Manga.DeleteMyListItem")
-	testErrorResponse(t, err, ErrorResponse{Message: "manga not found", Err: "not_found"})
+	testErrorResponse(t, err, mal.ErrorResponse{Message: "manga not found", Err: "not_found"})
 }

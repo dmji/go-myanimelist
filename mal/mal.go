@@ -11,10 +11,12 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+
+	"github.com/nstratos/go-myanimelist/mal/util"
 )
 
 const (
-	defaultBaseURL = "https://api.myanimelist.net/v2/"
+	DefaultBaseURL = "https://api.myanimelist.net/v2/"
 )
 
 // Client manages communication with the MyAnimeList API.
@@ -43,7 +45,7 @@ func NewClient(httpClient *http.Client) *Client {
 		httpClient = &http.Client{}
 	}
 
-	baseURL, _ := url.Parse(defaultBaseURL)
+	baseURL, _ := url.Parse(DefaultBaseURL)
 
 	c := &Client{
 		client:  httpClient,
@@ -119,13 +121,13 @@ func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) (*Res
 	}
 	req = req.WithContext(ctx)
 
-	dumpRequest(req)
+	util.DumpRequest(req)
 	resp, err := c.client.Do(req)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	dumpResponse(resp)
+	util.DumpResponse(resp)
 
 	response := &Response{Response: resp}
 	if err := checkResponse(resp); err != nil {

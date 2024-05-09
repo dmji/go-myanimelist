@@ -1,4 +1,4 @@
-package mal
+package mal_test
 
 import (
 	"context"
@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"reflect"
 	"testing"
+
+	"github.com/nstratos/go-myanimelist/mal"
 )
 
 func TestUserServiceMyInfo(t *testing.T) {
@@ -22,12 +24,12 @@ func TestUserServiceMyInfo(t *testing.T) {
 
 	ctx := context.Background()
 	u, _, err := client.User.MyInfo(ctx,
-		Fields{"time_zone", "is_supporter"},
+		mal.Fields{"time_zone", "is_supporter"},
 	)
 	if err != nil {
 		t.Errorf("User.MyInfo returned error: %v", err)
 	}
-	want := &User{ID: 1}
+	want := &mal.User{ID: 1}
 	if got := u; !reflect.DeepEqual(got, want) {
 		t.Errorf("User.MyInfo returned\nhave: %+v\n\nwant: %+v", got, want)
 	}
@@ -47,5 +49,5 @@ func TestUserServiceMyInfoError(t *testing.T) {
 	if err == nil {
 		t.Fatal("User.MyInfo expected not found error, got no error.")
 	}
-	testErrorResponse(t, err, ErrorResponse{Err: "not_found"})
+	testErrorResponse(t, err, mal.ErrorResponse{Err: "not_found"})
 }

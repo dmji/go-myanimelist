@@ -1,4 +1,4 @@
-package mal
+package mal_test
 
 import (
 	"context"
@@ -7,6 +7,8 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+
+	"github.com/nstratos/go-myanimelist/mal"
 )
 
 func TestAnimeServiceDetails(t *testing.T) {
@@ -23,11 +25,11 @@ func TestAnimeServiceDetails(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	a, _, err := client.Anime.Details(ctx, 1, Fields{"foo,bar"})
+	a, _, err := client.Anime.Details(ctx, 1, mal.Fields{"foo,bar"})
 	if err != nil {
 		t.Errorf("Anime.Details returned error: %v", err)
 	}
-	want := &Anime{ID: 1}
+	want := &mal.Anime{ID: 1}
 	if got := a; !reflect.DeepEqual(got, want) {
 		t.Errorf("Anime.Details returned\nhave: %+v\n\nwant: %+v", got, want)
 	}
@@ -47,7 +49,7 @@ func TestAnimeServiceDetailsError(t *testing.T) {
 	if err == nil {
 		t.Fatal("Anime.Details expected not found error, got no error.")
 	}
-	testErrorResponse(t, err, ErrorResponse{Message: "anime deleted", Err: "not_found"})
+	testErrorResponse(t, err, mal.ErrorResponse{Message: "anime deleted", Err: "not_found"})
 }
 
 func TestAnimeServiceList(t *testing.T) {
@@ -83,15 +85,15 @@ func TestAnimeServiceList(t *testing.T) {
 
 	ctx := context.Background()
 	got, resp, err := client.Anime.List(ctx, "query",
-		Fields{"foo", "bar"},
-		Limit(10),
-		Offset(0),
-		NSFW(true),
+		mal.Fields{"foo", "bar"},
+		mal.Limit(10),
+		mal.Offset(0),
+		mal.NSFW(true),
 	)
 	if err != nil {
 		t.Errorf("Anime.List returned error: %v", err)
 	}
-	want := []Anime{{ID: 1}, {ID: 2}}
+	want := []mal.Anime{{ID: 1}, {ID: 2}}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("Anime.List returned\nhave: %+v\n\nwant: %+v", got, want)
 	}
@@ -170,7 +172,7 @@ func TestAnimeServiceListError(t *testing.T) {
 		t.Fatal("Anime.List expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "Anime.List")
-	testErrorResponse(t, err, ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, mal.ErrorResponse{Message: "mal is down", Err: "internal"})
 }
 
 func TestAnimeServiceRanking(t *testing.T) {
@@ -205,15 +207,15 @@ func TestAnimeServiceRanking(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	got, resp, err := client.Anime.Ranking(ctx, AnimeRankingAll,
-		Fields{"foo", "bar"},
-		Limit(10),
-		Offset(0),
+	got, resp, err := client.Anime.Ranking(ctx, mal.AnimeRankingAll,
+		mal.Fields{"foo", "bar"},
+		mal.Limit(10),
+		mal.Offset(0),
 	)
 	if err != nil {
 		t.Errorf("Anime.Ranking returned error: %v", err)
 	}
-	want := []Anime{{ID: 1}, {ID: 2}}
+	want := []mal.Anime{{ID: 1}, {ID: 2}}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("Anime.Ranking returned\nhave: %+v\n\nwant: %+v", got, want)
 	}
@@ -255,17 +257,17 @@ func TestAnimeServiceSeasonal(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	got, resp, err := client.Anime.Seasonal(ctx, 2020, AnimeSeasonSummer,
-		SortSeasonalByAnimeNumListUsers,
-		Fields{"foo", "bar"},
-		Limit(10),
-		Offset(0),
-		NSFW(false),
+	got, resp, err := client.Anime.Seasonal(ctx, 2020, mal.AnimeSeasonSummer,
+		mal.SortSeasonalByAnimeNumListUsers,
+		mal.Fields{"foo", "bar"},
+		mal.Limit(10),
+		mal.Offset(0),
+		mal.NSFW(false),
 	)
 	if err != nil {
 		t.Errorf("Anime.Seasonal returned error: %v", err)
 	}
-	want := []Anime{{ID: 1}, {ID: 2}}
+	want := []mal.Anime{{ID: 1}, {ID: 2}}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("Anime.Seasonal returned\nhave: %+v\n\nwant: %+v", got, want)
 	}
@@ -303,14 +305,14 @@ func TestAnimeServiceSuggested(t *testing.T) {
 
 	ctx := context.Background()
 	got, resp, err := client.Anime.Suggested(ctx,
-		Fields{"foo", "bar"},
-		Limit(10),
-		Offset(0),
+		mal.Fields{"foo", "bar"},
+		mal.Limit(10),
+		mal.Offset(0),
 	)
 	if err != nil {
 		t.Errorf("Anime.Suggested returned error: %v", err)
 	}
-	want := []Anime{{ID: 1}, {ID: 2}}
+	want := []mal.Anime{{ID: 1}, {ID: 2}}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("Anime.Suggested returned\nhave: %+v\n\nwant: %+v", got, want)
 	}

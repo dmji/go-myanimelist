@@ -18,7 +18,7 @@ var (
 	clientSecret = flag.String("client-secret", "", "your registered MyAnimeList.net application client secret; optional if you chose App Type 'other'")
 )
 
-func setup(ctx context.Context, t *testing.T) *mal.Client {
+func setupIntegration(ctx context.Context, t *testing.T) *mal.Client {
 	const tokenFormat = `
 	{
 		"token_type": "Bearer",
@@ -59,7 +59,7 @@ func setup(ctx context.Context, t *testing.T) *mal.Client {
 
 func TestIntegration(t *testing.T) {
 	ctx := context.Background()
-	client := setup(ctx, t)
+	client := setupIntegration(ctx, t)
 
 	username := testGetUserInfo(ctx, t, client)
 	t.Run("UpdateUserAnimeList", func(t *testing.T) {

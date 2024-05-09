@@ -1,6 +1,6 @@
 //go:build debug
 
-package mal
+package util
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"net/http/httputil"
 )
 
-func dumpRequest(req *http.Request) {
+func DumpRequest(req *http.Request) {
 	dump, err := httputil.DumpRequest(req, true)
 	if err != nil {
 		fmt.Printf("request dump failed: %s", err)
@@ -19,7 +19,7 @@ func dumpRequest(req *http.Request) {
 	fmt.Println("")
 }
 
-func dumpResponse(resp *http.Response) {
+func DumpResponse(resp *http.Response) {
 	dump, err := httputil.DumpResponse(resp, true)
 	if err != nil {
 		fmt.Printf("response dump failed: %s", err)
