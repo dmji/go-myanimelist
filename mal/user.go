@@ -6,7 +6,6 @@ import (
 	"net/url"
 
 	"github.com/dmji/go-myanimelist/mal/api_driver"
-	"github.com/dmji/go-myanimelist/mal/common"
 	"github.com/dmji/go-myanimelist/mal/containers"
 	"github.com/dmji/go-myanimelist/mal/prm"
 )
@@ -28,7 +27,7 @@ func NewUserService(client *api_driver.Client) *UserService {
 }
 
 // MyInfo returns information about the authenticated user.
-func (s *UserService) MyInfo(ctx context.Context, options ...prm.MyInfoOption) (*containers.User, *common.Response, error) {
+func (s *UserService) MyInfo(ctx context.Context, options ...prm.MyInfoOption) (*containers.User, *api_driver.Response, error) {
 	u := new(containers.User)
 	rawOptions := OptionsToFuncs(options, func(t prm.MyInfoOption) func(*url.Values) { return t.MyInfoApply })
 	resp, err := s.client.RequestGet(ctx, "users/@me", u, rawOptions...)
@@ -41,7 +40,7 @@ func (s *UserService) MyInfo(ctx context.Context, options ...prm.MyInfoOption) (
 // MangaList gets the manga list of the user indicated by username (or use @me).
 // The manga can be sorted and filtered using the MangaStatus and SortMangaList
 // option functions respectively.
-func (s *UserService) MangaList(ctx context.Context, username string, options ...prm.MangaListOption) ([]containers.UserManga, *common.Response, error) {
+func (s *UserService) MangaList(ctx context.Context, username string, options ...prm.MangaListOption) ([]containers.UserManga, *api_driver.Response, error) {
 	rawOptions := OptionsToFuncs(options, func(t prm.MangaListOption) func(*url.Values) { return t.MangaListApply })
 	list, resp, err := s.client.RequestMangaList(ctx, fmt.Sprintf("users/%s/mangalist", username), rawOptions...)
 	if err != nil {
@@ -53,7 +52,7 @@ func (s *UserService) MangaList(ctx context.Context, username string, options ..
 // AnimeList gets the anime list of the user indicated by username (or use @me).
 // The anime can be sorted and filtered using the AnimeStatus and SortAnimeList
 // option functions respectively.
-func (s *UserService) AnimeList(ctx context.Context, username string, options ...prm.AnimeListOption) ([]containers.UserAnime, *common.Response, error) {
+func (s *UserService) AnimeList(ctx context.Context, username string, options ...prm.AnimeListOption) ([]containers.UserAnime, *api_driver.Response, error) {
 	rawOptions := OptionsToFuncs(options, func(t prm.AnimeListOption) func(*url.Values) { return t.AnimeListApply })
 	list, resp, err := s.client.RequestAnimeList(ctx, fmt.Sprintf("users/%s/animelist", username), rawOptions...)
 	if err != nil {

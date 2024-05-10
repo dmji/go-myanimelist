@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dmji/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/api_driver"
 	"github.com/dmji/go-myanimelist/mal/containers"
 	"github.com/dmji/go-myanimelist/mal/prm"
 )
@@ -100,7 +100,7 @@ func TestUserServiceAnimeListError(t *testing.T) {
 		t.Fatal("User.AnimeList expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "User.AnimeList")
-	testErrorResponse(t, err, common.ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, api_driver.ErrorResponse{Message: "mal is down", Err: "internal"})
 }
 
 func TestAnimeServiceUpdateMyListStatus(t *testing.T) {
@@ -180,7 +180,7 @@ func TestAnimeServiceUpdateMyListStatusError(t *testing.T) {
 		t.Fatal("Anime.UpdateMyListStatus expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "Anime.UpdateMyListStatus")
-	testErrorResponse(t, err, common.ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, api_driver.ErrorResponse{Message: "mal is down", Err: "internal"})
 }
 
 func TestAnimeServiceDeleteMyListItem(t *testing.T) {
@@ -214,5 +214,5 @@ func TestAnimeServiceDeleteMyListItemError(t *testing.T) {
 		t.Fatal("Anime.DeleteMyListItem expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusNotFound, "Anime.DeleteMyListItem")
-	testErrorResponse(t, err, common.ErrorResponse{Message: "anime not found", Err: "not_found"})
+	testErrorResponse(t, err, api_driver.ErrorResponse{Message: "anime not found", Err: "not_found"})
 }

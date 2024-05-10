@@ -3,9 +3,18 @@ package prm
 import (
 	"net/url"
 	"strconv"
+	"time"
 )
 
 var itoa = strconv.Itoa
+
+// MARK: Date / Time format
+func formatMALDate(d time.Time) string {
+	if d.IsZero() {
+		return ""
+	}
+	return d.Format("2006-01-02")
+}
 
 // MARK: Details Option
 // DetailsOption is an option specific for the anime and manga details methods.
@@ -14,7 +23,8 @@ type DetailsOption interface {
 }
 
 type DetailsOptionProvider struct {
-	Fields
+	AnimeFields
+	MangaFields
 }
 
 // MARK: OptionalParam Option
@@ -25,7 +35,11 @@ type OptionalParam interface {
 }
 
 type OptionalParamProvider struct {
-	Fields
+	MangaRanking
+
+	CustomFields Fields
+	AnimeFields
+	MangaFields
 	Limit
 	NSFW
 	Offset
@@ -43,7 +57,9 @@ type SeasonalAnimeOptionProvider struct {
 	AnimeSeason
 
 	// Optional
-	Fields
+	AnimeFields
+	// Optional
+	MangaFields
 	// Optional
 	Limit
 	// Optional
@@ -109,7 +125,7 @@ type AnimeListOption interface {
 type AnimeListOptionProvider struct {
 	SortAnimeList
 	AnimeStatus
-	Fields
+	AnimeFields
 	Limit
 	NSFW
 	Offset
@@ -146,6 +162,8 @@ type TopicsOption interface {
 type TopicsOptionProvider struct {
 	BoardID
 	SubboardID
+	Limit
+	Offset
 	SortTopics sortTopics
 	Query
 	TopicUserName

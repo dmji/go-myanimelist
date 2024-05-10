@@ -7,8 +7,6 @@ import (
 	"errors"
 	"io"
 	"net/http"
-
-	"github.com/dmji/go-myanimelist/mal/common"
 )
 
 // Do sends an API request and returns the API response. The API response is
@@ -17,7 +15,7 @@ import (
 // attempting to first decode it.
 //
 // If the provided ctx is nil then an error will be returned.
-func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) (*common.Response, error) {
+func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) (*Response, error) {
 	if ctx == nil {
 		return nil, errors.New("context must not be nil")
 	}
@@ -31,7 +29,7 @@ func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) (*com
 	defer resp.Body.Close()
 	DumpResponse(resp)
 
-	response := &common.Response{Response: resp}
+	response := &Response{Response: resp}
 	if err := checkResponse(resp); err != nil {
 		return response, err
 	}
@@ -53,7 +51,7 @@ func checkResponse(r *http.Response) error {
 	if c := r.StatusCode; 200 <= c && c <= 299 {
 		return nil
 	}
-	errorResponse := &common.ErrorResponse{Response: r}
+	errorResponse := &ErrorResponse{Response: r}
 	data, err := io.ReadAll(r.Body)
 	if err == nil && data != nil {
 		// Ignore unmarshal error for undocumented error formats or HTML.

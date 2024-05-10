@@ -6,7 +6,6 @@ import (
 	"net/url"
 
 	"github.com/dmji/go-myanimelist/mal/api_driver"
-	"github.com/dmji/go-myanimelist/mal/common"
 	"github.com/dmji/go-myanimelist/mal/containers"
 	"github.com/dmji/go-myanimelist/mal/prm"
 )
@@ -32,7 +31,7 @@ const (
 )
 
 // Boards returns the forum boards.
-func (s *ForumService) Boards(ctx context.Context) (*containers.Forum, *common.Response, error) {
+func (s *ForumService) Boards(ctx context.Context) (*containers.Forum, *api_driver.Response, error) {
 	f := new(containers.Forum)
 	resp, err := s.client.RequestGet(ctx, boardsEndpoint, f)
 	if err != nil {
@@ -43,7 +42,7 @@ func (s *ForumService) Boards(ctx context.Context) (*containers.Forum, *common.R
 
 // Topics returns the forum's topics. Make sure to pass at least the Query
 // option or you will get an API error.
-func (s *ForumService) Topics(ctx context.Context, options ...prm.TopicsOption) ([]containers.Topic, *common.Response, error) {
+func (s *ForumService) Topics(ctx context.Context, options ...prm.TopicsOption) ([]containers.Topic, *api_driver.Response, error) {
 	rawOptions := OptionsToFuncs(options, func(t prm.TopicsOption) func(*url.Values) { return t.TopicsApply })
 	topics, resp, err := s.client.RequestTopics(ctx, topicsEndpoint, rawOptions...)
 	if err != nil {
@@ -53,7 +52,7 @@ func (s *ForumService) Topics(ctx context.Context, options ...prm.TopicsOption) 
 }
 
 // TopicDetails returns details about the forum topic specified by topicID.
-func (s *ForumService) TopicDetails(ctx context.Context, topicID int, options ...prm.PagingOption) (containers.TopicDetails, *common.Response, error) {
+func (s *ForumService) TopicDetails(ctx context.Context, topicID int, options ...prm.PagingOption) (containers.TopicDetails, *api_driver.Response, error) {
 	rawOptions := OptionsToFuncs(options, func(t prm.PagingOption) func(*url.Values) { return t.PagingApply })
 	topicDetails, resp, err := s.client.RequestTopicDetails(ctx, fmt.Sprintf("%s/%d", topicEndpoint, topicID), rawOptions...)
 	if err != nil {

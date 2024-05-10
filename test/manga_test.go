@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/dmji/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/api_driver"
 	"github.com/dmji/go-myanimelist/mal/containers"
 	"github.com/dmji/go-myanimelist/mal/prm"
 )
@@ -50,7 +50,7 @@ func TestMangaServiceDetailsError(t *testing.T) {
 	if err == nil {
 		t.Fatal("Manga.Details expected not found error, got no error.")
 	}
-	testErrorResponse(t, err, common.ErrorResponse{Message: "manga deleted", Err: "not_found"})
+	testErrorResponse(t, err, api_driver.ErrorResponse{Message: "manga deleted", Err: "not_found"})
 }
 
 func TestMangaServiceList(t *testing.T) {
@@ -116,7 +116,7 @@ func TestMangaServiceListError(t *testing.T) {
 		t.Fatal("Manga.List expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "Manga.List")
-	testErrorResponse(t, err, common.ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, api_driver.ErrorResponse{Message: "mal is down", Err: "internal"})
 }
 
 func TestMangaServiceRanking(t *testing.T) {

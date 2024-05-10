@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/dmji/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/api_driver"
 	"github.com/dmji/go-myanimelist/mal/containers"
 	"github.com/dmji/go-myanimelist/mal/prm"
 )
@@ -51,5 +51,5 @@ func TestUserServiceMyInfoError(t *testing.T) {
 	if err == nil {
 		t.Fatal("User.MyInfo expected not found error, got no error.")
 	}
-	testErrorResponse(t, err, common.ErrorResponse{Err: "not_found"})
+	testErrorResponse(t, err, api_driver.ErrorResponse{Err: "not_found"})
 }

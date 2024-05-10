@@ -4,11 +4,9 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-
-	"github.com/dmji/go-myanimelist/mal/common"
 )
 
-func (s *Client) DeleteMyListItem(ctx context.Context, path string, animeID int) (*common.Response, error) {
+func (s *Client) DeleteMyListItem(ctx context.Context, path string, animeID int) (*Response, error) {
 	u := fmt.Sprintf("%s/%d/my_list_status", path, animeID)
 	req, err := s.NewRequest(http.MethodDelete, u)
 	if err != nil {

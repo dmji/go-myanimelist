@@ -6,21 +6,19 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
-
-	"github.com/dmji/go-myanimelist/mal/common"
 )
 
 // MARK: List / pagination template
 type listWithPagination[T any] struct {
-	Data   T             `json:"data"`
-	Paging common.Paging `json:"paging"`
+	Data   T      `json:"data"`
+	Paging paging `json:"paging"`
 }
 
 type pagination interface {
-	pagination() common.Paging
+	pagination() paging
 }
 
-func (c *Client) requestPagedItem(ctx context.Context, path string, p pagination, options ...func(v *url.Values)) (*common.Response, error) {
+func (c *Client) requestPagedItem(ctx context.Context, path string, p pagination, options ...func(v *url.Values)) (*Response, error) {
 	req, err := c.NewRequest(http.MethodGet, path)
 	if err != nil {
 		return nil, err
@@ -45,7 +43,7 @@ func (c *Client) requestPagedItem(ctx context.Context, path string, p pagination
 	return resp, nil
 }
 
-func parsePaging(p common.Paging) (prev, next int, err error) {
+func parsePaging(p paging) (prev, next int, err error) {
 	if p.Previous != "" {
 		offset, err := parseOffset(p.Previous)
 		if err != nil {

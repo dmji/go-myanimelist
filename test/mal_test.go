@@ -14,7 +14,6 @@ import (
 
 	"github.com/dmji/go-myanimelist/mal"
 	"github.com/dmji/go-myanimelist/mal/api_driver"
-	"github.com/dmji/go-myanimelist/mal/common"
 )
 
 // setup sets up a test HTTP server along with a mal.Client that is
@@ -80,9 +79,9 @@ func testContentType(t *testing.T, r *http.Request, want string) {
 	}
 }
 
-func testErrorResponse(t *testing.T, err error, want common.ErrorResponse) {
+func testErrorResponse(t *testing.T, err error, want api_driver.ErrorResponse) {
 	t.Helper()
-	errResp := &common.ErrorResponse{}
+	errResp := &api_driver.ErrorResponse{}
 	if !errors.As(err, &errResp) {
 		t.Fatalf("err is type %T, want type *ErrorResponse.", err)
 	}
@@ -94,7 +93,7 @@ func testErrorResponse(t *testing.T, err error, want common.ErrorResponse) {
 	}
 }
 
-func testResponseOffset(t *testing.T, resp *common.Response, next, prev int, prefix string) {
+func testResponseOffset(t *testing.T, resp *api_driver.Response, next, prev int, prefix string) {
 	t.Helper()
 	if resp == nil {
 		t.Fatalf("%s resp is nil, want NextOffset=%d and PrevOffset=%d", prefix, next, prev)
@@ -107,7 +106,7 @@ func testResponseOffset(t *testing.T, resp *common.Response, next, prev int, pre
 	}
 }
 
-func testResponseStatusCode(t *testing.T, resp *common.Response, code int, prefix string) {
+func testResponseStatusCode(t *testing.T, resp *api_driver.Response, code int, prefix string) {
 	t.Helper()
 	if resp == nil {
 		t.Fatalf("%s resp is nil, want StatusCode=%d", prefix, code)
@@ -127,7 +126,7 @@ func TestNewClient(t *testing.T) {
 }
 
 func TestErrorResponse(t *testing.T) {
-	errResp := &common.ErrorResponse{
+	errResp := &api_driver.ErrorResponse{
 		Response: &http.Response{
 			Request: &http.Request{
 				Method: http.MethodGet,

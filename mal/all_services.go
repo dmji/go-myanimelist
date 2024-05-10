@@ -6,7 +6,7 @@ import (
 	"net/url"
 
 	"github.com/dmji/go-myanimelist/mal/api_driver"
-	"github.com/dmji/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/prm"
 )
 
 // Site manages communication with the MyAnimeList API.
@@ -50,7 +50,7 @@ func NewSite(httpClient *http.Client) *Site {
 }
 
 type HttpDriver interface {
-	Do(ctx context.Context, req *http.Request, v interface{}) (*common.Response, error)
+	Do(ctx context.Context, req *http.Request, v interface{}) (*api_driver.Response, error)
 	NewRequest(method, urlStr string, urlOptions ...func(v *url.Values)) (*http.Request, error)
 }
 
@@ -71,4 +71,10 @@ func (c *Site) SetBaseURL(baseUrl *url.URL) {
 	}
 
 	c.client.BaseURL = baseUrl
+}
+
+func optionFromQuery(query string) prm.OptionFunc {
+	return prm.OptionFunc(func(v *url.Values) {
+		v.Set("q", query)
+	})
 }

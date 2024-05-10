@@ -4,11 +4,9 @@ import (
 	"context"
 	"net/http"
 	"net/url"
-
-	"github.com/dmji/go-myanimelist/mal/common"
 )
 
-func (c *Client) RequestGet(ctx context.Context, path string, v interface{}, options ...func(v *url.Values)) (*common.Response, error) {
+func (c *Client) RequestGet(ctx context.Context, path string, v interface{}, options ...func(v *url.Values)) (*Response, error) {
 	req, err := c.NewRequest(http.MethodGet, path)
 	if err != nil {
 		return nil, err

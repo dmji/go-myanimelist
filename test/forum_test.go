@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/dmji/go-myanimelist/mal"
-	"github.com/dmji/go-myanimelist/mal/common"
+	"github.com/dmji/go-myanimelist/mal/api_driver"
 	"github.com/dmji/go-myanimelist/mal/containers"
 	"github.com/dmji/go-myanimelist/mal/prm"
 )
@@ -79,7 +79,7 @@ func TestForumServiceBoardsError(t *testing.T) {
 	if err == nil {
 		t.Fatal("Forum.Boards expected not found error, got no error.")
 	}
-	testErrorResponse(t, err, common.ErrorResponse{Message: "forum deleted", Err: "not_found"})
+	testErrorResponse(t, err, api_driver.ErrorResponse{Message: "forum deleted", Err: "not_found"})
 }
 
 func TestForumServiceTopicDetails(t *testing.T) {
@@ -140,7 +140,7 @@ func TestForumServiceTopicDetailsError(t *testing.T) {
 		t.Fatal("Forum.TopicDetails expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "Forum.TopicDetails")
-	testErrorResponse(t, err, common.ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, api_driver.ErrorResponse{Message: "mal is down", Err: "internal"})
 }
 
 func TestForumServiceTopics(t *testing.T) {
@@ -208,5 +208,5 @@ func TestForumServiceTopicsError(t *testing.T) {
 		t.Fatal("Forum.Topics expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "Forum.Topics")
-	testErrorResponse(t, err, common.ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, api_driver.ErrorResponse{Message: "mal is down", Err: "internal"})
 }

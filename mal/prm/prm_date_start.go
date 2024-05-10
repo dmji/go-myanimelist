@@ -3,8 +3,6 @@ package prm
 import (
 	"net/url"
 	"time"
-
-	"github.com/dmji/go-myanimelist/mal/common"
 )
 
 // StartDate is an option that allows to update the start date of anime and manga
@@ -12,10 +10,10 @@ import (
 type StartDate time.Time
 
 func (d StartDate) UpdateMyAnimeListStatusApply(v *url.Values) {
-	v.Set("start_date", common.FormatMALDate(time.Time(d)))
+	v.Set("start_date", formatMALDate(time.Time(d)))
 }
 func (d StartDate) UpdateMyMangaListStatusApply(v *url.Values) {
-	v.Set("start_date", common.FormatMALDate(time.Time(d)))
+	v.Set("start_date", formatMALDate(time.Time(d)))
 }
 
 func (d StartDate) Val(v time.Time) StartDate { return StartDate(v) }
