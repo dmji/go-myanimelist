@@ -3,7 +3,7 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/dmji/go-myanimelist/mal.svg)](https://pkg.go.dev/github.com/dmji/go-myanimelist/mal)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/dmji/go-myanimelist)](https://goreportcard.com/report/github.com/dmji/go-myanimelist)
-[![Coverage Status](https://coveralls.io/repos/github/nstratos/go-myanimelist/badge.svg?branch=main)](https://coveralls.io/github/nstratos/go-myanimelist?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/dmji/go-myanimelist/badge.svg?branch=main)](https://coveralls.io/github/dmji/go-myanimelist?branch=main)
 [![Test Status](https://github.com/dmji/go-myanimelist/workflows/tests/badge.svg)](https://github.com/dmji/go-myanimelist/actions?query=workflow%3Atests)
 [![Integration Status](https://github.com/dmji/go-myanimelist/workflows/integration/badge.svg)](https://github.com/dmji/go-myanimelist/actions?query=workflow%3Aintegration)
 
@@ -20,7 +20,7 @@ As of March 2017, this package is featured in
 
 This package can be installed using:
 
-	go get github.com/dmji/go-myanimelist/mal
+    go get github.com/dmji/go-myanimelist/mal
 
 ## Usage
 
@@ -42,7 +42,7 @@ the different MyAnimeList API methods.
 ## Authentication
 
 When creating a new client, pass an `http.Client` that can handle authentication
-for you. 
+for you.
 
 ### Accessing publicly available information
 
@@ -126,10 +126,9 @@ token through the terminal under `example/malauth`. The only thing you need to r
 the example is a client ID and a client secret which you can acquire after
 registering your MAL API application. Here's how:
 
- 1. Navigate to https://myanimelist.net/apiconfig or go to your MyAnimeList
-    profile, click Edit Profile and select the API tab on the far right.
-
- 2. Click Create ID and submit the form with your application details.
+1. Navigate to https://myanimelist.net/apiconfig or go to your MyAnimeList
+   profile, click Edit Profile and select the API tab on the far right.
+2. Click Create ID and submit the form with your application details.
 
 After registering your application, you can run the example and pass the client
 ID and client secret through flags:
@@ -137,7 +136,7 @@ ID and client secret through flags:
     cd example/malauth
 	go run main.go democlient.go --client-id=... --client-secret=...
 
-	or 
+    or
 
     go install github.com/dmji/go-myanimelist/example/malauth
     malauth --client-id=... --client-secret=...
@@ -173,7 +172,6 @@ You may get user specific data for a certain record by using the optional field
 Official docs:
 
 - https://myanimelist.net/apiconfig/references/api/v2#operation/anime_get
-
 - https://myanimelist.net/apiconfig/references/api/v2#operation/manga_get
 
 ## UserList
@@ -208,7 +206,6 @@ user's list.
 Official docs:
 
 - https://myanimelist.net/apiconfig/references/api/v2#operation/users_user_id_animelist_get
-
 - https://myanimelist.net/apiconfig/references/api/v2#operation/users_user_id_mangalist_get
 
 ## MyInfo
@@ -266,7 +263,6 @@ fields you need.
 Official docs:
 
 - https://myanimelist.net/apiconfig/references/api/v2#operation/anime_anime_id_get
-
 - https://myanimelist.net/apiconfig/references/api/v2#operation/manga_manga_id_get
 
 ## Ranking
@@ -292,7 +288,6 @@ manga, _, err := c.Manga.Ranking(ctx,
 Official docs:
 
 - https://myanimelist.net/apiconfig/references/api/v2#operation/anime_ranking_get
-
 - https://myanimelist.net/apiconfig/references/api/v2#operation/manga_ranking_get
 
 ## Add or Update List
@@ -325,7 +320,6 @@ _, _, err := c.Manga.UpdateMyListStatus(ctx, 401,
 Official docs:
 
 - https://myanimelist.net/apiconfig/references/api/v2#operation/anime_anime_id_my_list_status_put
-
 - https://myanimelist.net/apiconfig/references/api/v2#operation/manga_manga_id_my_list_status_put
 
 ## Delete
@@ -343,7 +337,6 @@ _, err := c.Manga.DeleteMyListItem(ctx, 401)
 Official docs:
 
 - https://myanimelist.net/apiconfig/references/api/v2#operation/anime_anime_id_my_list_status_delete
-
 - https://myanimelist.net/apiconfig/references/api/v2#operation/manga_manga_id_my_list_status_delete
 
 ## More Examples
@@ -355,11 +348,11 @@ https://pkg.go.dev/github.com/dmji/go-myanimelist/mal#pkg-examples
 
 To run all unit tests:
 
-	go test -cover
+    go test -cover
 
 To see test coverage in your browser:
 
-	go test -covermode=count -coverprofile=count.out && go tool cover -html count.out
+    go test -covermode=count -coverprofile=count.out && go tool cover -html count.out
 
 ## Integration Testing
 
@@ -375,7 +368,7 @@ time. Check the authentication section to learn how to get one.
 By default the integration tests are skipped when an oauth2 token is not
 provided. To run all tests including the integration tests:
 
-	go test --client-id='<your app client ID>' --oauth2-token='<your oauth2 token>'
+    go test --client-id='`<your app client ID>`' --oauth2-token='`<your oauth2 token>`'
 
 ## License
 
