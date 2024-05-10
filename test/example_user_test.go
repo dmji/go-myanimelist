@@ -8,7 +8,7 @@ import (
 	"github.com/dmji/go-myanimelist/mal"
 )
 
-func ExampleUserService_MyInfo() {
+func ExampleSite_User_myinfo() {
 	ctx := context.Background()
 
 	c := mal.NewSite(nil)

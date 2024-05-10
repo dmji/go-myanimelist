@@ -13,7 +13,7 @@ import (
 	"golang.org/x/text/language"
 )
 
-func ExampleAnimeService_List() {
+func ExampleSite_Anime_list() {
 	ctx := context.Background()
 
 	c := mal.NewSite(nil)
@@ -43,7 +43,7 @@ func ExampleAnimeService_List() {
 	// ID:  1358, Rank:  2757, Popularity:  3964 Hokuto no Ken Movie (1986)
 }
 
-func ExampleAnimeService_Details() {
+func ExampleSite_Anime_details() {
 	ctx := context.Background()
 
 	c := mal.NewSite(nil)
@@ -108,7 +108,7 @@ func ExampleAnimeService_Details() {
 	// Duration: 25 min. per ep.
 }
 
-func ExampleAnimeService_Ranking() {
+func ExampleSite_Anime_ranking() {
 	ctx := context.Background()
 
 	c := mal.NewSite(nil)
@@ -141,7 +141,7 @@ func ExampleAnimeService_Ranking() {
 	// Rank:    85, Popularity:   304 Horimiya
 }
 
-func ExampleAnimeService_Seasonal() {
+func ExampleSite_Anime_seasonal() {
 	ctx := context.Background()
 
 	c := mal.NewSite(nil)
@@ -172,7 +172,7 @@ func ExampleAnimeService_Seasonal() {
 	// Rank:    62, Popularity:   106 Jujutsu Kaisen (TV)
 }
 
-func ExampleAnimeService_Suggested() {
+func ExampleSite_Anime_suggested() {
 	ctx := context.Background()
 
 	c := mal.NewSite(nil)
@@ -201,7 +201,7 @@ func ExampleAnimeService_Suggested() {
 	// Rank:   943, Popularity:  4595 Watashi no Ashinaga Ojisan
 }
 
-func ExampleAnimeService_DeleteMyListItem() {
+func ExampleSite_Anime_deletemylistttem() {
 	ctx := context.Background()
 
 	c := mal.NewSite(nil)

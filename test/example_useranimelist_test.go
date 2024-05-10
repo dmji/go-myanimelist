@@ -10,7 +10,7 @@ import (
 	"github.com/dmji/go-myanimelist/mal/prm"
 )
 
-func ExampleUserService_AnimeList() {
+func ExampleSite_User_animelist() {
 	ctx := context.Background()
 
 	c := mal.NewSite(nil)
@@ -42,7 +42,7 @@ func ExampleUserService_AnimeList() {
 	// ID: 37521, Status:     "completed", Episodes Watched:  24 Vinland Saga
 }
 
-func ExampleAnimeService_UpdateMyListStatus() {
+func ExampleSite_User_updatemyliststatus() {
 	ctx := context.Background()
 
 	c := mal.NewSite(nil)

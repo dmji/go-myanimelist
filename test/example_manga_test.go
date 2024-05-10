@@ -11,7 +11,7 @@ import (
 	"golang.org/x/text/language"
 )
 
-func ExampleMangaService_List() {
+func ExampleSite_Manga_list() {
 	ctx := context.Background()
 
 	c := mal.NewSite(nil)
@@ -41,7 +41,7 @@ func ExampleMangaService_List() {
 	// ID: 80797, Volumes:   1, Chapters:  15 Neo Kiseijuu f (Neo Parasyte f)
 }
 
-func ExampleMangaService_Details() {
+func ExampleSite_Manga_details() {
 	ctx := context.Background()
 
 	c := mal.NewSite(nil)
@@ -103,7 +103,7 @@ func ExampleMangaService_Details() {
 	// Status: Finished
 }
 
-func ExampleMangaService_Ranking() {
+func ExampleSite_Manga_ranking() {
 	ctx := context.Background()
 
 	c := mal.NewSite(nil)
@@ -136,7 +136,7 @@ func ExampleMangaService_Ranking() {
 	// Rank:    39, Popularity:     6 One Punch-Man
 }
 
-func ExampleMangaService_DeleteMyListItem() {
+func ExampleSite_Manga_deletemylistitem() {
 	ctx := context.Background()
 
 	c := mal.NewSite(nil)

@@ -9,7 +9,7 @@ import (
 	"github.com/dmji/go-myanimelist/mal/prm"
 )
 
-func ExampleForumService_Boards() {
+func ExampleSite_Forum_boards() {
 	ctx := context.Background()
 
 	c := mal.NewSite(nil)
@@ -68,7 +68,7 @@ func ExampleForumService_Boards() {
 	// ---
 }
 
-func ExampleForumService_Topics() {
+func ExampleSite_Forum_topics() {
 	ctx := context.Background()
 
 	c := mal.NewSite(nil)
@@ -97,7 +97,7 @@ func ExampleForumService_Topics() {
 	// ID: 1851738, Title: "JoJo's Bizarre Adventures but its Yu Yu Hakusho Opening" created by "TinTin_29"
 }
 
-func ExampleForumService_TopicDetails() {
+func ExampleSite_Forum_topicdetails() {
 	ctx := context.Background()
 
 	c := mal.NewSite(nil)

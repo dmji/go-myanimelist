@@ -10,7 +10,7 @@ import (
 	"github.com/dmji/go-myanimelist/mal/prm"
 )
 
-func ExampleUserService_MangaList() {
+func ExampleSite_User_mangalist() {
 	ctx := context.Background()
 
 	c := mal.NewSite(nil)
@@ -39,7 +39,7 @@ func ExampleUserService_MangaList() {
 	// ID:   401, Status:       "reading", Volumes Read:   1, Chapters Read:   5 Kiseijuu
 }
 
-func ExampleMangaService_UpdateMyListStatus() {
+func ExampleSite_Manga_updatemyliststatus() {
 	ctx := context.Background()
 
 	c := mal.NewSite(nil)
