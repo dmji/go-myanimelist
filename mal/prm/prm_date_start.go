@@ -17,3 +17,5 @@ func (d StartDate) UpdateMyAnimeListStatusApply(v *url.Values) {
 func (d StartDate) UpdateMyMangaListStatusApply(v *url.Values) {
 	v.Set("start_date", common.FormatMALDate(time.Time(d)))
 }
+
+func (d StartDate) Val(v time.Time) StartDate { return StartDate(v) }

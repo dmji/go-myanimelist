@@ -12,3 +12,5 @@ func (p Priority) UpdateMyAnimeListStatusApply(v *url.Values) {
 func (p Priority) UpdateMyMangaListStatusApply(v *url.Values) {
 	v.Set("priority", itoa(int(p)))
 }
+
+func (p Priority) Val(v int) Priority { return Priority(v) }

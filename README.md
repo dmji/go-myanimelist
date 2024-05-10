@@ -13,9 +13,6 @@ go-myanimelist is a Go client library for accessing the [MyAnimeList API v2](htt
 
 The project has been updated to support MyAnimeList API v2.
 
-As of March 2017, this package is featured in
-[awesome-go](https://github.com/avelino/awesome-go).
-
 ## Installation
 
 This package can be installed using:

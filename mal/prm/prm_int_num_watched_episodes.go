@@ -10,3 +10,5 @@ type NumEpisodesWatched int
 func (n NumEpisodesWatched) UpdateMyAnimeListStatusApply(v *url.Values) {
 	v.Set("num_watched_episodes", itoa(int(n)))
 }
+
+func (n NumEpisodesWatched) Val(v int) NumEpisodesWatched { return NumEpisodesWatched(v) }

@@ -153,11 +153,12 @@ func ExampleSite_Anime_seasonal() {
 	baseURL, _ := url.Parse(server.URL)
 	c.SetBaseURL(baseURL)
 
-	anime, _, err := c.Anime.Seasonal(ctx, 2020, prm.AnimeSeasonFall,
+	opts := prm.SeasonalAnimeOptionProvider{}
+	anime, _, err := c.Anime.Seasonal(ctx, 2020, opts.AnimeSeason.Fall(),
 		prm.Fields{"rank", "popularity"},
-		prm.SortSeasonalByAnimeNumListUsers,
-		prm.Limit(3),
-		prm.Offset(0),
+		opts.SortSeasonalAnime.ByUsersCount(),
+		opts.Limit.Val(3),
+		opts.Offset.Val(0),
 	)
 	if err != nil {
 		fmt.Printf("Anime.Seasonal error: %v", err)

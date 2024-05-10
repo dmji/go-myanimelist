@@ -15,3 +15,6 @@ const (
 )
 
 func (s SortSeasonalAnime) SeasonalAnimeApply(v *url.Values) { v.Set("sort", string(s)) }
+
+func (s SortSeasonalAnime) ByScore() SortSeasonalAnime      { return SortSeasonalByAnimeScore }
+func (s SortSeasonalAnime) ByUsersCount() SortSeasonalAnime { return SortSeasonalByAnimeNumListUsers }

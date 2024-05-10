@@ -25,3 +25,9 @@ const (
 )
 
 func (s SortMangaList) MangaListApply(v *url.Values) { v.Set("sort", string(s)) }
+
+func (s SortMangaList) ByListScore() SortMangaList      { return SortMangaListByListScore }
+func (s SortMangaList) ByListUpdatedAt() SortMangaList  { return SortMangaListByListUpdatedAt }
+func (s SortMangaList) ByMangaTitle() SortMangaList     { return SortMangaListByMangaTitle }
+func (s SortMangaList) ByMangaStartDate() SortMangaList { return SortMangaListByMangaStartDate }
+func (s SortMangaList) ByMangaID() SortMangaList        { return SortMangaListByMangaID }

@@ -259,12 +259,13 @@ func TestAnimeServiceSeasonal(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	got, resp, err := client.Anime.Seasonal(ctx, 2020, prm.AnimeSeasonSummer,
-		prm.SortSeasonalByAnimeNumListUsers,
+	opts := prm.SeasonalAnimeOptionProvider{}
+	got, resp, err := client.Anime.Seasonal(ctx, 2020, opts.AnimeSeason.Summer(),
+		opts.SortSeasonalAnime.ByUsersCount(),
 		prm.Fields{"foo", "bar"},
-		prm.Limit(10),
-		prm.Offset(0),
-		prm.NSFW(false),
+		opts.Limit.Val(10),
+		opts.Offset.Val(0),
+		opts.NSFW.False(),
 	)
 	if err != nil {
 		t.Errorf("Anime.Seasonal returned error: %v", err)

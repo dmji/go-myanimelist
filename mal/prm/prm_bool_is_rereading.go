@@ -12,3 +12,6 @@ type IsRereading bool
 func (r IsRereading) UpdateMyMangaListStatusApply(v *url.Values) {
 	v.Set("is_rereading", strconv.FormatBool(bool(r)))
 }
+
+func (n IsRereading) True() IsRereading  { return IsRereading(true) }
+func (n IsRereading) False() IsRereading { return IsRereading(false) }

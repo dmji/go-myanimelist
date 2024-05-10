@@ -17,3 +17,10 @@ const (
 func (r RereadValue) UpdateMyMangaListStatusApply(v *url.Values) {
 	v.Set("reread_value", itoa(int(r)))
 }
+
+func (r RereadValue) NoValue() RereadValue  { return RereadNoValue }
+func (r RereadValue) VeryLow() RereadValue  { return RereadVeryLow }
+func (r RereadValue) Low() RereadValue      { return RereadLow }
+func (r RereadValue) Medium() RereadValue   { return RereadMedium }
+func (r RereadValue) High() RereadValue     { return RereadHigh }
+func (r RereadValue) VeryHigh() RereadValue { return RereadVeryHigh }

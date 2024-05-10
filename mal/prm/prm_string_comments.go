@@ -12,3 +12,5 @@ func (c Comments) UpdateMyAnimeListStatusApply(v *url.Values) {
 func (c Comments) UpdateMyMangaListStatusApply(v *url.Values) {
 	v.Set("comments", string(c))
 }
+
+func (l Comments) Val(v string) Comments { return Comments(v) }

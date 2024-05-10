@@ -9,3 +9,5 @@ type NumTimesReread int
 func (n NumTimesReread) UpdateMyMangaListStatusApply(v *url.Values) {
 	v.Set("num_times_reread", itoa(int(n)))
 }
+
+func (n NumTimesReread) Val(v int) NumTimesReread { return NumTimesReread(v) }

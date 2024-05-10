@@ -27,3 +27,9 @@ const (
 
 func (s AnimeStatus) AnimeListApply(v *url.Values)               { v.Set("status", string(s)) }
 func (s AnimeStatus) UpdateMyAnimeListStatusApply(v *url.Values) { v.Set("status", string(s)) }
+
+func (n AnimeStatus) Watching() AnimeStatus    { return AnimeStatusWatching }
+func (n AnimeStatus) Completed() AnimeStatus   { return AnimeStatusCompleted }
+func (n AnimeStatus) OnHold() AnimeStatus      { return AnimeStatusOnHold }
+func (n AnimeStatus) Dropped() AnimeStatus     { return AnimeStatusDropped }
+func (n AnimeStatus) PlanToWatch() AnimeStatus { return AnimeStatusPlanToWatch }

@@ -27,3 +27,9 @@ const (
 
 func (s MangaStatus) MangaListApply(v *url.Values)               { v.Set("status", string(s)) }
 func (s MangaStatus) UpdateMyMangaListStatusApply(v *url.Values) { v.Set("status", string(s)) }
+
+func (n MangaStatus) Reading() MangaStatus    { return MangaStatusReading }
+func (n MangaStatus) Completed() MangaStatus  { return MangaStatusCompleted }
+func (n MangaStatus) OnHold() MangaStatus     { return MangaStatusOnHold }
+func (n MangaStatus) Dropped() MangaStatus    { return MangaStatusDropped }
+func (n MangaStatus) PlanToRead() MangaStatus { return MangaStatusPlanToRead }

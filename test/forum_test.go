@@ -7,6 +7,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/dmji/go-myanimelist/mal"
 	"github.com/dmji/go-myanimelist/mal/common"
 	"github.com/dmji/go-myanimelist/mal/containers"
 	"github.com/dmji/go-myanimelist/mal/prm"
@@ -106,9 +107,10 @@ func TestForumServiceTopicDetails(t *testing.T) {
 	})
 
 	ctx := context.Background()
+	opts := mal.PagingOptionProvider()
 	got, resp, err := client.Forum.TopicDetails(ctx, 1,
-		prm.Limit(10),
-		prm.Offset(0),
+		opts.Limit.Val(10),
+		opts.Offset.Val(0),
 	)
 	if err != nil {
 		t.Errorf("Forum.TopicDetails returned error: %v", err)
@@ -169,19 +171,21 @@ func TestForumServiceTopics(t *testing.T) {
 	})
 
 	ctx := context.Background()
+	opts := mal.TopicsOptionProvider()
 	got, resp, err := client.Forum.Topics(ctx,
-		prm.BoardID(1),
-		prm.SubboardID(1),
+		opts.BoardID.Val(1),
+		opts.SubboardID.Val(1),
 		prm.Limit(10),
 		prm.Offset(0),
-		prm.SortTopicsRecent,
-		prm.Query("foo"),
-		prm.TopicUserName("bar"),
-		prm.UserName("baz"),
+		opts.SortTopics.Recent(),
+		opts.Query.Val("foo"),
+		opts.TopicUserName.Val("bar"),
+		opts.UserName.Val("baz"),
 	)
 	if err != nil {
 		t.Errorf("Forum.Topics returned error: %v", err)
 	}
+
 	want := []containers.Topic{{ID: 1}, {ID: 2}}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("Forum.Topics returned\nhave: %+v\n\nwant: %+v", got, want)

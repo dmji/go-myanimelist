@@ -17,3 +17,10 @@ const (
 func (r RewatchValue) UpdateMyAnimeListStatusApply(v *url.Values) {
 	v.Set("rewatch_value", itoa(int(r)))
 }
+
+func (r RewatchValue) NoValue() RewatchValue  { return RewatchNoValue }
+func (r RewatchValue) VeryLow() RewatchValue  { return RewatchVeryLow }
+func (r RewatchValue) Low() RewatchValue      { return RewatchLow }
+func (r RewatchValue) Medium() RewatchValue   { return RewatchMedium }
+func (r RewatchValue) High() RewatchValue     { return RewatchHigh }
+func (r RewatchValue) VeryHigh() RewatchValue { return RewatchVeryHigh }

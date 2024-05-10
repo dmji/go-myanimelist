@@ -23,3 +23,13 @@ const (
 	// AnimeRankingFavorite returns the top favorite Anime.
 	AnimeRankingFavorite AnimeRanking = "favorite"
 )
+
+func (r AnimeRanking) All() AnimeRanking          { return AnimeRankingAll }
+func (r AnimeRanking) Airing() AnimeRanking       { return AnimeRankingAiring }
+func (r AnimeRanking) Upcoming() AnimeRanking     { return AnimeRankingUpcoming }
+func (r AnimeRanking) TV() AnimeRanking           { return AnimeRankingTV }
+func (r AnimeRanking) OVA() AnimeRanking          { return AnimeRankingOVA }
+func (r AnimeRanking) Movie() AnimeRanking        { return AnimeRankingMovie }
+func (r AnimeRanking) Special() AnimeRanking      { return AnimeRankingSpecial }
+func (r AnimeRanking) ByPopularity() AnimeRanking { return AnimeRankingByPopularity }
+func (r AnimeRanking) Favorite() AnimeRanking     { return AnimeRankingFavorite }

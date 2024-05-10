@@ -25,3 +25,9 @@ const (
 )
 
 func (s SortAnimeList) AnimeListApply(v *url.Values) { v.Set("sort", string(s)) }
+
+func (n SortAnimeList) ByListScore() SortAnimeList      { return SortAnimeListByListScore }
+func (n SortAnimeList) ByListUpdatedAt() SortAnimeList  { return SortAnimeListByListUpdatedAt }
+func (n SortAnimeList) ByAnimeTitle() SortAnimeList     { return SortAnimeListByAnimeTitle }
+func (n SortAnimeList) ByAnimeStartDate() SortAnimeList { return SortAnimeListByAnimeStartDate }
+func (n SortAnimeList) ByAnimeID() SortAnimeList        { return SortAnimeListByAnimeID }
