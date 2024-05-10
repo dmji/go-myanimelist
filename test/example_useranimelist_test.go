@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/dmji/go-myanimelist/mal"
-	"github.com/dmji/go-myanimelist/mal/prm"
 )
 
 func ExampleSite_User_animelist() {
@@ -22,10 +21,11 @@ func ExampleSite_User_animelist() {
 	baseURL, _ := url.Parse(server.URL)
 	c.SetBaseURL(baseURL)
 
+	opts := c.User.AnimeListOptions
 	anime, _, err := c.User.AnimeList(ctx, "@me",
-		prm.Fields{"list_status"},
-		prm.SortAnimeListByListUpdatedAt,
-		prm.Limit(5),
+		opts.Fields(opts.UserListFields.ListStatus()),
+		opts.SortAnimeList.ByListUpdatedAt(),
+		opts.Limit(5),
 	)
 	if err != nil {
 		fmt.Printf("User.AnimeList error: %v", err)
@@ -54,13 +54,14 @@ func ExampleSite_User_updatemyliststatus() {
 	baseURL, _ := url.Parse(server.URL)
 	c.SetBaseURL(baseURL)
 
+	opts := c.Anime.UpdateMyListStatusOptions
 	s, _, err := c.Anime.UpdateMyListStatus(ctx, 967,
-		prm.AnimeStatusWatching,
-		prm.NumEpisodesWatched(73),
-		prm.Score(8),
-		prm.Comments("You wa shock!"),
-		prm.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
-		prm.FinishDate(time.Time{}), // Remove an existing date.
+		opts.AnimeStatus.Watching(),
+		opts.NumEpisodesWatched(73),
+		opts.Score(8),
+		opts.Comments("You wa shock!"),
+		opts.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
+		opts.FinishDate(time.Time{}), // Remove an existing date.
 	)
 	if err != nil {
 		fmt.Printf("Anime.UpdateMyListStatus error: %v", err)

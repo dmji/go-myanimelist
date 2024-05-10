@@ -7,7 +7,6 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/dmji/go-myanimelist/mal"
 	"github.com/dmji/go-myanimelist/mal/api_driver"
 	"github.com/dmji/go-myanimelist/mal/containers"
 	"github.com/dmji/go-myanimelist/mal/prm"
@@ -107,10 +106,10 @@ func TestForumServiceTopicDetails(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	opts := mal.PagingOptionProvider()
+	opts := client.Forum.TopicDetailsOptions
 	got, resp, err := client.Forum.TopicDetails(ctx, 1,
-		opts.Limit.Val(10),
-		opts.Offset.Val(0),
+		opts.Limit(10),
+		opts.Offset(0),
 	)
 	if err != nil {
 		t.Errorf("Forum.TopicDetails returned error: %v", err)
@@ -171,16 +170,16 @@ func TestForumServiceTopics(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	opts := mal.TopicsOptionProvider()
+	opts := client.Forum.TopicsOptions
 	got, resp, err := client.Forum.Topics(ctx,
-		opts.BoardID.Val(1),
-		opts.SubboardID.Val(1),
+		opts.BoardID(1),
+		opts.SubboardID(1),
 		prm.Limit(10),
 		prm.Offset(0),
 		opts.SortTopics.Recent(),
-		opts.Query.Val("foo"),
-		opts.TopicUserName.Val("bar"),
-		opts.UserName.Val("baz"),
+		opts.Query("foo"),
+		opts.TopicUserName("bar"),
+		opts.UserName("baz"),
 	)
 	if err != nil {
 		t.Errorf("Forum.Topics returned error: %v", err)

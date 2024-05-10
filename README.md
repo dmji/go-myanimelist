@@ -365,7 +365,7 @@ time. Check the authentication section to learn how to get one.
 By default the integration tests are skipped when an oauth2 token is not
 provided. To run all tests including the integration tests:
 
-    go test --client-id='`<your app client ID>`' --oauth2-token='`<your oauth2 token>`'
+`go test --client-id='<your app client ID>``' --oauth2-token='<your oauth2 token>``'`
 
 ## License
 

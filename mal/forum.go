@@ -16,6 +16,9 @@ import (
 // https://myanimelist.net/apiconfig/references/api/v2#tag/forum
 type ForumService struct {
 	client *api_driver.Client
+
+	TopicsOptions       prm.TopicsOptionProvider
+	TopicDetailsOptions prm.PagingOptionProvider
 }
 
 func NewForumService(client *api_driver.Client) *ForumService {
@@ -43,7 +46,7 @@ func (s *ForumService) Boards(ctx context.Context) (*containers.Forum, *api_driv
 // Topics returns the forum's topics. Make sure to pass at least the Query
 // option or you will get an API error.
 func (s *ForumService) Topics(ctx context.Context, options ...prm.TopicsOption) ([]containers.Topic, *api_driver.Response, error) {
-	rawOptions := OptionsToFuncs(options, func(t prm.TopicsOption) func(*url.Values) { return t.TopicsApply })
+	rawOptions := optionsToFuncs(options, func(t prm.TopicsOption) func(*url.Values) { return t.TopicsApply })
 	topics, resp, err := s.client.RequestTopics(ctx, topicsEndpoint, rawOptions...)
 	if err != nil {
 		return nil, resp, err
@@ -53,7 +56,7 @@ func (s *ForumService) Topics(ctx context.Context, options ...prm.TopicsOption) 
 
 // TopicDetails returns details about the forum topic specified by topicID.
 func (s *ForumService) TopicDetails(ctx context.Context, topicID int, options ...prm.PagingOption) (containers.TopicDetails, *api_driver.Response, error) {
-	rawOptions := OptionsToFuncs(options, func(t prm.PagingOption) func(*url.Values) { return t.PagingApply })
+	rawOptions := optionsToFuncs(options, func(t prm.PagingOption) func(*url.Values) { return t.PagingApply })
 	topicDetails, resp, err := s.client.RequestTopicDetails(ctx, fmt.Sprintf("%s/%d", topicEndpoint, topicID), rawOptions...)
 	if err != nil {
 		return containers.TopicDetails{}, resp, err

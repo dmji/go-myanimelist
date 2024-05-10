@@ -24,7 +24,7 @@ func (f Fields) Apply(v *url.Values) {
 	}
 }
 
-func (f Fields) F(v ...string) Fields {
+func NewFields(v ...string) Fields {
 	res := make([]string, 0, len(v))
 	res = append(res, v...)
 	return Fields(res)

@@ -11,5 +11,3 @@ type NumTimesRewatched int
 func (n NumTimesRewatched) UpdateMyAnimeListStatusApply(v *url.Values) {
 	v.Set("num_times_rewatched", itoa(int(n)))
 }
-
-func (n NumTimesRewatched) Val(v int) NumTimesRewatched { return NumTimesRewatched(v) }

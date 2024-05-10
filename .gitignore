@@ -1,8 +1,6 @@
 client
 agent.txt
-count.out
-cover.out
+count
+cover
 *token-cache.txt
 *.exe
-malauth
-!malauth/

@@ -16,7 +16,7 @@ func (t Tags) UpdateMyMangaListStatusApply(v *url.Values) {
 	v.Set("tags", strings.Join(t, ","))
 }
 
-func (f Tags) f(v ...string) Tags {
+func NewTags(v ...string) Tags {
 	res := make([]string, 0, len(v))
 	res = append(res, v...)
 	return Tags(res)

@@ -6,7 +6,6 @@ import (
 	"net/url"
 
 	"github.com/dmji/go-myanimelist/mal"
-	"github.com/dmji/go-myanimelist/mal/prm"
 )
 
 func ExampleSite_Forum_boards() {
@@ -80,10 +79,11 @@ func ExampleSite_Forum_topics() {
 	baseURL, _ := url.Parse(server.URL)
 	c.SetBaseURL(baseURL)
 
+	opts := c.Forum.TopicsOptions
 	topics, _, err := c.Forum.Topics(ctx,
-		prm.Query("JoJo opening"),
-		prm.SortTopicsRecent,
-		prm.Limit(2),
+		opts.Query("JoJo opening"),
+		opts.SortTopics.Recent(),
+		opts.Limit(2),
 	)
 	if err != nil {
 		fmt.Printf("Forum.Topics error: %v", err)
@@ -109,7 +109,8 @@ func ExampleSite_Forum_topicdetails() {
 	baseURL, _ := url.Parse(server.URL)
 	c.SetBaseURL(baseURL)
 
-	topicDetails, _, err := c.Forum.TopicDetails(ctx, 1877721, prm.Limit(3), prm.Offset(0))
+	opts := c.Forum.TopicDetailsOptions
+	topicDetails, _, err := c.Forum.TopicDetails(ctx, 1877721, opts.Limit(3), opts.Offset(0))
 	if err != nil {
 		fmt.Printf("Forum.TopicDetails error: %v", err)
 		return

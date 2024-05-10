@@ -6,7 +6,6 @@ import (
 	"net/url"
 
 	"github.com/dmji/go-myanimelist/mal"
-	"github.com/dmji/go-myanimelist/mal/prm"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )
@@ -23,10 +22,15 @@ func ExampleSite_Manga_list() {
 	baseURL, _ := url.Parse(server.URL)
 	c.SetBaseURL(baseURL)
 
+	opts := c.Manga.ListOptions
 	manga, _, err := c.Manga.List(ctx, "parasyte",
-		prm.Fields{"num_volumes", "num_chapters", "alternative_titles"},
-		prm.Limit(3),
-		prm.Offset(0),
+		opts.Fields(
+			opts.MangaFields.NumVolumes(),
+			opts.MangaFields.NumChapters(),
+			opts.MangaFields.AlternativeTitles(),
+		),
+		opts.Limit(3),
+		opts.Offset(0),
 	)
 	if err != nil {
 		fmt.Printf("Manga.List error: %v", err)
@@ -53,16 +57,17 @@ func ExampleSite_Manga_details() {
 	baseURL, _ := url.Parse(server.URL)
 	c.SetBaseURL(baseURL)
 
+	opts := c.Manga.DetailsOptions
 	m, _, err := c.Manga.Details(ctx, 401,
-		prm.Fields{
-			"alternative_titles",
-			"media_type",
-			"num_volumes",
-			"num_chapters",
-			"authors{last_name, first_name}",
-			"genres",
-			"status",
-		},
+		opts.Fields(
+			opts.MangaFields.AlternativeTitles(),
+			opts.MangaFields.MediaType(),
+			opts.MangaFields.NumVolumes(),
+			opts.MangaFields.NumChapters(),
+			opts.MangaFields.Authors("last_name", "first_name"),
+			opts.MangaFields.Genres(),
+			opts.MangaFields.Status(),
+		),
 	)
 	if err != nil {
 		fmt.Printf("Manga.Details error: %v", err)
@@ -115,10 +120,11 @@ func ExampleSite_Manga_ranking() {
 	baseURL, _ := url.Parse(server.URL)
 	c.SetBaseURL(baseURL)
 
+	opts := c.Manga.RankingOptions
 	manga, _, err := c.Manga.Ranking(ctx,
-		prm.MangaRankingByPopularity,
-		prm.Fields{"rank", "popularity"},
-		prm.Limit(6),
+		opts.MangaRanking.ByPopularity(),
+		opts.Fields("rank", "popularity"),
+		opts.Limit(6),
 	)
 	if err != nil {
 		fmt.Printf("Manga.Ranking error: %v", err)

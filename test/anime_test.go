@@ -10,7 +10,6 @@ import (
 
 	"github.com/dmji/go-myanimelist/mal/api_driver"
 	"github.com/dmji/go-myanimelist/mal/containers"
-	"github.com/dmji/go-myanimelist/mal/prm"
 )
 
 func TestAnimeServiceDetails(t *testing.T) {
@@ -27,7 +26,10 @@ func TestAnimeServiceDetails(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	a, _, err := client.Anime.Details(ctx, 1, prm.Fields{"foo,bar"})
+
+	a, _, err := client.Anime.Details(ctx, 1,
+		client.Anime.DetailsOptions.Fields("foo,bar"),
+	)
 	if err != nil {
 		t.Errorf("Anime.Details returned error: %v", err)
 	}
@@ -86,11 +88,12 @@ func TestAnimeServiceList(t *testing.T) {
 	})
 
 	ctx := context.Background()
+	opts := client.Anime.ListOptions
 	got, resp, err := client.Anime.List(ctx, "query",
-		prm.Fields{"foo", "bar"},
-		prm.Limit(10),
-		prm.Offset(0),
-		prm.NSFW(true),
+		opts.Fields("foo", "bar"),
+		opts.Limit(10),
+		opts.Offset(0),
+		opts.NSFW(true),
 	)
 	if err != nil {
 		t.Errorf("Anime.List returned error: %v", err)
@@ -209,10 +212,11 @@ func TestAnimeServiceRanking(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	got, resp, err := client.Anime.Ranking(ctx, prm.AnimeRankingAll,
-		prm.Fields{"foo", "bar"},
-		prm.Limit(10),
-		prm.Offset(0),
+	opts := client.Anime.RankingOptions
+	got, resp, err := client.Anime.Ranking(ctx, opts.AnimeRanking.All(),
+		opts.Fields("foo", "bar"),
+		opts.Limit(10),
+		opts.Offset(0),
 	)
 	if err != nil {
 		t.Errorf("Anime.Ranking returned error: %v", err)
@@ -259,13 +263,13 @@ func TestAnimeServiceSeasonal(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	opts := prm.SeasonalAnimeOptionProvider{}
+	opts := client.Anime.SeasonalOptions
 	got, resp, err := client.Anime.Seasonal(ctx, 2020, opts.AnimeSeason.Summer(),
 		opts.SortSeasonalAnime.ByUsersCount(),
-		prm.Fields{"foo", "bar"},
-		opts.Limit.Val(10),
-		opts.Offset.Val(0),
-		opts.NSFW.False(),
+		opts.Fields("foo", "bar"),
+		opts.Limit(10),
+		opts.Offset(0),
+		opts.NSFW(false),
 	)
 	if err != nil {
 		t.Errorf("Anime.Seasonal returned error: %v", err)
@@ -307,10 +311,11 @@ func TestAnimeServiceSuggested(t *testing.T) {
 	})
 
 	ctx := context.Background()
+	opts := client.Anime.SuggestedOptions
 	got, resp, err := client.Anime.Suggested(ctx,
-		prm.Fields{"foo", "bar"},
-		prm.Limit(10),
-		prm.Offset(0),
+		opts.Fields("foo", "bar"),
+		opts.Limit(10),
+		opts.Offset(0),
 	)
 	if err != nil {
 		t.Errorf("Anime.Suggested returned error: %v", err)

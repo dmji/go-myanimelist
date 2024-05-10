@@ -9,5 +9,3 @@ type NumChaptersRead int
 func (n NumChaptersRead) UpdateMyMangaListStatusApply(v *url.Values) {
 	v.Set("num_chapters_read", itoa(int(n)))
 }
-
-func (n NumChaptersRead) Val(v int) NumChaptersRead { return NumChaptersRead(v) }

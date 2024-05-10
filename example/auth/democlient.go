@@ -73,16 +73,15 @@ func (c *demoClient) animeList(ctx context.Context) {
 		return
 	}
 
-	opts := mal.OptionalParamProvider()
-	af := opts.AnimeFields
-	af.Rank = true
-	af.Popularity = true
-	af.StartSeason = true
-
+	opts := c.Anime.ListOptions
 	anime, _, err := c.Anime.List(ctx, "hokuto no ken",
-		af.Fields(),
-		opts.Limit.Val(3),
-		opts.Offset.Val(0),
+		opts.Fields(
+			opts.AnimeFields.Rank(),
+			opts.AnimeFields.Popularity(),
+			opts.AnimeFields.StartSeason(),
+		),
+		opts.Limit(3),
+		opts.Offset(0),
 	)
 	if err != nil {
 		c.err = err
@@ -98,16 +97,15 @@ func (c *demoClient) mangaList(ctx context.Context) {
 		return
 	}
 
-	opts := mal.OptionalParamProvider()
-	mf := opts.MangaFields
-	mf.NumVolumes = true
-	mf.NumChapters = true
-	mf.AlternativeTitles = true
-
+	opts := c.Manga.ListOptions
 	manga, _, err := c.Manga.List(ctx, "parasyte",
-		mf.Fields(),
-		opts.Limit.Val(3),
-		opts.Offset.Val(0),
+		opts.Fields(
+			opts.MangaFields.NumVolumes(),
+			opts.MangaFields.NumChapters(),
+			opts.MangaFields.AlternativeTitles(),
+		),
+		opts.Limit(3),
+		opts.Offset(0),
 	)
 	if err != nil {
 		c.err = err
@@ -122,17 +120,19 @@ func (c *demoClient) animeDetails(ctx context.Context) {
 	if c.err != nil {
 		return
 	}
-	opts := mal.DetailsOptionProvider()
-	af := opts.AnimeFields
-	af.AlternativeTitles = true
-	af.MediaType = true
-	af.NumEpisodes = true
-	af.StartSeason = true
-	af.Source = true
-	af.Genres = true
-	af.Studios = true
-	af.AverageEpisodeDuration = true
-	a, _, err := c.Anime.Details(ctx, 967, af.Fields())
+
+	opts := c.Anime.DetailsOptions
+	a, _, err := c.Anime.Details(ctx, 967,
+		opts.Fields(
+			opts.AnimeFields.AlternativeTitles(),
+			opts.AnimeFields.MediaType(),
+			opts.AnimeFields.NumEpisodes(),
+			opts.AnimeFields.StartSeason(),
+			opts.AnimeFields.Source(),
+			opts.AnimeFields.Genres(),
+			opts.AnimeFields.Studios(),
+			opts.AnimeFields.AverageEpisodeDuration(),
+		))
 
 	if err != nil {
 		c.err = err
@@ -168,17 +168,17 @@ func (c *demoClient) mangaDetails(ctx context.Context) {
 		return
 	}
 
-	opts := mal.DetailsOptionProvider()
-	mf := opts.MangaFields
-	mf.AlternativeTitles = true
-	mf.MediaType = true
-	mf.NumVolumes = true
-	mf.NumChapters = true
-	mf.AuthorsLF = true
-	mf.Genres = true
-	mf.Status = true
-
-	m, _, err := c.Manga.Details(ctx, 401, mf.Fields())
+	opts := c.Manga.DetailsOptions
+	m, _, err := c.Manga.Details(ctx, 401,
+		opts.Fields(
+			opts.MangaFields.AlternativeTitles(),
+			opts.MangaFields.MediaType(),
+			opts.MangaFields.NumVolumes(),
+			opts.MangaFields.NumChapters(),
+			opts.MangaFields.Authors("last_name", "first_name"),
+			opts.MangaFields.Genres(),
+			opts.MangaFields.Status(),
+		))
 	if err != nil {
 		c.err = err
 		return
@@ -213,17 +213,16 @@ func (c *demoClient) animeListForLoop(ctx context.Context) {
 		return
 	}
 	offset := 0
-	opts := mal.OptionalParamProvider()
-	af := opts.AnimeFields
-	af.Rank = true
-	af.Popularity = true
-	af.StartSeason = true
-
+	opts := c.Anime.ListOptions
 	for {
 		anime, resp, err := c.Anime.List(ctx, "kiseijuu",
-			af.Fields(),
-			opts.Limit.Val(100),
-			opts.Offset.Val(offset),
+			opts.Fields(
+				opts.AnimeFields.Rank(),
+				opts.AnimeFields.Popularity(),
+				opts.AnimeFields.StartSeason(),
+			),
+			opts.Limit(100),
+			opts.Offset(offset),
 		)
 		if err != nil {
 			c.err = err
@@ -246,14 +245,12 @@ func (c *demoClient) userAnimeList(ctx context.Context) {
 		return
 	}
 
-	opts := mal.AnimeListOptionProvider()
-	af := opts.AnimeFields
-	//af.MyListStatus = true
+	opts := c.User.AnimeListOptions
 	anime, _, err := c.User.AnimeList(ctx, "@me",
-		af.F("list_status"),
+		opts.Fields(opts.UserListFields.ListStatus()),
 		opts.AnimeStatus.Watching(),
 		opts.SortAnimeList.ByListUpdatedAt(),
-		opts.Limit.Val(5),
+		opts.Limit(5),
 	)
 	if err != nil {
 		c.err = err
@@ -269,12 +266,12 @@ func (c *demoClient) userMangaList(ctx context.Context) {
 		return
 	}
 
-	opts := mal.MangaListOptionProvider()
+	opts := c.User.MangaListOptions
 	manga, _, err := c.User.MangaList(ctx, "@me",
 		opts.SortMangaList.ByListScore(),
-		opts.Fields.F("list_status{comments, tags}"),
-		opts.Limit.Val(5),
-		opts.Offset.Val(0),
+		opts.Fields("list_status{comments, tags}"),
+		opts.Limit(5),
+		opts.Offset(0),
 	)
 	if err != nil {
 		c.err = err
@@ -290,14 +287,14 @@ func (c *demoClient) updateMyAnimeListStatus(ctx context.Context) {
 		return
 	}
 
-	opts := mal.UpdateMyAnimeListStatusOptionProvider()
+	opts := c.Anime.UpdateMyListStatusOptions
 	s, _, err := c.Anime.UpdateMyListStatus(ctx, 967,
 		opts.AnimeStatus.Watching(),
-		opts.NumEpisodesWatched.Val(73),
-		opts.Score.Val(8),
-		opts.Comments.Val("You wa shock!"),
-		opts.StartDate.Val(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
-		opts.FinishDate.Val(time.Time{}), // Remove an existing date.
+		opts.NumEpisodesWatched(73),
+		opts.Score(8),
+		opts.Comments("You wa shock!"),
+		opts.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
+		opts.FinishDate(time.Time{}), // Remove an existing date.
 	)
 	if err != nil {
 		c.err = err
@@ -311,14 +308,14 @@ func (c *demoClient) updateMyMangaListStatus(ctx context.Context) {
 		return
 	}
 
-	opts := mal.UpdateMyMangaListStatusOptionProvider()
+	opts := c.Manga.UpdateMyListStatusOptions
 	s, _, err := c.Manga.UpdateMyListStatus(ctx, 401,
 		opts.MangaStatus.Reading(),
-		opts.NumVolumesRead.Val(1),
-		opts.NumChaptersRead.Val(5),
-		opts.Comments.Val("Migi"),
-		opts.StartDate.Val(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
-		opts.FinishDate.Val(time.Time{}), // Remove an existing date.
+		opts.NumVolumesRead(1),
+		opts.NumChaptersRead(5),
+		opts.Comments("Migi"),
+		opts.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
+		opts.FinishDate(time.Time{}), // Remove an existing date.
 	)
 	if err != nil {
 		c.err = err
@@ -360,14 +357,14 @@ func (c *demoClient) animeRanking(ctx context.Context) {
 		prm.AnimeRankingByPopularity,
 	}
 
-	opts := mal.OptionalParamProvider()
-	af := opts.AnimeFields
-	af.Rank = true
-	af.Popularity = true
-
+	opts := c.Anime.RankingOptions
 	for _, r := range rankings {
 		fmt.Println("Ranking:", r)
-		anime, _, err := c.Anime.Ranking(ctx, r, af.Fields())
+		anime, _, err := c.Anime.Ranking(ctx, r,
+			opts.Fields(
+				opts.AnimeFields.Rank(),
+				opts.AnimeFields.Popularity(),
+			))
 		if err != nil {
 			c.err = err
 			return
@@ -384,15 +381,14 @@ func (c *demoClient) mangaRanking(ctx context.Context) {
 		return
 	}
 
-	opts := mal.OptionalParamProvider()
-	mf := opts.MangaFields
-	mf.Rank = true
-	mf.Popularity = true
-
+	opts := c.Manga.RankingOptions
 	manga, _, err := c.Manga.Ranking(ctx,
 		opts.MangaRanking.ByPopularity(),
-		mf.Fields(),
-		opts.Limit.Val(6),
+		opts.Fields(
+			opts.AnimeFields.Rank(),
+			opts.AnimeFields.Popularity(),
+		),
+		opts.Limit(6),
 	)
 	if err != nil {
 		c.err = err
@@ -408,16 +404,15 @@ func (c *demoClient) animeSeasonal(ctx context.Context) {
 		return
 	}
 
-	opts := mal.SeasonalAnimeOptionProvider()
-	af := opts.AnimeFields
-	af.Rank = true
-	af.Popularity = true
-
+	opts := c.Anime.SeasonalOptions
 	anime, _, err := c.Anime.Seasonal(ctx, 2020, opts.AnimeSeason.Fall(),
-		af.Fields(),
+		opts.Fields(
+			opts.AnimeFields.Rank(),
+			opts.AnimeFields.Popularity(),
+		),
 		opts.SortSeasonalAnime.ByUsersCount(),
-		opts.Limit.Val(3),
-		opts.Offset.Val(0),
+		opts.Limit(3),
+		opts.Offset(0),
 	)
 	if err != nil {
 		c.err = err
@@ -433,14 +428,13 @@ func (c *demoClient) animeSuggested(ctx context.Context) {
 		return
 	}
 
-	opts := mal.OptionalParamProvider()
-	af := opts.AnimeFields
-	af.Rank = true
-	af.Popularity = true
-
+	opts := c.Anime.SuggestedOptions
 	anime, _, err := c.Anime.Suggested(ctx,
-		opts.Limit.Val(3),
-		af.Fields(),
+		opts.Limit(3),
+		opts.Fields(
+			opts.AnimeFields.Rank(),
+			opts.AnimeFields.Popularity(),
+		),
 	)
 	if err != nil {
 		c.err = err
@@ -477,11 +471,11 @@ func (c *demoClient) forumTopics(ctx context.Context) {
 		return
 	}
 
-	opts := mal.TopicsOptionProvider()
+	opts := c.Forum.TopicsOptions
 	topics, _, err := c.Forum.Topics(ctx,
-		opts.Query.Val("JoJo opening"),
+		opts.Query("JoJo opening"),
 		opts.SortTopics.Recent(),
-		opts.Limit.Val(2),
+		opts.Limit(2),
 	)
 	if err != nil {
 		c.err = err
@@ -496,8 +490,8 @@ func (c *demoClient) forumTopicDetails(ctx context.Context) {
 	if c.err != nil {
 		return
 	}
-	opts := mal.PagingOptionProvider()
-	topicDetails, _, err := c.Forum.TopicDetails(ctx, 1877721, opts.Limit.Val(3), opts.Offset.Val(0))
+	opts := c.Forum.TopicDetailsOptions
+	topicDetails, _, err := c.Forum.TopicDetails(ctx, 1877721, opts.Limit(3), opts.Offset(0))
 	if err != nil {
 		c.err = err
 		return

@@ -8,13 +8,11 @@ import (
 type BoardID int
 
 func (id BoardID) TopicsApply(v *url.Values) { v.Set("board_id", itoa(int(id))) }
-func (s BoardID) Val(v int) BoardID          { return BoardID(v) }
 
 // SubboardID is an option that filters topics based on the subboard ID.
 type SubboardID int
 
 func (id SubboardID) TopicsApply(v *url.Values) { v.Set("subboard_id", itoa(int(id))) }
-func (s SubboardID) Val(v int) SubboardID       { return SubboardID(v) }
 
 // sortTopics is an option that sorts the returned topics.
 type sortTopics string
@@ -29,16 +27,13 @@ func (s sortTopics) Recent() sortTopics        { return SortTopicsRecent }
 type Query string
 
 func (q Query) TopicsApply(v *url.Values) { v.Set("q", string(q)) }
-func (s Query) Val(v string) Query        { return Query(v) }
 
 // TopicUserName is an option that filters topics based on the topic username.
 type TopicUserName string
 
-func (n TopicUserName) TopicsApply(v *url.Values)  { v.Set("topic_user_name", string(n)) }
-func (s TopicUserName) Val(v string) TopicUserName { return TopicUserName(v) }
+func (n TopicUserName) TopicsApply(v *url.Values) { v.Set("topic_user_name", string(n)) }
 
 // UserName is an option that filters topics based on a username.
 type UserName string
 
 func (n UserName) TopicsApply(v *url.Values) { v.Set("user_name", string(n)) }
-func (s UserName) Val(v string) UserName     { return UserName(v) }

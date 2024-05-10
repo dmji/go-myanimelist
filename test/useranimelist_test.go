@@ -10,7 +10,6 @@ import (
 
 	"github.com/dmji/go-myanimelist/mal/api_driver"
 	"github.com/dmji/go-myanimelist/mal/containers"
-	"github.com/dmji/go-myanimelist/mal/prm"
 )
 
 func TestUserServiceAnimeList(t *testing.T) {
@@ -52,13 +51,14 @@ func TestUserServiceAnimeList(t *testing.T) {
 	})
 
 	ctx := context.Background()
+	opts := client.User.AnimeListOptions
 	got, resp, err := client.User.AnimeList(ctx, "foo",
-		prm.AnimeStatusCompleted,
-		prm.SortAnimeListByAnimeID,
-		prm.Fields{"foo", "bar"},
-		prm.Limit(10),
-		prm.Offset(0),
-		prm.NSFW(true),
+		opts.AnimeStatus.Completed(),
+		opts.SortAnimeList.ByAnimeID(),
+		opts.Fields("foo", "bar"),
+		opts.Limit(10),
+		opts.Offset(0),
+		opts.NSFW(true),
 	)
 	if err != nil {
 		t.Errorf("User.AnimeList returned error: %v", err)
@@ -89,12 +89,13 @@ func TestUserServiceAnimeListError(t *testing.T) {
 	})
 
 	ctx := context.Background()
+	opts := client.User.AnimeListOptions
 	_, resp, err := client.User.AnimeList(ctx, "foo",
-		prm.AnimeStatusCompleted,
-		prm.SortAnimeListByAnimeID,
-		prm.Fields{"foo", "bar"},
-		prm.Limit(10),
-		prm.Offset(0),
+		opts.AnimeStatus.Completed(),
+		opts.SortAnimeList.ByAnimeID(),
+		opts.Fields("foo", "bar"),
+		opts.Limit(10),
+		opts.Offset(0),
 	)
 	if err == nil {
 		t.Fatal("User.AnimeList expected internal error, got no error.")
@@ -129,25 +130,26 @@ func TestAnimeServiceUpdateMyListStatus(t *testing.T) {
 	})
 
 	ctx := context.Background()
+	opts := client.Anime.UpdateMyListStatusOptions
 	got, _, err := client.Anime.UpdateMyListStatus(ctx, 1,
-		prm.AnimeStatusCompleted,
-		prm.IsRewatching(true),
-		prm.Score(8),
-		prm.NumEpisodesWatched(3),
-		prm.Priority(2),
-		prm.NumTimesRewatched(2),
-		prm.RewatchValue(1),
-		prm.Tags{"foo", "bar"},
-		prm.Comments("comments"),
-		prm.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
-		prm.FinishDate(time.Time{}),
+		opts.AnimeStatus.Completed(),
+		opts.IsRewatching(true),
+		opts.Score(8),
+		opts.NumEpisodesWatched(3),
+		opts.Priority(2),
+		opts.NumTimesRewatched(2),
+		opts.RewatchValue.VeryLow(),
+		opts.Tags("foo", "bar"),
+		opts.Comments("comments"),
+		opts.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
+		opts.FinishDate(time.Time{}),
 	)
 	if err != nil {
 		t.Errorf("Anime.UpdateMyListStatus returned error: %v", err)
 	}
 
 	want := &containers.AnimeListStatus{
-		Status:             prm.AnimeStatusCompleted,
+		Status:             opts.AnimeStatus.Completed(),
 		IsRewatching:       true,
 		Score:              8,
 		NumEpisodesWatched: 3,

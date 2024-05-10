@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/dmji/go-myanimelist/mal"
-	"github.com/dmji/go-myanimelist/mal/prm"
 )
 
 func ExampleSite_User_mangalist() {
@@ -22,10 +21,11 @@ func ExampleSite_User_mangalist() {
 	baseURL, _ := url.Parse(server.URL)
 	c.SetBaseURL(baseURL)
 
+	opts := c.User.MangaListOptions
 	manga, _, err := c.User.MangaList(ctx, "@me",
-		prm.Fields{"list_status"},
-		prm.SortMangaListByListUpdatedAt,
-		prm.Limit(2),
+		opts.Fields(opts.UserListFields.ListStatus()),
+		opts.SortMangaList.ByListUpdatedAt(),
+		opts.Limit(2),
 	)
 	if err != nil {
 		fmt.Printf("User.MangaList error: %v", err)
@@ -51,13 +51,14 @@ func ExampleSite_Manga_updatemyliststatus() {
 	baseURL, _ := url.Parse(server.URL)
 	c.SetBaseURL(baseURL)
 
+	opts := c.Manga.UpdateMyListStatusOptions
 	s, _, err := c.Manga.UpdateMyListStatus(ctx, 401,
-		prm.MangaStatusReading,
-		prm.NumVolumesRead(1),
-		prm.NumChaptersRead(5),
-		prm.Comments("Migi"),
-		prm.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
-		prm.FinishDate(time.Time{}), // Remove an existing date.
+		opts.MangaStatus.Reading(),
+		opts.NumVolumesRead(1),
+		opts.NumChaptersRead(5),
+		opts.Comments("Migi"),
+		opts.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
+		opts.FinishDate(time.Time{}), // Remove an existing date.
 	)
 	if err != nil {
 		fmt.Printf("Manga.UpdateMyListStatus error: %v", err)

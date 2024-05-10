@@ -271,7 +271,7 @@ func testAnimeMethods(ctx context.Context, t *testing.T, client *mal.Site) {
 	}
 
 	opts := prm.SeasonalAnimeOptionProvider{}
-	_, _, err = client.Anime.Seasonal(ctx, 2020, opts.AnimeSeason.Winter(), opts.SortSeasonalAnime.ByUsersCount(), opts.Limit.Val(2))
+	_, _, err = client.Anime.Seasonal(ctx, 2020, opts.AnimeSeason.Winter(), opts.SortSeasonalAnime.ByUsersCount(), opts.Limit(2))
 	if err != nil {
 		t.Errorf("Anime.Seasonal returned error: %v", err)
 	}

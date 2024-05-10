@@ -6,7 +6,7 @@ import (
 	"github.com/dmji/go-myanimelist/mal/prm"
 )
 
-func OptionsToFuncs[T any](options []T, fn func(t T) func(*url.Values)) []func(v *url.Values) {
+func optionsToFuncs[T any](options []T, fn func(t T) func(*url.Values)) []func(v *url.Values) {
 	rawOptions := make([]func(v *url.Values), len(options))
 	for i := range options {
 		rawOptions[i] = fn(options[i])
@@ -14,7 +14,7 @@ func OptionsToFuncs[T any](options []T, fn func(t T) func(*url.Values)) []func(v
 	return rawOptions
 }
 
-func DetailsOptionsToFuncs(options []prm.DetailsOption) []func(v *url.Values) {
+func detailsOptionsToFuncs(options []prm.DetailsOption) []func(v *url.Values) {
 	fn := func(t prm.DetailsOption) func(*url.Values) { return t.DetailsApply }
 
 	rawOptions := make([]func(v *url.Values), len(options))
@@ -22,4 +22,10 @@ func DetailsOptionsToFuncs(options []prm.DetailsOption) []func(v *url.Values) {
 		rawOptions[i] = fn(options[i])
 	}
 	return rawOptions
+}
+
+func optionFromQuery(query string) prm.OptionFunc {
+	return prm.OptionFunc(func(v *url.Values) {
+		v.Set("q", query)
+	})
 }

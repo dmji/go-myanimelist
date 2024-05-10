@@ -9,7 +9,6 @@ import (
 
 	"github.com/dmji/go-myanimelist/mal/api_driver"
 	"github.com/dmji/go-myanimelist/mal/containers"
-	"github.com/dmji/go-myanimelist/mal/prm"
 )
 
 func TestMangaServiceDetails(t *testing.T) {
@@ -26,7 +25,8 @@ func TestMangaServiceDetails(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	a, _, err := client.Manga.Details(ctx, 1, prm.Fields{"foo,bar"})
+
+	a, _, err := client.Manga.Details(ctx, 1, client.Manga.DetailsOptions.Fields("foo", "bar"))
 	if err != nil {
 		t.Errorf("Manga.Details returned error: %v", err)
 	}
@@ -85,11 +85,12 @@ func TestMangaServiceList(t *testing.T) {
 	})
 
 	ctx := context.Background()
+	opts := client.Manga.ListOptions
 	got, resp, err := client.Manga.List(ctx, "query",
-		prm.Fields{"foo", "bar"},
-		prm.Limit(10),
-		prm.Offset(0),
-		prm.NSFW(true),
+		opts.Fields("foo", "bar"),
+		opts.Limit(10),
+		opts.Offset(0),
+		opts.NSFW(true),
 	)
 	if err != nil {
 		t.Errorf("Manga.List returned error: %v", err)
@@ -151,10 +152,11 @@ func TestMangaServiceRanking(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	got, resp, err := client.Manga.Ranking(ctx, prm.MangaRankingAll,
-		prm.Fields{"foo", "bar"},
-		prm.Limit(10),
-		prm.Offset(0),
+	opts := client.Manga.RankingOptions
+	got, resp, err := client.Manga.Ranking(ctx, opts.MangaRanking.All(),
+		opts.Fields("foo", "bar"),
+		opts.Limit(10),
+		opts.Offset(0),
 	)
 	if err != nil {
 		t.Errorf("Manga.Ranking returned error: %v", err)

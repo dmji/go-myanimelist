@@ -12,5 +12,3 @@ func (s Score) UpdateMyAnimeListStatusApply(v *url.Values) {
 func (s Score) UpdateMyMangaListStatusApply(v *url.Values) {
 	v.Set("score", itoa(int(s)))
 }
-
-func (s Score) Val(v int) Score { return Score(v) }

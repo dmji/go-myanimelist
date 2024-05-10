@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/dmji/go-myanimelist/mal"
-	"github.com/dmji/go-myanimelist/mal/prm"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )
@@ -25,10 +24,15 @@ func ExampleSite_Anime_list() {
 	baseURL, _ := url.Parse(server.URL)
 	c.SetBaseURL(baseURL)
 
+	opts := c.Anime.ListOptions
 	anime, _, err := c.Anime.List(ctx, "hokuto no ken",
-		prm.Fields{"rank", "popularity", "start_season"},
-		prm.Limit(5),
-		prm.Offset(0),
+		opts.Fields(
+			opts.AnimeFields.Rank(),
+			opts.AnimeFields.Popularity(),
+			opts.AnimeFields.StartSeason(),
+		),
+		opts.Limit(5),
+		opts.Offset(0),
 	)
 	if err != nil {
 		fmt.Printf("Anime.List error: %v", err)
@@ -55,18 +59,18 @@ func ExampleSite_Anime_details() {
 	baseURL, _ := url.Parse(server.URL)
 	c.SetBaseURL(baseURL)
 
+	opts := c.Anime.DetailsOptions
 	a, _, err := c.Anime.Details(ctx, 967,
-		prm.Fields{
-			"alternative_titles",
-			"media_type",
-			"num_episodes",
-			"start_season",
-			"source",
-			"genres",
-			"studios",
-			"average_episode_duration",
-		},
-	)
+		opts.Fields(
+			opts.AnimeFields.AlternativeTitles(),
+			opts.AnimeFields.MediaType(),
+			opts.AnimeFields.NumEpisodes(),
+			opts.AnimeFields.StartSeason(),
+			opts.AnimeFields.Source(),
+			opts.AnimeFields.Genres(),
+			opts.AnimeFields.Studios(),
+			opts.AnimeFields.AverageEpisodeDuration(),
+		))
 	if err != nil {
 		fmt.Printf("Anime.Details error: %v", err)
 		return
@@ -120,10 +124,14 @@ func ExampleSite_Anime_ranking() {
 	baseURL, _ := url.Parse(server.URL)
 	c.SetBaseURL(baseURL)
 
+	opts := c.Anime.RankingOptions
 	anime, _, err := c.Anime.Ranking(ctx,
-		prm.AnimeRankingAiring,
-		prm.Fields{"rank", "popularity"},
-		prm.Limit(6),
+		opts.AnimeRanking.Airing(),
+		opts.Fields(
+			opts.AnimeFields.Rank(),
+			opts.AnimeFields.Popularity(),
+		),
+		opts.Limit(6),
 	)
 	if err != nil {
 		fmt.Printf("Anime.Ranking error: %v", err)
@@ -153,12 +161,15 @@ func ExampleSite_Anime_seasonal() {
 	baseURL, _ := url.Parse(server.URL)
 	c.SetBaseURL(baseURL)
 
-	opts := prm.SeasonalAnimeOptionProvider{}
+	opts := c.Anime.SeasonalOptions
 	anime, _, err := c.Anime.Seasonal(ctx, 2020, opts.AnimeSeason.Fall(),
-		prm.Fields{"rank", "popularity"},
+		opts.Fields(
+			opts.AnimeFields.Rank(),
+			opts.AnimeFields.Popularity(),
+		),
 		opts.SortSeasonalAnime.ByUsersCount(),
-		opts.Limit.Val(3),
-		opts.Offset.Val(0),
+		opts.Limit(3),
+		opts.Offset(0),
 	)
 	if err != nil {
 		fmt.Printf("Anime.Seasonal error: %v", err)
@@ -185,9 +196,13 @@ func ExampleSite_Anime_suggested() {
 	baseURL, _ := url.Parse(server.URL)
 	c.SetBaseURL(baseURL)
 
+	opts := c.Anime.SuggestedOptions
 	anime, _, err := c.Anime.Suggested(ctx,
-		prm.Limit(10),
-		prm.Fields{"rank", "popularity"},
+		opts.Limit(10),
+		opts.Fields(
+			opts.AnimeFields.Rank(),
+			opts.AnimeFields.Popularity(),
+		),
 	)
 	if err != nil {
 		fmt.Printf("Anime.Suggested error: %v", err)

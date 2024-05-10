@@ -17,6 +17,11 @@ import (
 // https://myanimelist.net/apiconfig/references/api/v2#tag/user-mangalist
 type MangaService struct {
 	client *api_driver.Client
+
+	DetailsOptions            prm.DetailsOptionProvider
+	ListOptions               prm.OptionalParamProvider
+	RankingOptions            prm.OptionalParamProvider
+	UpdateMyListStatusOptions prm.UpdateMyMangaListStatusOptionProvider
 }
 
 func NewMangaService(client *api_driver.Client) *MangaService {
@@ -29,7 +34,7 @@ func NewMangaService(client *api_driver.Client) *MangaService {
 // populated. Use the Fields option to specify which fields should be included.
 func (s *MangaService) Details(ctx context.Context, mangaID int, options ...prm.DetailsOption) (*containers.Manga, *api_driver.Response, error) {
 	m := new(containers.Manga)
-	rawOptions := DetailsOptionsToFuncs(options)
+	rawOptions := detailsOptionsToFuncs(options)
 	resp, err := s.client.RequestGet(ctx, fmt.Sprintf("manga/%d", mangaID), m, rawOptions...)
 	if err != nil {
 		return nil, resp, err
@@ -42,19 +47,6 @@ func (s *MangaService) Details(ctx context.Context, mangaID int, options ...prm.
 func (s *MangaService) List(ctx context.Context, search string, options ...prm.OptionalParam) ([]containers.Manga, *api_driver.Response, error) {
 	options = append(options, optionFromQuery(search))
 	return s.list(ctx, "manga", options...)
-}
-
-func (s *MangaService) list(ctx context.Context, path string, options ...prm.OptionalParam) ([]containers.Manga, *api_driver.Response, error) {
-	rawOptions := OptionsToFuncs(options, func(t prm.OptionalParam) func(*url.Values) { return t.Apply })
-	mangaList, resp, err := s.client.RequestMangaList(ctx, path, rawOptions...)
-	if err != nil {
-		return nil, resp, err
-	}
-	manga := make([]containers.Manga, len(mangaList))
-	for i := range mangaList {
-		manga[i] = mangaList[i].Manga
-	}
-	return manga, resp, nil
 }
 
 // DeleteMyListItem deletes a manga from the user's list. If the manga does not
@@ -78,7 +70,7 @@ func (s *MangaService) Ranking(ctx context.Context, ranking prm.MangaRanking, op
 // list with one or more options added to update the status. If the manga
 // already exists in the list, only the status is updated.
 func (s *MangaService) UpdateMyListStatus(ctx context.Context, mangaID int, options ...prm.UpdateMyMangaListStatusOption) (*containers.MangaListStatus, *api_driver.Response, error) {
-	rawOptions := OptionsToFuncs(options, func(t prm.UpdateMyMangaListStatusOption) func(*url.Values) { return t.UpdateMyMangaListStatusApply })
+	rawOptions := optionsToFuncs(options, func(t prm.UpdateMyMangaListStatusOption) func(*url.Values) { return t.UpdateMyMangaListStatusApply })
 
 	m := new(containers.MangaListStatus)
 	resp, err := s.client.UpdateMyListStatus(ctx, "manga", mangaID, m, rawOptions...)
@@ -87,4 +79,17 @@ func (s *MangaService) UpdateMyListStatus(ctx context.Context, mangaID int, opti
 	}
 
 	return m, resp, nil
+}
+
+func (s *MangaService) list(ctx context.Context, path string, options ...prm.OptionalParam) ([]containers.Manga, *api_driver.Response, error) {
+	rawOptions := optionsToFuncs(options, func(t prm.OptionalParam) func(*url.Values) { return t.Apply })
+	mangaList, resp, err := s.client.RequestMangaList(ctx, path, rawOptions...)
+	if err != nil {
+		return nil, resp, err
+	}
+	manga := make([]containers.Manga, len(mangaList))
+	for i := range mangaList {
+		manga[i] = mangaList[i].Manga
+	}
+	return manga, resp, nil
 }

@@ -17,6 +17,13 @@ import (
 // https://myanimelist.net/apiconfig/references/api/v2#tag/user-animelist
 type AnimeService struct {
 	client *api_driver.Client
+
+	DetailsOptions            prm.DetailsOptionProvider
+	ListOptions               prm.OptionalParamProvider
+	SuggestedOptions          prm.OptionalParamProvider
+	RankingOptions            prm.OptionalParamProvider
+	UpdateMyListStatusOptions prm.UpdateMyAnimeListStatusOptionProvider
+	SeasonalOptions           prm.SeasonalAnimeOptionProvider
 }
 
 func NewAnimeService(client *api_driver.Client) *AnimeService {
@@ -30,7 +37,7 @@ func NewAnimeService(client *api_driver.Client) *AnimeService {
 // populated. Use the Fields option to specify which fields should be included.
 func (s *AnimeService) Details(ctx context.Context, animeID int, options ...prm.DetailsOption) (*containers.Anime, *api_driver.Response, error) {
 	a := new(containers.Anime)
-	rawOptions := DetailsOptionsToFuncs(options)
+	rawOptions := detailsOptionsToFuncs(options)
 	resp, err := s.client.RequestGet(ctx, fmt.Sprintf("anime/%d", animeID), a, rawOptions...)
 	if err != nil {
 		return nil, resp, err
@@ -43,27 +50,15 @@ func (s *AnimeService) Details(ctx context.Context, animeID int, options ...prm.
 // user specific data by using the optional field "my_list_status".
 func (s *AnimeService) List(ctx context.Context, search string, options ...prm.OptionalParam) ([]containers.Anime, *api_driver.Response, error) {
 	options = append(options, optionFromQuery(search))
-	rawOptions := OptionsToFuncs(options, func(t prm.OptionalParam) func(*url.Values) { return t.Apply })
+	rawOptions := optionsToFuncs(options, func(t prm.OptionalParam) func(*url.Values) { return t.Apply })
 	return s.list(ctx, "anime", rawOptions...)
-}
-
-func (s *AnimeService) list(ctx context.Context, path string, options ...func(v *url.Values)) ([]containers.Anime, *api_driver.Response, error) {
-	list, resp, err := s.client.RequestAnimeList(ctx, path, options...)
-	if err != nil {
-		return nil, resp, err
-	}
-	anime := make([]containers.Anime, len(list))
-	for i := range list {
-		anime[i] = list[i].Anime
-	}
-	return anime, resp, nil
 }
 
 // MARK: Suggested
 // Suggested returns suggested anime for the authorized user. If the user is new
 // comer, this endpoint returns an empty list.
 func (s *AnimeService) Suggested(ctx context.Context, options ...prm.OptionalParam) ([]containers.Anime, *api_driver.Response, error) {
-	rawOptions := OptionsToFuncs(options, func(t prm.OptionalParam) func(*url.Values) { return t.Apply })
+	rawOptions := optionsToFuncs(options, func(t prm.OptionalParam) func(*url.Values) { return t.Apply })
 	return s.list(ctx, "anime/suggestions", rawOptions...)
 }
 
@@ -84,7 +79,7 @@ func (s *AnimeService) Ranking(ctx context.Context, ranking prm.AnimeRanking, op
 			v.Set("ranking_type", string(ranking))
 		}),
 	)
-	rawOptions := OptionsToFuncs(options, func(t prm.OptionalParam) func(*url.Values) { return t.Apply })
+	rawOptions := optionsToFuncs(options, func(t prm.OptionalParam) func(*url.Values) { return t.Apply })
 	return s.list(ctx, "anime/ranking", rawOptions...)
 }
 
@@ -94,7 +89,7 @@ func (s *AnimeService) Ranking(ctx context.Context, ranking prm.AnimeRanking, op
 // already exists in the list, only the status is updated.
 func (s *AnimeService) UpdateMyListStatus(ctx context.Context, animeID int, options ...prm.UpdateMyAnimeListStatusOption) (*containers.AnimeListStatus, *api_driver.Response, error) {
 	a := new(containers.AnimeListStatus)
-	rawOptions := OptionsToFuncs(options, func(t prm.UpdateMyAnimeListStatusOption) func(*url.Values) { return t.UpdateMyAnimeListStatusApply })
+	rawOptions := optionsToFuncs(options, func(t prm.UpdateMyAnimeListStatusOption) func(*url.Values) { return t.UpdateMyAnimeListStatusApply })
 	resp, err := s.client.UpdateMyListStatus(ctx, "anime", animeID, a, rawOptions...)
 	if err != nil {
 		return nil, resp, err
@@ -107,6 +102,18 @@ func (s *AnimeService) UpdateMyListStatus(ctx context.Context, animeID int, opti
 // Seasonal allows an authenticated user to receive the seasonal anime by
 // providing the year and season. The results can be sorted using an option.
 func (s *AnimeService) Seasonal(ctx context.Context, year int, season prm.AnimeSeason, options ...prm.SeasonalAnimeOption) ([]containers.Anime, *api_driver.Response, error) {
-	rawOptions := OptionsToFuncs(options, func(t prm.SeasonalAnimeOption) func(*url.Values) { return t.SeasonalAnimeApply })
+	rawOptions := optionsToFuncs(options, func(t prm.SeasonalAnimeOption) func(*url.Values) { return t.SeasonalAnimeApply })
 	return s.list(ctx, fmt.Sprintf("anime/season/%d/%s", year, season), rawOptions...)
+}
+
+func (s *AnimeService) list(ctx context.Context, path string, options ...func(v *url.Values)) ([]containers.Anime, *api_driver.Response, error) {
+	list, resp, err := s.client.RequestAnimeList(ctx, path, options...)
+	if err != nil {
+		return nil, resp, err
+	}
+	anime := make([]containers.Anime, len(list))
+	for i := range list {
+		anime[i] = list[i].Anime
+	}
+	return anime, resp, nil
 }

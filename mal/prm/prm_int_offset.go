@@ -14,5 +14,3 @@ func (o Offset) SeasonalAnimeApply(v *url.Values) { o.Apply(v) }
 func (o Offset) AnimeListApply(v *url.Values)     { o.Apply(v) }
 func (o Offset) MangaListApply(v *url.Values)     { o.Apply(v) }
 func (o Offset) Apply(v *url.Values)              { v.Set("offset", strconv.Itoa(int(o))) }
-
-func (l Offset) Val(v int) Offset { return Offset(v) }

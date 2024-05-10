@@ -9,7 +9,6 @@ import (
 
 	"github.com/dmji/go-myanimelist/mal/api_driver"
 	"github.com/dmji/go-myanimelist/mal/containers"
-	"github.com/dmji/go-myanimelist/mal/prm"
 )
 
 func TestUserServiceMyInfo(t *testing.T) {
@@ -25,8 +24,12 @@ func TestUserServiceMyInfo(t *testing.T) {
 	})
 
 	ctx := context.Background()
+	opts := client.User.MyInfoOptions
 	u, _, err := client.User.MyInfo(ctx,
-		prm.Fields{"time_zone", "is_supporter"},
+		opts.Fields(
+			opts.UserFields.TimeZone(),
+			opts.UserFields.IsSupporter(),
+		),
 	)
 	if err != nil {
 		t.Errorf("User.MyInfo returned error: %v", err)

@@ -10,7 +10,6 @@ import (
 
 	"github.com/dmji/go-myanimelist/mal/api_driver"
 	"github.com/dmji/go-myanimelist/mal/containers"
-	"github.com/dmji/go-myanimelist/mal/prm"
 )
 
 func TestUserServiceMangaList(t *testing.T) {
@@ -52,13 +51,14 @@ func TestUserServiceMangaList(t *testing.T) {
 	})
 
 	ctx := context.Background()
+	opts := client.User.MangaListOptions
 	got, resp, err := client.User.MangaList(ctx, "foo",
-		prm.MangaStatusCompleted,
-		prm.SortMangaListByMangaID,
-		prm.Fields{"foo", "bar"},
-		prm.Limit(10),
-		prm.Offset(0),
-		prm.NSFW(true),
+		opts.MangaStatus.Completed(),
+		opts.SortMangaList.ByMangaID(),
+		opts.Fields("foo", "bar"),
+		opts.Limit(10),
+		opts.Offset(0),
+		opts.NSFW(true),
 	)
 	if err != nil {
 		t.Errorf("User.MangaList returned error: %v", err)
@@ -123,26 +123,27 @@ func TestMangaServiceUpdateMyListStatus(t *testing.T) {
 	})
 
 	ctx := context.Background()
+	opts := client.Manga.UpdateMyListStatusOptions
 	got, _, err := client.Manga.UpdateMyListStatus(ctx, 1,
-		prm.MangaStatusCompleted,
-		prm.IsRereading(true),
-		prm.Score(8),
-		prm.NumVolumesRead(3),
-		prm.NumChaptersRead(3),
-		prm.Priority(2),
-		prm.NumTimesReread(2),
-		prm.RereadValue(1),
-		prm.Tags{"foo", "bar"},
-		prm.Comments("comments"),
-		prm.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
-		prm.FinishDate(time.Time{}),
+		opts.MangaStatus.Completed(),
+		opts.IsRereading(true),
+		opts.Score(8),
+		opts.NumVolumesRead(3),
+		opts.NumChaptersRead(3),
+		opts.Priority(2),
+		opts.NumTimesReread(2),
+		opts.RereadValue.VeryLow(),
+		opts.Tags("foo", "bar"),
+		opts.Comments("comments"),
+		opts.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
+		opts.FinishDate(time.Time{}),
 	)
 	if err != nil {
 		t.Errorf("Manga.UpdateMyListStatus returned error: %v", err)
 	}
 
 	want := &containers.MangaListStatus{
-		Status:          prm.MangaStatusCompleted,
+		Status:          opts.MangaStatus.Completed(),
 		IsRereading:     true,
 		Score:           8,
 		NumVolumesRead:  3,
