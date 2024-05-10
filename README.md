@@ -20,7 +20,7 @@ As of March 2017, this package is featured in
 
 This package can be installed using:
 
-    go get github.com/dmji/go-myanimelist/mal
+    `go get github.com/dmji/go-myanimelist/mal`
 
 ## Usage
 
@@ -342,17 +342,17 @@ Official docs:
 ## More Examples
 
 See package examples:
-https://pkg.go.dev/github.com/dmji/go-myanimelist/mal#pkg-examples
+https://pkg.go.dev/github.com/dmji/go-myanimelist/
 
 ## Unit Testing
 
 To run all unit tests:
 
-    go test -cover
+`go test .\test\... -cover -coverpkg='./mal/...'`
 
 To see test coverage in your browser:
 
-    go test -covermode=count -coverprofile=count.out && go tool cover -html count.out
+`go test .\test\... -covermode=count -coverprofile=count && go tool cover -html count`
 
 ## Integration Testing
 

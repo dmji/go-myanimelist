@@ -5,26 +5,18 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/dmji/go-myanimelist/mal/anime"
 	"github.com/dmji/go-myanimelist/mal/api_driver"
 	"github.com/dmji/go-myanimelist/mal/common"
-	"github.com/dmji/go-myanimelist/mal/forum"
-	"github.com/dmji/go-myanimelist/mal/manga"
-	"github.com/dmji/go-myanimelist/mal/user"
-)
-
-const (
-	DefaultBaseURL = "https://api.myanimelist.net/v2/"
 )
 
 // Site manages communication with the MyAnimeList API.
 type Site struct {
 	client *api_driver.Client
 
-	Anime *anime.Service
-	Manga *manga.Service
-	User  *user.Service
-	Forum *forum.Service
+	Anime *AnimeService
+	Manga *MangaService
+	User  *UserService
+	Forum *ForumService
 }
 
 // NewClient returns a new MyAnimeList API client. The httpClient parameter
@@ -40,7 +32,7 @@ func NewSite(httpClient *http.Client) *Site {
 		httpClient = &http.Client{}
 	}
 
-	baseURL, err := url.Parse(DefaultBaseURL)
+	baseURL, err := url.Parse(api_driver.DefaultBaseURL)
 	if err != nil {
 		panic(err)
 	}
@@ -49,10 +41,10 @@ func NewSite(httpClient *http.Client) *Site {
 		client: api_driver.NewClient(httpClient, baseURL),
 	}
 
-	c.User = user.NewService(c.client)
-	c.Anime = anime.NewService(c.client)
-	c.Manga = manga.NewService(c.client)
-	c.Forum = forum.NewService(c.client)
+	c.User = NewUserService(c.client)
+	c.Anime = NewAnimeService(c.client)
+	c.Manga = NewMangaService(c.client)
+	c.Forum = NewForumService(c.client)
 
 	return c
 }

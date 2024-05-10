@@ -30,11 +30,3 @@ type Response struct {
 	NextOffset int
 	PrevOffset int
 }
-
-func OptionsToFuncs[T any](options []T, fn func(t T) func(*url.Values)) []func(v *url.Values) {
-	rawOptions := make([]func(v *url.Values), len(options))
-	for i := range options {
-		rawOptions[i] = fn(options[i])
-	}
-	return rawOptions
-}

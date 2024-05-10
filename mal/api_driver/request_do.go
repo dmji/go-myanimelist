@@ -9,7 +9,6 @@ import (
 	"net/http"
 
 	"github.com/dmji/go-myanimelist/mal/common"
-	"github.com/dmji/go-myanimelist/mal/util"
 )
 
 // Do sends an API request and returns the API response. The API response is
@@ -24,13 +23,13 @@ func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) (*com
 	}
 	req = req.WithContext(ctx)
 
-	util.DumpRequest(req)
+	DumpRequest(req)
 	resp, err := c.client.Do(req)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	util.DumpResponse(resp)
+	DumpResponse(resp)
 
 	response := &common.Response{Response: resp}
 	if err := checkResponse(resp); err != nil {

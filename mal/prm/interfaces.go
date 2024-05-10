@@ -14,6 +14,13 @@ type DetailsOption interface {
 	DetailsApply(v *url.Values)
 }
 
+type DetailsOptionVariants struct {
+	Fields DetailsOptionFields
+}
+
+type DetailsOptionFields struct {
+}
+
 // MARK: OptionalParam Option
 // common.OptionalParam is implemented by types that can be used as options in most methods
 // such as Limit, Offset and Fields.

@@ -5,6 +5,10 @@ import (
 	"net/url"
 )
 
+const (
+	DefaultBaseURL = "https://api.myanimelist.net/v2/"
+)
+
 type Client struct {
 	client *http.Client
 
