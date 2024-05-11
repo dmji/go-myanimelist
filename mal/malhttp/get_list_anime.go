@@ -12,6 +12,7 @@ type animeList listWithPagination[[]maltype.UserAnime]
 
 func (a animeList) pagination() paging { return a.Paging }
 
+// RequestAnimeList sends a GET request to the specified URL.
 func (c *Client) RequestAnimeList(ctx context.Context, path string, options ...func(v *url.Values)) ([]maltype.UserAnime, *Response, error) {
 	p := new(animeList)
 	resp, err := c.requestPagedItem(ctx, path, p, options...)

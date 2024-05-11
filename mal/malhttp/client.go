@@ -7,9 +7,11 @@ import (
 )
 
 const (
+	// DefaultBaseURL is the default MyAnimeList API base URL.
 	DefaultBaseURL = "https://api.myanimelist.net/v2/"
 )
 
+// Client manages communication with the MyAnimeList API.
 type Client struct {
 	client *http.Client
 
@@ -17,10 +19,11 @@ type Client struct {
 	BaseURL *url.URL
 }
 
-func NewClient(httpClient *http.Client, baseUrl *url.URL) *Client {
+// NewClient returns a new MyAnimeList API client. The httpClient parameter
+func NewClient(httpClient *http.Client, baseURL *url.URL) *Client {
 	return &Client{
 		client:  httpClient,
-		BaseURL: baseUrl,
+		BaseURL: baseURL,
 	}
 }
 

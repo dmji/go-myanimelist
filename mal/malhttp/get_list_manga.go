@@ -12,6 +12,7 @@ type mangaList listWithPagination[[]maltype.UserManga]
 
 func (m mangaList) pagination() paging { return m.Paging }
 
+// RequestMangaList sends a GET request to the specified URL.
 func (c *Client) RequestMangaList(ctx context.Context, path string, options ...func(v *url.Values)) ([]maltype.UserManga, *Response, error) {
 	p := new(mangaList)
 	resp, err := c.requestPagedItem(ctx, path, p, options...)

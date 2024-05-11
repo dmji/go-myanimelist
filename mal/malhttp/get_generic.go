@@ -6,6 +6,7 @@ import (
 	"net/url"
 )
 
+// RequestGet sends a GET request to the specified URL.
 func (c *Client) RequestGet(ctx context.Context, path string, v interface{}, options ...func(v *url.Values)) (*Response, error) {
 	req, err := c.NewRequest(http.MethodGet, path)
 	if err != nil {

@@ -8,6 +8,7 @@ import (
 	"net/http/httputil"
 )
 
+// DumpRequest  functions for debugging
 func DumpRequest(req *http.Request) {
 	dump, err := httputil.DumpRequest(req, true)
 	if err != nil {
@@ -19,6 +20,7 @@ func DumpRequest(req *http.Request) {
 	fmt.Println("")
 }
 
+// DumpResponse  functions for debugging
 func DumpResponse(resp *http.Response) {
 	dump, err := httputil.DumpResponse(resp, true)
 	if err != nil {

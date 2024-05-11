@@ -12,6 +12,7 @@ type topics listWithPagination[[]maltype.Topic]
 
 func (t topics) pagination() paging { return t.Paging }
 
+// RequestTopics sends a GET request to the specified URL.
 func (c *Client) RequestTopics(ctx context.Context, path string, options ...func(v *url.Values)) ([]maltype.Topic, *Response, error) {
 	p := new(topics)
 	resp, err := c.requestPagedItem(ctx, path, p, options...)

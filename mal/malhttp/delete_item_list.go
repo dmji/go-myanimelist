@@ -6,6 +6,7 @@ import (
 	"net/http"
 )
 
+// DeleteMyListItem deletes an anime from the user's list. If the anime does not
 func (s *Client) DeleteMyListItem(ctx context.Context, path string, animeID int) (*Response, error) {
 	u := fmt.Sprintf("%s/%d/my_list_status", path, animeID)
 	req, err := s.NewRequest(http.MethodDelete, u)
