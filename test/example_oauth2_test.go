@@ -17,12 +17,19 @@ func newOAuth2Client(ctx context.Context) *http.Client {
 	//  1. Navigate to https://myanimelist.net/apiconfig or go to your MyAnimeList
 	//     profile, click Edit Profile and select the API tab on the far right.
 	//  2. Click Create ID and submit the form with your application details.
+	malSecret := clientID
+	if clientSecret != nil {
+		malSecret = clientSecret
+	}
+
 	oauth2Conf := &oauth2.Config{
-		ClientID:     "<Enter your MyAnimeList.net application client ID>",
-		ClientSecret: "<Enter your MyAnimeList.net application client secret>", // Optional if you chose App Type 'other'.
+		// "<Enter your MyAnimeList.net application client ID>" (now load from argiment)
+		ClientID: *clientID,
+		// "<Enter your MyAnimeList.net application client secret>" (now load from argiment)
+		ClientSecret: *malSecret, // Optional if you chose App Type 'other'.
 		Endpoint: oauth2.Endpoint{
-			AuthURL:   "https://myanimelist.net/v1/oauth2/authorize",
-			TokenURL:  "https://myanimelist.net/v1/oauth2/token",
+			AuthURL:   "https://myanimelist.net/v2/oauth2/authorize",
+			TokenURL:  "https://myanimelist.net/v2/oauth2/token",
 			AuthStyle: oauth2.AuthStyleInParams,
 		},
 	}
@@ -33,21 +40,22 @@ func newOAuth2Client(ctx context.Context) *http.Client {
 	//
 	// Here we assume we have already received our first valid token and stored
 	// it somewhere in JSON format.
-	const storedToken = `
-	{
-		"token_type": "Bearer",
-		"access_token": "yourAccessToken",
-		"refresh_token": "yourRefreshToken",
-		"expiry": "2021-06-01T16:12:56.1319122Z"
-	}`
+	// Comes from secret storage
+	//const oauth2Token = `
+	//{
+	//	"token_type": "Bearer",
+	//	"access_token": "yourAccessToken",
+	//	"refresh_token": "yourRefreshToken",
+	//	"expiry": "2021-06-01T16:12:56.1319122Z"
+	//}`
 
 	// Decode stored token to oauth2.Token struct.
-	oauth2Token := new(oauth2.Token)
-	_ = json.Unmarshal([]byte(storedToken), oauth2Token)
+	token := new(oauth2.Token)
+	_ = json.Unmarshal([]byte(*oauth2Token), token)
 
 	// The oauth2 client returned here with the above configuration and valid
 	// token will refresh the token seamlessly when it expires.
-	return oauth2Conf.Client(ctx, oauth2Token)
+	return oauth2Conf.Client(ctx, token)
 }
 
 func Example_oAuth2() {
@@ -62,4 +70,6 @@ func Example_oAuth2() {
 		return
 	}
 	fmt.Printf("ID: %5d, Joined: %v, Username: %s\n", user.ID, user.JoinedAt.Format("Jan 2006"), user.Name)
+	// Output:
+	// ID: 18315605, Joined: May 2024, Username: go_api_test
 }
