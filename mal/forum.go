@@ -21,6 +21,7 @@ type ForumService struct {
 	TopicDetailsOptions prm.PagingOptionProvider
 }
 
+// NewForumService returns a new ForumService.
 func NewForumService(client *malhttp.Client) *ForumService {
 	return &ForumService{
 		client: client,

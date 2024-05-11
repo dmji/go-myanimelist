@@ -24,6 +24,7 @@ type UserService struct {
 	MyInfoOptions    prm.MyInfoOptionProvider
 }
 
+// NewUserService returns a new UserService.
 func NewUserService(client *malhttp.Client) *UserService {
 	return &UserService{
 		client: client,

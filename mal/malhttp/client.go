@@ -38,6 +38,7 @@ type paging struct {
 }
 
 // MARK: Error format
+
 // An ErrorResponse reports an error caused by an API request.
 //
 // https://myanimelist.net/apiconfig/references/api/v2#section/Common-formats - Error format

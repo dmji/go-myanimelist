@@ -24,6 +24,7 @@ type MangaService struct {
 	UpdateMyListStatusOptions prm.UpdateMyMangaListStatusOptionProvider
 }
 
+// NewMangaService returns a new MangaService.
 func NewMangaService(client *malhttp.Client) *MangaService {
 	return &MangaService{
 		client: client,

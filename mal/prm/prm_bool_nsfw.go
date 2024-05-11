@@ -6,6 +6,7 @@ import (
 )
 
 // MARK: Not Safe For Work
+
 // NSFW is an option which sets the NSFW query option. By default this is set to
 // false.
 type NSFW bool

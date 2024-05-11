@@ -26,6 +26,7 @@ type AnimeService struct {
 	SeasonalOptions           prm.SeasonalAnimeOptionProvider
 }
 
+// NewAnimeService returns a new AnimeService.
 func NewAnimeService(client *malhttp.Client) *AnimeService {
 	return &AnimeService{
 		client: client,
@@ -33,6 +34,7 @@ func NewAnimeService(client *malhttp.Client) *AnimeService {
 }
 
 // MARK: List
+
 // List allows an authenticated user to search and list anime data. You may get
 // user specific data by using the optional field.
 // Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/anime_get
@@ -43,6 +45,7 @@ func (s *AnimeService) List(ctx context.Context, search string, options ...prm.O
 }
 
 // MARK: Details
+
 // Details returns details about an anime. By default, few anime fields are
 // populated. Use the Fields option to specify which fields should be included.
 // Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/anime_anime_id_get
@@ -57,6 +60,7 @@ func (s *AnimeService) Details(ctx context.Context, animeID int, options ...prm.
 }
 
 // MARK: Ranking
+
 // Ranking allows an authenticated user to receive the top anime based on a
 // certain ranking.
 // Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/anime_ranking_get
@@ -72,6 +76,7 @@ func (s *AnimeService) Ranking(ctx context.Context, ranking prm.AnimeRanking, op
 }
 
 // MARK: Seasonal
+
 // Seasonal allows an authenticated user to receive the seasonal anime by
 // providing the year and season. The results can be sorted using an option.
 // Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/anime_season_year_season_get
@@ -81,6 +86,7 @@ func (s *AnimeService) Seasonal(ctx context.Context, year int, season prm.AnimeS
 }
 
 // MARK: Suggested
+
 // Suggested returns suggested anime for the authorized user. If the user is new
 // comer, this endpoint returns an empty list.
 // Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/anime_suggestions_get
@@ -90,6 +96,7 @@ func (s *AnimeService) Suggested(ctx context.Context, options ...prm.OptionalPar
 }
 
 // MARK: UpdateMyListStatus
+
 // UpdateMyListStatus adds the anime specified by animeID to the user's anime
 // list with one or more options added to update the status. If the anime
 // already exists in the list, only the status is updated.
@@ -106,6 +113,7 @@ func (s *AnimeService) UpdateMyListStatus(ctx context.Context, animeID int, opti
 }
 
 // MARK: DeleteMyListItem
+
 // DeleteMyListItem deletes an anime from the user's list. If the anime does not
 // exist in the user's list, 404 Not Found error is returned.
 // Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/anime_anime_id_my_list_status_delete

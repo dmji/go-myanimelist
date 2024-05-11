@@ -8,7 +8,6 @@ import (
 
 var itoa = strconv.Itoa
 
-// MARK: Date / Time format
 func formatMALDate(d time.Time) string {
 	if d.IsZero() {
 		return ""

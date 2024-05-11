@@ -8,7 +8,6 @@ import (
 	"strconv"
 )
 
-// MARK: List / pagination template
 type listWithPagination[T any] struct {
 	Data   T      `json:"data"`
 	Paging paging `json:"paging"`
