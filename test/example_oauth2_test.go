@@ -58,11 +58,45 @@ func newOAuth2Client(ctx context.Context) *http.Client {
 	return conf.Client(ctx, token)
 }
 
+func setupIntegration2(ctx context.Context) *mal.Site {
+	const tokenFormat = `
+	{
+		"token_type": "Bearer",
+		"access_token": "yourAccessToken",
+		"refresh_token": "yourRefreshToken",
+		"expiry": "2021-06-01T16:12:56.1319122Z"
+		}`
+
+	token := new(oauth2.Token)
+	err := json.Unmarshal([]byte(*oauth2Token), token)
+	if err != nil {
+		fmt.Printf("The oauth2 token is expected to be in JSON format, example: %s", tokenFormat)
+		fmt.Printf(`Note: On some terminals you may need to escape the double quotes: --oauth2-token='{\"token_type\":\"Bearer\",...'`)
+		fmt.Printf("failed to unmarshal oauth2 token: %v", err)
+		fmt.Printf("input was:\n%q", *oauth2Token)
+		return nil
+	}
+
+	conf := &oauth2.Config{
+		ClientID:     *clientID,
+		ClientSecret: *clientSecret,
+		Endpoint: oauth2.Endpoint{
+			AuthURL:   "https://myanimelist.net/v1/oauth2/authorize",
+			TokenURL:  "https://myanimelist.net/v1/oauth2/token",
+			AuthStyle: oauth2.AuthStyleInParams,
+		},
+	}
+
+	return mal.NewSite(conf.Client(ctx, token))
+}
+
 func Example_oAuth2() {
 	ctx := context.Background()
-	oauth2Client := newOAuth2Client(ctx)
+	//oauth2Client := newOAuth2Client(ctx)
 
-	c := mal.NewSite(oauth2Client)
+	//c := mal.NewSite(oauth2Client)
+
+	c := setupIntegration2(ctx)
 
 	user, _, err := c.User.MyInfo(ctx)
 	if err != nil {
