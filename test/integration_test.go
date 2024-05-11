@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/dmji/go-myanimelist/mal"
-	"github.com/dmji/go-myanimelist/mal/containers"
+	"github.com/dmji/go-myanimelist/mal/maltype"
 	"github.com/dmji/go-myanimelist/mal/prm"
 	"golang.org/x/oauth2"
 )
@@ -155,7 +155,7 @@ func testUpdateUserAnimeList(ctx context.Context, t *testing.T, client *mal.Site
 
 	// And that they all have been updated appropriately.
 	for _, a := range list {
-		want := containers.AnimeListStatus{
+		want := maltype.AnimeListStatus{
 			Status:             prm.AnimeStatusWatching,
 			Score:              1,
 			NumEpisodesWatched: 1,
@@ -233,7 +233,7 @@ func testUpdateUserMangaList(ctx context.Context, t *testing.T, client *mal.Site
 
 	// And that they all have been updated appropriately.
 	for _, a := range list {
-		want := containers.MangaListStatus{
+		want := maltype.MangaListStatus{
 			Status:          prm.MangaStatusReading,
 			Score:           1,
 			NumChaptersRead: 1,

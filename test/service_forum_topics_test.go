@@ -7,8 +7,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/dmji/go-myanimelist/mal/api_driver"
-	"github.com/dmji/go-myanimelist/mal/containers"
+	"github.com/dmji/go-myanimelist/mal/malhttp"
+	"github.com/dmji/go-myanimelist/mal/maltype"
 	"github.com/dmji/go-myanimelist/mal/prm"
 )
 
@@ -55,7 +55,7 @@ func TestForumServiceTopics(t *testing.T) {
 		t.Errorf("Forum.Topics returned error: %v", err)
 	}
 
-	want := []containers.Topic{{ID: 1}, {ID: 2}}
+	want := []maltype.Topic{{ID: 1}, {ID: 2}}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("Forum.Topics returned\nhave: %+v\n\nwant: %+v", got, want)
 	}
@@ -77,5 +77,5 @@ func TestForumServiceTopicsError(t *testing.T) {
 		t.Fatal("Forum.Topics expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "Forum.Topics")
-	testErrorResponse(t, err, api_driver.ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, malhttp.ErrorResponse{Message: "mal is down", Err: "internal"})
 }

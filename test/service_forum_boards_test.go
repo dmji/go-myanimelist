@@ -7,8 +7,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/dmji/go-myanimelist/mal/api_driver"
-	"github.com/dmji/go-myanimelist/mal/containers"
+	"github.com/dmji/go-myanimelist/mal/malhttp"
+	"github.com/dmji/go-myanimelist/mal/maltype"
 )
 
 func TestForumServiceBoards(t *testing.T) {
@@ -43,16 +43,16 @@ func TestForumServiceBoards(t *testing.T) {
 	if err != nil {
 		t.Errorf("Forum.Boards returned error: %v", err)
 	}
-	want := &containers.Forum{
-		Categories: []containers.ForumCategory{
+	want := &maltype.Forum{
+		Categories: []maltype.ForumCategory{
 			{
 				Title: "MyAnimeList",
-				Boards: []containers.ForumBoard{
+				Boards: []maltype.ForumBoard{
 					{
 						ID:          17,
 						Title:       "MAL Guidelines",
 						Description: "Site rules.",
-						Subboards:   []containers.ForumSubboard{{ID: 2, Title: "Anime DB"}},
+						Subboards:   []maltype.ForumSubboard{{ID: 2, Title: "Anime DB"}},
 					},
 				},
 			},
@@ -77,5 +77,5 @@ func TestForumServiceBoardsError(t *testing.T) {
 	if err == nil {
 		t.Fatal("Forum.Boards expected not found error, got no error.")
 	}
-	testErrorResponse(t, err, api_driver.ErrorResponse{Message: "forum deleted", Err: "not_found"})
+	testErrorResponse(t, err, malhttp.ErrorResponse{Message: "forum deleted", Err: "not_found"})
 }

@@ -5,12 +5,12 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/dmji/go-myanimelist/mal/api_driver"
+	"github.com/dmji/go-myanimelist/mal/malhttp"
 )
 
 // Site manages communication with the MyAnimeList API.
 type Site struct {
-	client *api_driver.Client
+	client *malhttp.Client
 
 	Anime *AnimeService
 	Manga *MangaService
@@ -31,7 +31,7 @@ func NewSite(httpClient *http.Client, baseUrl *string) (*Site, error) {
 		httpClient = &http.Client{}
 	}
 	if baseUrl == nil {
-		defaultUrl := api_driver.DefaultBaseURL
+		defaultUrl := malhttp.DefaultBaseURL
 		baseUrl = &defaultUrl
 	}
 
@@ -40,7 +40,7 @@ func NewSite(httpClient *http.Client, baseUrl *string) (*Site, error) {
 		return nil, err
 	}
 
-	c := api_driver.NewClient(httpClient, baseURL)
+	c := malhttp.NewClient(httpClient, baseURL)
 	return &Site{
 		client: c,
 		User:   NewUserService(c),
@@ -51,7 +51,7 @@ func NewSite(httpClient *http.Client, baseUrl *string) (*Site, error) {
 }
 
 type HttpDriver interface {
-	Do(ctx context.Context, req *http.Request, v interface{}) (*api_driver.Response, error)
+	Do(ctx context.Context, req *http.Request, v interface{}) (*malhttp.Response, error)
 	NewRequest(method, urlStr string, urlOptions ...func(v *url.Values)) (*http.Request, error)
 }
 

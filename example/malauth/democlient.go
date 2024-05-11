@@ -65,6 +65,7 @@ func (c *demoClient) userMyInfo(ctx context.Context) {
 		c.err = err
 		return
 	}
+
 	fmt.Printf("ID: %5d, Joined: %v, Username: %s\n", u.ID, u.JoinedAt.Format("Jan 2006"), u.Name)
 }
 

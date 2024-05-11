@@ -1,4 +1,4 @@
-package containers
+package maltype
 
 // The Forum of MyAnimeList.
 type Forum struct {

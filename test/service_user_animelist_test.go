@@ -7,8 +7,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/dmji/go-myanimelist/mal/api_driver"
-	"github.com/dmji/go-myanimelist/mal/containers"
+	"github.com/dmji/go-myanimelist/mal/malhttp"
+	"github.com/dmji/go-myanimelist/mal/maltype"
 )
 
 func TestUserServiceAnimeList(t *testing.T) {
@@ -62,14 +62,14 @@ func TestUserServiceAnimeList(t *testing.T) {
 	if err != nil {
 		t.Errorf("User.AnimeList returned error: %v", err)
 	}
-	want := []containers.UserAnime{
+	want := []maltype.UserAnime{
 		{
-			Anime:  containers.Anime{ID: 1},
-			Status: containers.AnimeListStatus{Status: "plan_to_watch"},
+			Anime:  maltype.Anime{ID: 1},
+			Status: maltype.AnimeListStatus{Status: "plan_to_watch"},
 		},
 		{
-			Anime:  containers.Anime{ID: 2},
-			Status: containers.AnimeListStatus{Status: "watching"},
+			Anime:  maltype.Anime{ID: 2},
+			Status: maltype.AnimeListStatus{Status: "watching"},
 		},
 	}
 	if !reflect.DeepEqual(got, want) {
@@ -100,5 +100,5 @@ func TestUserServiceAnimeListError(t *testing.T) {
 		t.Fatal("User.AnimeList expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "User.AnimeList")
-	testErrorResponse(t, err, api_driver.ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, malhttp.ErrorResponse{Message: "mal is down", Err: "internal"})
 }

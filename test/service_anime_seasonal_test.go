@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/dmji/go-myanimelist/mal/containers"
+	"github.com/dmji/go-myanimelist/mal/maltype"
 )
 
 func TestAnimeServiceSeasonal(t *testing.T) {
@@ -56,7 +56,7 @@ func TestAnimeServiceSeasonal(t *testing.T) {
 	if err != nil {
 		t.Errorf("Anime.Seasonal returned error: %v", err)
 	}
-	want := []containers.Anime{{ID: 1}, {ID: 2}}
+	want := []maltype.Anime{{ID: 1}, {ID: 2}}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("Anime.Seasonal returned\nhave: %+v\n\nwant: %+v", got, want)
 	}

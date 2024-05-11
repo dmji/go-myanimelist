@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/dmji/go-myanimelist/mal/api_driver"
+	"github.com/dmji/go-myanimelist/mal/malhttp"
 )
 
 func TestMangaServiceDeleteMyListItem(t *testing.T) {
@@ -39,5 +39,5 @@ func TestMangaServiceDeleteMyListItemError(t *testing.T) {
 		t.Fatal("Manga.DeleteMyListItem expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusNotFound, "Manga.DeleteMyListItem")
-	testErrorResponse(t, err, api_driver.ErrorResponse{Message: "manga not found", Err: "not_found"})
+	testErrorResponse(t, err, malhttp.ErrorResponse{Message: "manga not found", Err: "not_found"})
 }

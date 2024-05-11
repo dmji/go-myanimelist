@@ -1,4 +1,4 @@
-package containers
+package maltype
 
 import (
 	"time"

@@ -7,8 +7,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/dmji/go-myanimelist/mal/api_driver"
-	"github.com/dmji/go-myanimelist/mal/containers"
+	"github.com/dmji/go-myanimelist/mal/malhttp"
+	"github.com/dmji/go-myanimelist/mal/maltype"
 )
 
 func TestMangaServiceList(t *testing.T) {
@@ -53,7 +53,7 @@ func TestMangaServiceList(t *testing.T) {
 	if err != nil {
 		t.Errorf("Manga.List returned error: %v", err)
 	}
-	want := []containers.Manga{{ID: 1}, {ID: 2}}
+	want := []maltype.Manga{{ID: 1}, {ID: 2}}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("Manga.List returned\nhave: %+v\n\nwant: %+v", got, want)
 	}
@@ -75,5 +75,5 @@ func TestMangaServiceListError(t *testing.T) {
 		t.Fatal("Manga.List expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "Manga.List")
-	testErrorResponse(t, err, api_driver.ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, malhttp.ErrorResponse{Message: "mal is down", Err: "internal"})
 }

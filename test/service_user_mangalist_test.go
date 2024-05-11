@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/dmji/go-myanimelist/mal/containers"
+	"github.com/dmji/go-myanimelist/mal/maltype"
 )
 
 func TestUserServiceMangaList(t *testing.T) {
@@ -61,14 +61,14 @@ func TestUserServiceMangaList(t *testing.T) {
 	if err != nil {
 		t.Errorf("User.MangaList returned error: %v", err)
 	}
-	want := []containers.UserManga{
+	want := []maltype.UserManga{
 		{
-			Manga:  containers.Manga{ID: 1},
-			Status: containers.MangaListStatus{Status: "plan_to_read"},
+			Manga:  maltype.Manga{ID: 1},
+			Status: maltype.MangaListStatus{Status: "plan_to_read"},
 		},
 		{
-			Manga:  containers.Manga{ID: 2},
-			Status: containers.MangaListStatus{Status: "reading"},
+			Manga:  maltype.Manga{ID: 2},
+			Status: maltype.MangaListStatus{Status: "reading"},
 		},
 	}
 	if !reflect.DeepEqual(got, want) {

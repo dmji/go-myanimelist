@@ -1,6 +1,6 @@
 //go:build debug
 
-package api_driver
+package malhttp
 
 import (
 	"fmt"

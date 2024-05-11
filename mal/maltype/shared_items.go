@@ -1,4 +1,4 @@
-package containers
+package maltype
 
 // Picture is a representative picture from the show.
 type Picture struct {

@@ -11,7 +11,7 @@ import (
 	"testing"
 
 	"github.com/dmji/go-myanimelist/mal"
-	"github.com/dmji/go-myanimelist/mal/api_driver"
+	"github.com/dmji/go-myanimelist/mal/malhttp"
 )
 
 func TestNewClient(t *testing.T) {
@@ -22,7 +22,7 @@ func TestNewClient(t *testing.T) {
 	}
 
 	// test default base URL
-	if got, want := c.BaseURL(), api_driver.DefaultBaseURL; got != want {
+	if got, want := c.BaseURL(), malhttp.DefaultBaseURL; got != want {
 		t.Errorf("NewClient.BaseURL = %v, want %v", got, want)
 	}
 }
@@ -44,7 +44,7 @@ func TestNewClientWringURL(t *testing.T) {
 }
 
 func TestErrorResponse(t *testing.T) {
-	errResp := &api_driver.ErrorResponse{
+	errResp := &malhttp.ErrorResponse{
 		Response: &http.Response{
 			Request: &http.Request{
 				Method: http.MethodGet,
@@ -70,7 +70,7 @@ func TestNewRequest(t *testing.T) {
 		return
 	}
 
-	inURL, outURL := "foo", api_driver.DefaultBaseURL+"foo"
+	inURL, outURL := "foo", malhttp.DefaultBaseURL+"foo"
 	inBody, outBody := func(v *url.Values) { v.Set("name", "bar") }, "name=bar"
 
 	req, err := c.DirectRequest().NewRequest("GET", inURL, inBody)
