@@ -12,73 +12,6 @@ import (
 	"github.com/dmji/go-myanimelist/mal/containers"
 )
 
-func TestUserServiceMangaList(t *testing.T) {
-	client, mux, teardown := setup()
-	defer teardown()
-
-	mux.HandleFunc("/users/foo/mangalist", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, http.MethodGet)
-		testURLValues(t, r, urlValues{
-			"status": "completed",
-			"sort":   "manga_id",
-			"fields": "foo,bar",
-			"limit":  "10",
-			"offset": "0",
-			"nsfw":   "true",
-		})
-		const out = `
-		{
-		  "data": [
-		    {
-		      "node": { "id": 1 },
-			  "list_status": {
-			    "status": "plan_to_read"
-			  }
-		    },
-		    {
-		      "node": { "id": 2 },
-			  "list_status": {
-			    "status": "reading"
-			  }
-		    }
-		  ],
-		  "paging": {
-		    "next": "?offset=4",
-		    "previous": "?offset=2"
-		  }
-		}`
-		fmt.Fprint(w, out)
-	})
-
-	ctx := context.Background()
-	opts := client.User.MangaListOptions
-	got, resp, err := client.User.MangaList(ctx, "foo",
-		opts.MangaStatus.Completed(),
-		opts.SortMangaList.ByMangaID(),
-		opts.Fields("foo", "bar"),
-		opts.Limit(10),
-		opts.Offset(0),
-		opts.NSFW(true),
-	)
-	if err != nil {
-		t.Errorf("User.MangaList returned error: %v", err)
-	}
-	want := []containers.UserManga{
-		{
-			Manga:  containers.Manga{ID: 1},
-			Status: containers.MangaListStatus{Status: "plan_to_read"},
-		},
-		{
-			Manga:  containers.Manga{ID: 2},
-			Status: containers.MangaListStatus{Status: "reading"},
-		},
-	}
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("User.MangaList returned\nhave: %+v\n\nwant: %+v", got, want)
-	}
-	testResponseOffset(t, resp, 4, 2, "User.MangaList")
-}
-
 func TestUserServiceMangaListError(t *testing.T) {
 	client, mux, teardown := setup()
 	defer teardown()
@@ -178,38 +111,4 @@ func TestMangaServiceUpdateMyListStatusError(t *testing.T) {
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "Manga.UpdateMyListStatus")
 	testErrorResponse(t, err, api_driver.ErrorResponse{Message: "mal is down", Err: "internal"})
-}
-
-func TestMangaServiceDeleteMyListItem(t *testing.T) {
-	client, mux, teardown := setup()
-	defer teardown()
-
-	mux.HandleFunc("/manga/1/my_list_status", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, http.MethodDelete)
-	})
-
-	ctx := context.Background()
-	resp, err := client.Manga.DeleteMyListItem(ctx, 1)
-	if err != nil {
-		t.Errorf("Manga.DeleteMyListItem returned error: %v", err)
-	}
-	testResponseStatusCode(t, resp, http.StatusOK, "Manga.DeleteMyListItem")
-}
-
-func TestMangaServiceDeleteMyListItemError(t *testing.T) {
-	client, mux, teardown := setup()
-	defer teardown()
-
-	mux.HandleFunc("/manga/1/my_list_status", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, http.MethodDelete)
-		http.Error(w, `{"message":"manga not found","error":"not_found"}`, http.StatusNotFound)
-	})
-
-	ctx := context.Background()
-	resp, err := client.Manga.DeleteMyListItem(ctx, 1)
-	if err == nil {
-		t.Fatal("Manga.DeleteMyListItem expected internal error, got no error.")
-	}
-	testResponseStatusCode(t, resp, http.StatusNotFound, "Manga.DeleteMyListItem")
-	testErrorResponse(t, err, api_driver.ErrorResponse{Message: "manga not found", Err: "not_found"})
 }

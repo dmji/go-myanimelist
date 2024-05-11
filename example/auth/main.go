@@ -56,8 +56,13 @@ func run() error {
 		return err
 	}
 
+	malc, err := mal.NewSite(tokenClient, nil)
+	if err != nil {
+		return err
+	}
+
 	c := demoClient{
-		Site: mal.NewSite(tokenClient),
+		Site: malc,
 	}
 
 	return c.showcase(ctx)

@@ -349,7 +349,7 @@ To run all unit tests:
 
 To see test coverage in your browser:
 
-`go test .\test\... -covermode=count -coverprofile=count && go tool cover -html count`
+`go test .\test\... -coverpkg='./mal/...' -covermode=count -coverprofile=count && go tool cover -html count`
 
 ## Integration Testing
 

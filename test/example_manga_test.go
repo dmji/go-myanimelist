@@ -3,7 +3,6 @@ package mal_test
 import (
 	"context"
 	"fmt"
-	"net/url"
 
 	"github.com/dmji/go-myanimelist/mal"
 	"golang.org/x/text/cases"
@@ -13,14 +12,16 @@ import (
 func ExampleSite_Manga_list() {
 	ctx := context.Background()
 
-	c := mal.NewSite(nil)
-
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	baseURL, _ := url.Parse(server.URL)
-	c.SetBaseURL(baseURL)
+
+	c, err := mal.NewSite(nil, &server.URL)
+	if err != nil {
+		fmt.Printf("Site creation error: %v", err)
+		return
+	}
 
 	opts := c.Manga.ListOptions
 	manga, _, err := c.Manga.List(ctx, "parasyte",
@@ -48,14 +49,16 @@ func ExampleSite_Manga_list() {
 func ExampleSite_Manga_details() {
 	ctx := context.Background()
 
-	c := mal.NewSite(nil)
-
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	baseURL, _ := url.Parse(server.URL)
-	c.SetBaseURL(baseURL)
+
+	c, err := mal.NewSite(nil, &server.URL)
+	if err != nil {
+		fmt.Printf("Site creation error: %v", err)
+		return
+	}
 
 	opts := c.Manga.DetailsOptions
 	m, _, err := c.Manga.Details(ctx, 401,
@@ -111,14 +114,16 @@ func ExampleSite_Manga_details() {
 func ExampleSite_Manga_ranking() {
 	ctx := context.Background()
 
-	c := mal.NewSite(nil)
-
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	baseURL, _ := url.Parse(server.URL)
-	c.SetBaseURL(baseURL)
+
+	c, err := mal.NewSite(nil, &server.URL)
+	if err != nil {
+		fmt.Printf("Site creation error: %v", err)
+		return
+	}
 
 	opts := c.Manga.RankingOptions
 	manga, _, err := c.Manga.Ranking(ctx,
@@ -145,14 +150,16 @@ func ExampleSite_Manga_ranking() {
 func ExampleSite_Manga_deletemylistitem() {
 	ctx := context.Background()
 
-	c := mal.NewSite(nil)
-
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	baseURL, _ := url.Parse(server.URL)
-	c.SetBaseURL(baseURL)
+
+	c, err := mal.NewSite(nil, &server.URL)
+	if err != nil {
+		fmt.Printf("Site creation error: %v", err)
+		return
+	}
 
 	resp, err := c.Manga.DeleteMyListItem(ctx, 401)
 	if err != nil {

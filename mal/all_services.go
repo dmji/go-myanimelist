@@ -26,26 +26,28 @@ type Site struct {
 // perform the authentication for you. Such a client is provided by the
 // golang.org/x/oauth2 package. Check out the example directory of the project
 // for a full authentication example.
-func NewSite(httpClient *http.Client) *Site {
+func NewSite(httpClient *http.Client, baseUrl *string) (*Site, error) {
 	if httpClient == nil {
 		httpClient = &http.Client{}
 	}
+	if baseUrl == nil {
+		defaultUrl := api_driver.DefaultBaseURL
+		baseUrl = &defaultUrl
+	}
 
-	baseURL, err := url.Parse(api_driver.DefaultBaseURL)
+	baseURL, err := url.Parse(*baseUrl)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	c := &Site{
-		client: api_driver.NewClient(httpClient, baseURL),
-	}
-
-	c.User = NewUserService(c.client)
-	c.Anime = NewAnimeService(c.client)
-	c.Manga = NewMangaService(c.client)
-	c.Forum = NewForumService(c.client)
-
-	return c
+	c := api_driver.NewClient(httpClient, baseURL)
+	return &Site{
+		client: c,
+		User:   NewUserService(c),
+		Anime:  NewAnimeService(c),
+		Manga:  NewMangaService(c),
+		Forum:  NewForumService(c),
+	}, nil
 }
 
 type HttpDriver interface {
@@ -58,16 +60,5 @@ func (c *Site) DirectRequest() HttpDriver {
 }
 
 func (c *Site) BaseURL() string {
-	if c.client == nil {
-		panic("client is nil")
-	}
 	return c.client.BaseURL.String()
-}
-
-func (c *Site) SetBaseURL(baseUrl *url.URL) {
-	if c.client == nil {
-		panic("client is nil")
-	}
-
-	c.client.BaseURL = baseUrl
 }

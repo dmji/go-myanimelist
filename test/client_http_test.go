@@ -3,11 +3,9 @@ package mal_test
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
-	"net/http/httptest"
 	"net/url"
 	"reflect"
 	"testing"
@@ -16,111 +14,31 @@ import (
 	"github.com/dmji/go-myanimelist/mal/api_driver"
 )
 
-// setup sets up a test HTTP server along with a mal.Client that is
-// configured to talk to that test server. Tests should register handlers on
-// mux which provide mock responses for the API method being tested.
-func setup(cls ...*http.Client) (client *mal.Site, mux *http.ServeMux, teardown func()) {
-	// mux is the HTTP request multiplexer that the test HTTP server will use
-	// to mock API responses.
-	mux = http.NewServeMux()
-
-	// server is a test HTTP server used to provide mock API responses.
-	server := httptest.NewServer(mux)
-
-	// client is the MyAnimeList client being tested and is configured to use
-	// test server.
-	var httpClient *http.Client = nil
-	if len(cls) > 0 {
-		httpClient = cls[0]
-	}
-
-	client = mal.NewSite(httpClient)
-	baseURL, _ := url.Parse(server.URL + "/")
-	client.SetBaseURL(baseURL)
-
-	return client, mux, server.Close
-}
-
-type urlValues map[string]string
-
-func testURLValues(t *testing.T, r *http.Request, values urlValues) {
-	t.Helper()
-	want := url.Values{}
-	for k, v := range values {
-		want.Add(k, v)
-	}
-	actual := r.URL.Query()
-	if !reflect.DeepEqual(want, actual) {
-		t.Errorf("URL Values = %v, want %v", actual, want)
-	}
-}
-
-func testBody(t *testing.T, r *http.Request, want string) {
-	t.Helper()
-	b, err := io.ReadAll(r.Body)
-	if err != nil {
-		t.Fatalf("Error reading request body: %v", err)
-	}
-	if got := string(b); got != want {
-		t.Errorf("request body\nhave: %q\nwant: %q", got, want)
-	}
-}
-
-func testMethod(t *testing.T, r *http.Request, want string) {
-	if want != r.Method {
-		t.Errorf("Request method = %v, want %v", r.Method, want)
-	}
-}
-
-func testContentType(t *testing.T, r *http.Request, want string) {
-	ct := r.Header.Get("Content-Type")
-	if ct != want {
-		t.Errorf("Content-Type = %q, want %q", ct, want)
-	}
-}
-
-func testErrorResponse(t *testing.T, err error, want api_driver.ErrorResponse) {
-	t.Helper()
-	errResp := &api_driver.ErrorResponse{}
-	if !errors.As(err, &errResp) {
-		t.Fatalf("err is type %T, want type *ErrorResponse.", err)
-	}
-	if got, want := errResp.Message, want.Message; got != want {
-		t.Errorf("ErrorResponse.Message = %q, want %q", got, want)
-	}
-	if got, want := errResp.Err, want.Err; got != want {
-		t.Errorf("ErrorResponse.Err = %q, want %q", got, want)
-	}
-}
-
-func testResponseOffset(t *testing.T, resp *api_driver.Response, next, prev int, prefix string) {
-	t.Helper()
-	if resp == nil {
-		t.Fatalf("%s resp is nil, want NextOffset=%d and PrevOffset=%d", prefix, next, prev)
-	}
-	if got, want := resp.NextOffset, next; got != want {
-		t.Errorf("%s resp.NextOffset=%d, want %d", prefix, got, want)
-	}
-	if got, want := resp.PrevOffset, prev; got != want {
-		t.Errorf("%s resp.PrevOffset=%d, want %d", prefix, got, want)
-	}
-}
-
-func testResponseStatusCode(t *testing.T, resp *api_driver.Response, code int, prefix string) {
-	t.Helper()
-	if resp == nil {
-		t.Fatalf("%s resp is nil, want StatusCode=%d", prefix, code)
-	}
-	if got, want := resp.StatusCode, code; got != want {
-		t.Errorf("%s resp.StatusCode=%d, want %d", prefix, got, want)
-	}
-}
-
 func TestNewClient(t *testing.T) {
-	c := mal.NewSite(nil)
+	c, err := mal.NewSite(nil, nil)
+	if err != nil {
+		t.Errorf("Site creation error: %v", err)
+		return
+	}
 
 	// test default base URL
 	if got, want := c.BaseURL(), api_driver.DefaultBaseURL; got != want {
+		t.Errorf("NewClient.BaseURL = %v, want %v", got, want)
+	}
+}
+
+func TestNewClientWringURL(t *testing.T) {
+	wrongUrl := "foo\x7fclr"
+	_, err := mal.NewSite(nil, &wrongUrl)
+	if err == nil {
+		t.Errorf("Expected creation error for wrong URL: %s", wrongUrl)
+		return
+	}
+
+	// test default base URL
+	want := "parse \"foo\\x7fclr\": net/url: invalid control character in URL"
+	got := err.Error()
+	if got != want {
 		t.Errorf("NewClient.BaseURL = %v, want %v", got, want)
 	}
 }
@@ -146,7 +64,11 @@ func TestErrorResponse(t *testing.T) {
 }
 
 func TestNewRequest(t *testing.T) {
-	c := mal.NewSite(nil)
+	c, err := mal.NewSite(nil, nil)
+	if err != nil {
+		t.Errorf("Site creation error: %v", err)
+		return
+	}
 
 	inURL, outURL := "foo", api_driver.DefaultBaseURL+"foo"
 	inBody, outBody := func(v *url.Values) { v.Set("name", "bar") }, "name=bar"
@@ -174,17 +96,26 @@ func TestNewRequest(t *testing.T) {
 }
 
 func TestNewRequestInvalidMethod(t *testing.T) {
-	c := mal.NewSite(nil)
-	_, err := c.DirectRequest().NewRequest("invalid method", "/foo")
+	c, err := mal.NewSite(nil, nil)
+	if err != nil {
+		t.Errorf("Site creation error: %v", err)
+		return
+	}
+	_, err = c.DirectRequest().NewRequest("invalid method", "/foo")
 	if err == nil {
 		t.Error("NewRequest with invalid method expected to return err")
 	}
 }
 
 func TestNewRequestBadEndpoint(t *testing.T) {
-	c := mal.NewSite(nil)
+	c, err := mal.NewSite(nil, nil)
+	if err != nil {
+		t.Errorf("Site creation error: %v", err)
+		return
+	}
+
 	inURL := "%foo"
-	_, err := c.DirectRequest().NewRequest("GET", inURL)
+	_, err = c.DirectRequest().NewRequest("GET", inURL)
 	if err == nil {
 		t.Errorf("NewRequest(%q) should return parse err", inURL)
 	}

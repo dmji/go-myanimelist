@@ -4,7 +4,6 @@ import (
 	"context"
 	_ "embed"
 	"fmt"
-	"net/url"
 	"strings"
 
 	"github.com/dmji/go-myanimelist/mal"
@@ -15,14 +14,16 @@ import (
 func ExampleSite_Anime_list() {
 	ctx := context.Background()
 
-	c := mal.NewSite(nil)
-
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	baseURL, _ := url.Parse(server.URL)
-	c.SetBaseURL(baseURL)
+
+	c, err := mal.NewSite(nil, &server.URL)
+	if err != nil {
+		fmt.Printf("Site creation error: %v", err)
+		return
+	}
 
 	opts := c.Anime.ListOptions
 	anime, _, err := c.Anime.List(ctx, "hokuto no ken",
@@ -50,14 +51,16 @@ func ExampleSite_Anime_list() {
 func ExampleSite_Anime_details() {
 	ctx := context.Background()
 
-	c := mal.NewSite(nil)
-
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	baseURL, _ := url.Parse(server.URL)
-	c.SetBaseURL(baseURL)
+
+	c, err := mal.NewSite(nil, &server.URL)
+	if err != nil {
+		fmt.Printf("Site creation error: %v", err)
+		return
+	}
 
 	opts := c.Anime.DetailsOptions
 	a, _, err := c.Anime.Details(ctx, 967,
@@ -115,14 +118,16 @@ func ExampleSite_Anime_details() {
 func ExampleSite_Anime_ranking() {
 	ctx := context.Background()
 
-	c := mal.NewSite(nil)
-
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	baseURL, _ := url.Parse(server.URL)
-	c.SetBaseURL(baseURL)
+
+	c, err := mal.NewSite(nil, &server.URL)
+	if err != nil {
+		fmt.Printf("Site creation error: %v", err)
+		return
+	}
 
 	opts := c.Anime.RankingOptions
 	anime, _, err := c.Anime.Ranking(ctx,
@@ -152,14 +157,16 @@ func ExampleSite_Anime_ranking() {
 func ExampleSite_Anime_seasonal() {
 	ctx := context.Background()
 
-	c := mal.NewSite(nil)
-
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	baseURL, _ := url.Parse(server.URL)
-	c.SetBaseURL(baseURL)
+
+	c, err := mal.NewSite(nil, &server.URL)
+	if err != nil {
+		fmt.Printf("Site creation error: %v", err)
+		return
+	}
 
 	opts := c.Anime.SeasonalOptions
 	anime, _, err := c.Anime.Seasonal(ctx, 2020, opts.AnimeSeason.Fall(),
@@ -187,14 +194,16 @@ func ExampleSite_Anime_seasonal() {
 func ExampleSite_Anime_suggested() {
 	ctx := context.Background()
 
-	c := mal.NewSite(nil)
-
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	baseURL, _ := url.Parse(server.URL)
-	c.SetBaseURL(baseURL)
+
+	c, err := mal.NewSite(nil, &server.URL)
+	if err != nil {
+		fmt.Printf("Site creation error: %v", err)
+		return
+	}
 
 	opts := c.Anime.SuggestedOptions
 	anime, _, err := c.Anime.Suggested(ctx,
@@ -220,14 +229,16 @@ func ExampleSite_Anime_suggested() {
 func ExampleSite_Anime_deletemylistttem() {
 	ctx := context.Background()
 
-	c := mal.NewSite(nil)
-
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	baseURL, _ := url.Parse(server.URL)
-	c.SetBaseURL(baseURL)
+
+	c, err := mal.NewSite(nil, &server.URL)
+	if err != nil {
+		fmt.Printf("Site creation error: %v", err)
+		return
+	}
 
 	resp, err := c.Anime.DeleteMyListItem(ctx, 967)
 	if err != nil {

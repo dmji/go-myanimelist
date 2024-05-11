@@ -58,7 +58,7 @@ func newOAuth2Client(ctx context.Context) *http.Client {
 	return conf.Client(ctx, token)
 }
 
-func setupIntegration2(ctx context.Context) *mal.Site {
+func setupIntegration2(ctx context.Context) (*mal.Site, error) {
 	const tokenFormat = `
 	{
 		"token_type": "Bearer",
@@ -74,7 +74,7 @@ func setupIntegration2(ctx context.Context) *mal.Site {
 		fmt.Printf(`Note: On some terminals you may need to escape the double quotes: --oauth2-token='{\"token_type\":\"Bearer\",...'`)
 		fmt.Printf("failed to unmarshal oauth2 token: %v", err)
 		fmt.Printf("input was:\n%q", *oauth2Token)
-		return nil
+		return nil, err
 	}
 
 	conf := &oauth2.Config{
@@ -87,7 +87,7 @@ func setupIntegration2(ctx context.Context) *mal.Site {
 		},
 	}
 
-	return mal.NewSite(conf.Client(ctx, token))
+	return mal.NewSite(conf.Client(ctx, token), nil)
 }
 
 func Example_oAuth2() {
@@ -101,7 +101,11 @@ func Example_oAuth2() {
 
 	//c := mal.NewSite(oauth2Client)
 
-	c := setupIntegration2(ctx)
+	c, err := setupIntegration2(ctx)
+	if err != nil {
+		fmt.Printf("Site creation error: %v", err)
+		return
+	}
 
 	user, _, err := c.User.MyInfo(ctx)
 	if err != nil {

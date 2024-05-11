@@ -3,7 +3,6 @@ package mal_test
 import (
 	"context"
 	"fmt"
-	"net/url"
 
 	"github.com/dmji/go-myanimelist/mal"
 )
@@ -11,14 +10,16 @@ import (
 func ExampleSite_User_myinfo() {
 	ctx := context.Background()
 
-	c := mal.NewSite(nil)
-
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	baseURL, _ := url.Parse(server.URL)
-	c.SetBaseURL(baseURL)
+
+	c, err := mal.NewSite(nil, &server.URL)
+	if err != nil {
+		fmt.Printf("Site creation error: %v", err)
+		return
+	}
 
 	user, _, err := c.User.MyInfo(ctx)
 	if err != nil {

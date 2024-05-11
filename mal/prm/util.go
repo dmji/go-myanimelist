@@ -16,12 +16,6 @@ func formatMALDate(d time.Time) string {
 	return d.Format("2006-01-02")
 }
 
-func appendIf(b bool, s []string, v string) {
-	if b {
-		s = append(s, v)
-	}
-}
-
 func argJoin(v ...string) string {
 	if len(v) == 0 {
 		return ""

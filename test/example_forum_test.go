@@ -3,7 +3,6 @@ package mal_test
 import (
 	"context"
 	"fmt"
-	"net/url"
 
 	"github.com/dmji/go-myanimelist/mal"
 )
@@ -11,14 +10,16 @@ import (
 func ExampleSite_Forum_boards() {
 	ctx := context.Background()
 
-	c := mal.NewSite(nil)
-
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	baseURL, _ := url.Parse(server.URL)
-	c.SetBaseURL(baseURL)
+
+	c, err := mal.NewSite(nil, &server.URL)
+	if err != nil {
+		fmt.Printf("Site creation error: %v", err)
+		return
+	}
 
 	forum, _, err := c.Forum.Boards(ctx)
 	if err != nil {
@@ -70,14 +71,16 @@ func ExampleSite_Forum_boards() {
 func ExampleSite_Forum_topics() {
 	ctx := context.Background()
 
-	c := mal.NewSite(nil)
-
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	baseURL, _ := url.Parse(server.URL)
-	c.SetBaseURL(baseURL)
+
+	c, err := mal.NewSite(nil, &server.URL)
+	if err != nil {
+		fmt.Printf("Site creation error: %v", err)
+		return
+	}
 
 	opts := c.Forum.TopicsOptions
 	topics, _, err := c.Forum.Topics(ctx,
@@ -100,14 +103,16 @@ func ExampleSite_Forum_topics() {
 func ExampleSite_Forum_topicdetails() {
 	ctx := context.Background()
 
-	c := mal.NewSite(nil)
-
 	// Ignore the 3 following lines. A stub server is used instead of the real
 	// API to produce testable examples. See: https://go.dev/blog/examples
 	server := newStubServer()
 	defer server.Close()
-	baseURL, _ := url.Parse(server.URL)
-	c.SetBaseURL(baseURL)
+
+	c, err := mal.NewSite(nil, &server.URL)
+	if err != nil {
+		fmt.Printf("Site creation error: %v", err)
+		return
+	}
 
 	opts := c.Forum.TopicDetailsOptions
 	topicDetails, _, err := c.Forum.TopicDetails(ctx, 1877721, opts.Limit(3), opts.Offset(0))
