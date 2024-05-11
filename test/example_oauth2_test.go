@@ -22,14 +22,14 @@ func newOAuth2Client(ctx context.Context) *http.Client {
 		malSecret = clientSecret
 	}
 
-	oauth2Conf := &oauth2.Config{
+	conf := &oauth2.Config{
 		// "<Enter your MyAnimeList.net application client ID>" (now load from argiment)
 		ClientID: *clientID,
 		// "<Enter your MyAnimeList.net application client secret>" (now load from argiment)
 		ClientSecret: *malSecret, // Optional if you chose App Type 'other'.
 		Endpoint: oauth2.Endpoint{
-			AuthURL:   "https://myanimelist.net/v2/oauth2/authorize",
-			TokenURL:  "https://myanimelist.net/v2/oauth2/token",
+			AuthURL:   "https://myanimelist.net/v1/oauth2/authorize",
+			TokenURL:  "https://myanimelist.net/v1/oauth2/token",
 			AuthStyle: oauth2.AuthStyleInParams,
 		},
 	}
@@ -55,7 +55,7 @@ func newOAuth2Client(ctx context.Context) *http.Client {
 
 	// The oauth2 client returned here with the above configuration and valid
 	// token will refresh the token seamlessly when it expires.
-	return oauth2Conf.Client(ctx, token)
+	return conf.Client(ctx, token)
 }
 
 func Example_oAuth2() {
