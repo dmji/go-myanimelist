@@ -4,3 +4,5 @@ count
 cover
 *token-cache.txt
 *.exe
+auth
+!auth/

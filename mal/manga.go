@@ -30,8 +30,17 @@ func NewMangaService(client *api_driver.Client) *MangaService {
 	}
 }
 
+// List allows an authenticated user to search and list manga data. You may get
+// user specific data by using the optional field.
+// Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/manga_get
+func (s *MangaService) List(ctx context.Context, search string, options ...prm.OptionalParam) ([]containers.Manga, *api_driver.Response, error) {
+	options = append(options, optionFromQuery(search))
+	return s.list(ctx, "manga", options...)
+}
+
 // Details returns details about a manga. By default, few manga fields are
 // populated. Use the Fields option to specify which fields should be included.
+// Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/manga_manga_id_get
 func (s *MangaService) Details(ctx context.Context, mangaID int, options ...prm.DetailsOption) (*containers.Manga, *api_driver.Response, error) {
 	m := new(containers.Manga)
 	rawOptions := detailsOptionsToFuncs(options)
@@ -42,21 +51,9 @@ func (s *MangaService) Details(ctx context.Context, mangaID int, options ...prm.
 	return m, resp, nil
 }
 
-// List allows an authenticated user to search and list manga data. You may get
-// user specific data by using the optional field "my_list_status".
-func (s *MangaService) List(ctx context.Context, search string, options ...prm.OptionalParam) ([]containers.Manga, *api_driver.Response, error) {
-	options = append(options, optionFromQuery(search))
-	return s.list(ctx, "manga", options...)
-}
-
-// DeleteMyListItem deletes a manga from the user's list. If the manga does not
-// exist in the user's list, 404 Not Found error is returned.
-func (s *MangaService) DeleteMyListItem(ctx context.Context, mangaID int) (*api_driver.Response, error) {
-	return s.client.DeleteMyListItem(ctx, "manga", mangaID)
-}
-
 // Ranking allows an authenticated user to receive the top manga based on a
 // certain ranking.
+// Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/manga_ranking_get
 func (s *MangaService) Ranking(ctx context.Context, ranking prm.MangaRanking, options ...prm.OptionalParam) ([]containers.Manga, *api_driver.Response, error) {
 	options = append(
 		options,
@@ -69,6 +66,7 @@ func (s *MangaService) Ranking(ctx context.Context, ranking prm.MangaRanking, op
 // UpdateMyListStatus adds the manga specified by mangaID to the user's manga
 // list with one or more options added to update the status. If the manga
 // already exists in the list, only the status is updated.
+// Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/manga_manga_id_my_list_status_put
 func (s *MangaService) UpdateMyListStatus(ctx context.Context, mangaID int, options ...prm.UpdateMyMangaListStatusOption) (*containers.MangaListStatus, *api_driver.Response, error) {
 	rawOptions := optionsToFuncs(options, func(t prm.UpdateMyMangaListStatusOption) func(*url.Values) { return t.UpdateMyMangaListStatusApply })
 
@@ -79,6 +77,13 @@ func (s *MangaService) UpdateMyListStatus(ctx context.Context, mangaID int, opti
 	}
 
 	return m, resp, nil
+}
+
+// DeleteMyListItem deletes a manga from the user's list. If the manga does not
+// exist in the user's list, 404 Not Found error is returned.
+// Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/manga_manga_id_my_list_status_delete
+func (s *MangaService) DeleteMyListItem(ctx context.Context, mangaID int) (*api_driver.Response, error) {
+	return s.client.DeleteMyListItem(ctx, "manga", mangaID)
 }
 
 func (s *MangaService) list(ctx context.Context, path string, options ...prm.OptionalParam) ([]containers.Manga, *api_driver.Response, error) {

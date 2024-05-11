@@ -34,6 +34,7 @@ const (
 )
 
 // Boards returns the forum boards.
+// Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/forum_boards_get
 func (s *ForumService) Boards(ctx context.Context) (*containers.Forum, *api_driver.Response, error) {
 	f := new(containers.Forum)
 	resp, err := s.client.RequestGet(ctx, boardsEndpoint, f)
@@ -43,18 +44,8 @@ func (s *ForumService) Boards(ctx context.Context) (*containers.Forum, *api_driv
 	return f, resp, nil
 }
 
-// Topics returns the forum's topics. Make sure to pass at least the Query
-// option or you will get an API error.
-func (s *ForumService) Topics(ctx context.Context, options ...prm.TopicsOption) ([]containers.Topic, *api_driver.Response, error) {
-	rawOptions := optionsToFuncs(options, func(t prm.TopicsOption) func(*url.Values) { return t.TopicsApply })
-	topics, resp, err := s.client.RequestTopics(ctx, topicsEndpoint, rawOptions...)
-	if err != nil {
-		return nil, resp, err
-	}
-	return topics, resp, nil
-}
-
 // TopicDetails returns details about the forum topic specified by topicID.
+// Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/forum_topic_get
 func (s *ForumService) TopicDetails(ctx context.Context, topicID int, options ...prm.PagingOption) (containers.TopicDetails, *api_driver.Response, error) {
 	rawOptions := optionsToFuncs(options, func(t prm.PagingOption) func(*url.Values) { return t.PagingApply })
 	topicDetails, resp, err := s.client.RequestTopicDetails(ctx, fmt.Sprintf("%s/%d", topicEndpoint, topicID), rawOptions...)
@@ -62,4 +53,16 @@ func (s *ForumService) TopicDetails(ctx context.Context, topicID int, options ..
 		return containers.TopicDetails{}, resp, err
 	}
 	return topicDetails, resp, nil
+}
+
+// Topics returns the forum's topics. Make sure to pass at least the Query
+// option or you will get an API error.
+// Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/forum_topics_get
+func (s *ForumService) Topics(ctx context.Context, options ...prm.TopicsOption) ([]containers.Topic, *api_driver.Response, error) {
+	rawOptions := optionsToFuncs(options, func(t prm.TopicsOption) func(*url.Values) { return t.TopicsApply })
+	topics, resp, err := s.client.RequestTopics(ctx, topicsEndpoint, rawOptions...)
+	if err != nil {
+		return nil, resp, err
+	}
+	return topics, resp, nil
 }

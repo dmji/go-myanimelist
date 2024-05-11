@@ -28,24 +28,24 @@ func (c *demoClient) showcase(ctx context.Context) error {
 		// Uncomment the methods you need to see their results. Run or build
 		// using -tags=debug to see the full HTTP request and response.
 		c.userMyInfo,
-		c.animeList,
-		c.mangaList,
-		c.animeDetails,
-		c.mangaDetails,
-		c.animeRanking,
-		c.mangaRanking,
-		c.animeSeasonal,
-		c.animeSuggested,
-		c.animeListForLoop, // Warning: Many requests.
-		c.updateMyAnimeListStatus,
-		c.userAnimeList,
-		c.deleteMyAnimeListItem,
-		c.updateMyMangaListStatus,
-		c.userMangaList,
-		c.deleteMyMangaListItem,
-		c.forumBoards,
-		c.forumTopics,
-		c.forumTopicDetails,
+		/* 		c.animeList,
+		   		c.mangaList,
+		   		c.animeDetails,
+		   		c.mangaDetails,
+		   		c.animeRanking,
+		   		c.mangaRanking,
+		   		c.animeSeasonal,
+		   		c.animeSuggested,
+		   		c.animeListForLoop, // Warning: Many requests.
+		   		c.updateMyAnimeListStatus,
+		   		c.userAnimeList,
+		   		c.deleteMyAnimeListItem,
+		   		c.updateMyMangaListStatus,
+		   		c.userMangaList,
+		   		c.deleteMyMangaListItem,
+		   		c.forumBoards,
+		   		c.forumTopics,
+		   		c.forumTopicDetails, */
 	}
 	for _, m := range methods {
 		m(ctx)
@@ -74,6 +74,7 @@ func (c *demoClient) animeList(ctx context.Context) {
 	}
 
 	opts := c.Anime.ListOptions
+	opts.AnimeFields.MyListStatus()
 	anime, _, err := c.Anime.List(ctx, "hokuto no ken",
 		opts.Fields(
 			opts.AnimeFields.Rank(),
@@ -132,7 +133,8 @@ func (c *demoClient) animeDetails(ctx context.Context) {
 			opts.AnimeFields.Genres(),
 			opts.AnimeFields.Studios(),
 			opts.AnimeFields.AverageEpisodeDuration(),
-		))
+		),
+	)
 
 	if err != nil {
 		c.err = err
@@ -178,7 +180,8 @@ func (c *demoClient) mangaDetails(ctx context.Context) {
 			opts.MangaFields.Authors("last_name", "first_name"),
 			opts.MangaFields.Genres(),
 			opts.MangaFields.Status(),
-		))
+		),
+	)
 	if err != nil {
 		c.err = err
 		return
@@ -269,9 +272,9 @@ func (c *demoClient) userMangaList(ctx context.Context) {
 	opts := c.User.MangaListOptions
 	manga, _, err := c.User.MangaList(ctx, "@me",
 		opts.SortMangaList.ByListScore(),
-		opts.Fields("list_status{comments, tags}"),
+		opts.Fields(opts.UserListFields.ListStatus("comments", "tags")),
 		opts.Limit(5),
-		opts.Offset(0),
+		opts.Offset(1),
 	)
 	if err != nil {
 		c.err = err
@@ -358,13 +361,15 @@ func (c *demoClient) animeRanking(ctx context.Context) {
 	}
 
 	opts := c.Anime.RankingOptions
+	opts.AnimeRanking.ByPopularity()
 	for _, r := range rankings {
 		fmt.Println("Ranking:", r)
 		anime, _, err := c.Anime.Ranking(ctx, r,
 			opts.Fields(
 				opts.AnimeFields.Rank(),
 				opts.AnimeFields.Popularity(),
-			))
+			),
+		)
 		if err != nil {
 			c.err = err
 			return

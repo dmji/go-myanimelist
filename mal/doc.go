@@ -16,7 +16,7 @@ Import the package using:
 
 First construct a new mal client:
 
-	c := mal.NewClient(nil)
+	c := mal.NewSite(nil, nil)
 
 Then use one of the client's services (User, Anime, Manga and Forum) to access
 the different MyAnimeList API methods.
@@ -51,7 +51,7 @@ transport and use it as shown below:
 			Transport: &clientIDTransport{ClientID: "<Your application client ID>"},
 		}
 
-		c := mal.NewClient(publicInfoClient)
+		c := mal.NewSite(publicInfoClient, nil)
 		// ...
 	}
 
@@ -81,16 +81,16 @@ like this:
 		ClientID:     "<Enter your registered MyAnimeList.net application client ID>",
 		ClientSecret: "<Enter your registered MyAnimeList.net application client secret>",
 		Endpoint: oauth2.Endpoint{
-		    AuthURL:   "https://myanimelist.net/v1/oauth2/authorize",
-		    TokenURL:  "https://myanimelist.net/v1/oauth2/token",
-		    AuthStyle: oauth2.AuthStyleInParams,
+			AuthURL:   "https://myanimelist.net/v1/oauth2/authorize",
+			TokenURL:  "https://myanimelist.net/v1/oauth2/token",
+			AuthStyle: oauth2.AuthStyleInParams,
 		},
 	}
 
 	oauth2Client := oauth2Conf.Client(ctx, oauth2Token)
 
 	// The oauth2Client will refresh the token if it expires.
-	c := mal.NewClient(oauth2Client)
+	c := mal.NewSite(oauth2Client, nil)
 
 Note that all calls made by the client above will include the specified oauth2
 token which is specific for an authenticated user. Therefore, authenticated
@@ -131,15 +131,26 @@ https://myanimelist.net/apiconfig/references/authorization
 
 To search and get anime and manga data:
 
-	list, _, err := c.Anime.List(ctx, "hokuto no ken",
-		prm.Fields{"rank", "popularity", "my_list_status"},
-		prm.Limit(5),
+	opts := c.Anime.ListOptions
+	anime, _, err := c.Anime.List(ctx, "hokuto no ken",
+		opts.Fields(
+			opts.AnimeFields.Rank(),
+			opts.AnimeFields.Popularity(),
+			opts.AnimeFields.MyListStatus(),
+		),
+		opts.Limit(5),
 	)
 	// ...
 
-	list, _, err := c.Manga.List(ctx, "hokuto no ken",
-		prm.Fields{"rank", "popularity", "my_list_status"},
-		prm.Limit(5),
+
+	opts := c.Manga.ListOptions
+	anime, _, err := c.Manga.List(ctx, "hokuto no ken",
+		opts.Fields(
+			opts.MangaFields.Rank(),
+			opts.MangaFields.Popularity(),
+			opts.MangaFields.MyListStatus(),
+		),
+		opts.Limit(5),
 	)
 	// ...
 
@@ -158,21 +169,23 @@ To get the anime or manga list of a user:
 
 	// Get the authenticated user's anime list, filter only watching anime, sort by
 	// last updated, include list status.
+	opts := c.User.AnimeListOptions
 	anime, _, err := c.User.AnimeList(ctx, "@me",
-	    prm.Fields{"list_status"},
-	    mal.AnimeStatusWatching,
-	    mal.SortAnimeListByListUpdatedAt,
-	    prm.Limit(5),
+		opts.Fields(opts.UserListFields.ListStatus()),
+		opts.AnimeStatus.Watching(),
+		opts.SortAnimeList.ByListUpdatedAt(),
+		opts.Limit(5),
 	)
 	// ...
 
 	// Get the authenticated user's manga list's second page, sort by score,
 	// include list status, comments and tags.
+	opts := c.User.MangaListOptions
 	manga, _, err := c.User.MangaList(ctx, "@me",
-	    mal.SortMangaListByListScore,
-	    prm.Fields{"list_status{comments, tags}"},
-	    prm.Limit(5),
-	    prm.Offset(1),
+		opts.SortMangaList.ByListScore(),
+		opts.Fields(opts.UserListFields.ListStatus("comments", "tags")),
+		opts.Limit(5),
+		opts.Offset(1),
 	)
 	// ...
 
@@ -192,6 +205,15 @@ To get information about the authenticated user:
 	user, _, err := c.User.MyInfo(ctx)
 	// ...
 
+	opts := client.User.MyInfoOptions
+	user, _, err := client.User.MyInfo(ctx,
+		opts.Fields(
+			opts.UserFields.TimeZone(),
+			opts.UserFields.IsSupporter(),
+		),
+	)
+	// ...
+
 This method can use the Fields option but the API doesn't seem to be able to
 send optional fields like "anime_statistics" at the time of writing.
 
@@ -203,30 +225,32 @@ Official docs:
 
 To get details for a certain anime or manga:
 
+	opts := c.Anime.DetailsOptions
 	a, _, err := c.Anime.Details(ctx, 967,
-		prm.Fields{
-			"alternative_titles",
-			"media_type",
-			"num_episodes",
-			"start_season",
-			"source",
-			"genres",
-			"studios",
-			"average_episode_duration",
-		},
+		opts.Fields(
+			opts.AnimeFields.AlternativeTitles(),
+			opts.AnimeFields.MediaType(),
+			opts.AnimeFields.NumEpisodes(),
+			opts.AnimeFields.StartSeason(),
+			opts.AnimeFields.Source(),
+			opts.AnimeFields.Genres(),
+			opts.AnimeFields.Studios(),
+			opts.AnimeFields.AverageEpisodeDuration(),
+		),
 	)
 	// ...
 
+	opts := c.Manga.DetailsOptions
 	m, _, err := c.Manga.Details(ctx, 401,
-		prm.Fields{
-			"alternative_titles",
-			"media_type",
-			"num_volumes",
-			"num_chapters",
-			"authors{last_name, first_name}",
-			"genres",
-			"status",
-		},
+		opts.Fields(
+			opts.MangaFields.AlternativeTitles(),
+			opts.MangaFields.MediaType(),
+			opts.MangaFields.NumVolumes(),
+			opts.MangaFields.NumChapters(),
+			opts.MangaFields.Authors("last_name", "first_name"),
+			opts.MangaFields.Genres(),
+			opts.MangaFields.Status(),
+		),
 	)
 	// ...
 
@@ -243,17 +267,25 @@ Official docs:
 
 To get anime or manga based on a certain ranking:
 
+	opts := c.Anime.RankingOptions
 	anime, _, err := c.Anime.Ranking(ctx,
-		mal.AnimeRankingAiring,
-		prm.Fields{"rank", "popularity"},
-		prm.Limit(6),
+		opts.AnimeRanking.ByPopularity(),
+		opts.Fields(
+			opts.AnimeFields.Rank(),
+			opts.AnimeFields.Popularity(),
+		),
+		opts.Limit(6),
 	)
 	// ...
 
+	opts := c.Manga.RankingOptions
 	manga, _, err := c.Manga.Ranking(ctx,
-		mal.MangaRankingByPopularity,
-		prm.Fields{"rank", "popularity"},
-		prm.Limit(6),
+		opts.MangaRanking.ByPopularity(),
+		opts.Fields(
+			opts.MangaFields.Rank(),
+			opts.MangaFields.Popularity(),
+		),
+		opts.Limit(6),
 	)
 	// ...
 
@@ -268,23 +300,25 @@ Official docs:
 To add or update an entry in an authenticated user's list, provide the anime or
 manga ID and then options to specify the status, score, comments, tags etc.
 
-	_, _, err := c.Anime.UpdateMyListStatus(ctx, 967,
-		mal.AnimeStatusWatching,
-		mal.NumEpisodesWatched(73),
-		mal.Score(8),
-		mal.Comments("You wa shock!"),
-		mal.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
-		mal.FinishDate(time.Time{}), // Remove an existing date.
+	opts := c.Anime.UpdateMyListStatusOptions
+	s, _, err := c.Anime.UpdateMyListStatus(ctx, 967,
+		opts.AnimeStatus.Watching(),
+		opts.NumEpisodesWatched(73),
+		opts.Score(8),
+		opts.Comments("You wa shock!"),
+		opts.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
+		opts.FinishDate(time.Time{}), // Remove an existing date.
 	)
 	// ...
 
-	_, _, err := c.Manga.UpdateMyListStatus(ctx, 401,
-		mal.MangaStatusReading,
-		mal.NumVolumesRead(1),
-		mal.NumChaptersRead(5),
-		mal.Comments("Migi"),
-		mal.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
-		mal.FinishDate(time.Time{}), // Remove an existing date.
+	opts := c.Manga.UpdateMyListStatusOptions
+	s, _, err := c.Manga.UpdateMyListStatus(ctx, 401,
+		opts.MangaStatus.Reading(),
+		opts.NumVolumesRead(1),
+		opts.NumChaptersRead(5),
+		opts.Comments("Migi"),
+		opts.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
+		opts.FinishDate(time.Time{}), // Remove an existing date.
 	)
 	// ...
 
@@ -319,11 +353,11 @@ https://pkg.go.dev/github.com/dmji/go-myanimelist/mal#pkg-examples
 
 To run all unit tests:
 
-	go test -cover
+	go test .\test\... -cover -coverpkg='./mal/...'
 
 To see test coverage in your browser:
 
-	go test -covermode=count -coverprofile=count.out && go tool cover -html count.out
+	go test .\test\... -coverpkg='./mal/...' -covermode=count -coverprofile=count && go tool cover -html count
 
 # Integration Testing
 
