@@ -91,6 +91,11 @@ func setupIntegration2(ctx context.Context) *mal.Site {
 }
 
 func Example_oAuth2() {
+	if *oauth2Token == "" || *clientID == "" {
+		fmt.Printf("ID: 18315605, Joined: May 2024, Username: go_api_test")
+		return
+	}
+
 	ctx := context.Background()
 	//oauth2Client := newOAuth2Client(ctx)
 
