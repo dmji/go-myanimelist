@@ -1,7 +1,6 @@
 package prm
 
-type UserListFields struct {
-}
+type UserListFields struct{}
 
 func (f UserListFields) Node(p ...string) string {
 	return "node" + argJoin(p...)

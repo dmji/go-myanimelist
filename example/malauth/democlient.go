@@ -136,7 +136,6 @@ func (c *demoClient) animeDetails(ctx context.Context) {
 			opts.AnimeFields.AverageEpisodeDuration(),
 		),
 	)
-
 	if err != nil {
 		c.err = err
 		return
@@ -297,7 +296,7 @@ func (c *demoClient) updateMyAnimeListStatus(ctx context.Context) {
 		opts.NumEpisodesWatched(73),
 		opts.Score(8),
 		opts.Comments("You wa shock!"),
-		opts.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
+		opts.StartDate(time.Date(2022, 0o2, 20, 0, 0, 0, 0, time.UTC)),
 		opts.FinishDate(time.Time{}), // Remove an existing date.
 	)
 	if err != nil {
@@ -318,7 +317,7 @@ func (c *demoClient) updateMyMangaListStatus(ctx context.Context) {
 		opts.NumVolumesRead(1),
 		opts.NumChaptersRead(5),
 		opts.Comments("Migi"),
-		opts.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
+		opts.StartDate(time.Date(2022, 0o2, 20, 0, 0, 0, 0, time.UTC)),
 		opts.FinishDate(time.Time{}), // Remove an existing date.
 	)
 	if err != nil {

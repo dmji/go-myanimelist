@@ -12,6 +12,7 @@ type StartDate time.Time
 func (d StartDate) UpdateMyAnimeListStatusApply(v *url.Values) {
 	v.Set("start_date", formatMALDate(time.Time(d)))
 }
+
 func (d StartDate) UpdateMyMangaListStatusApply(v *url.Values) {
 	v.Set("start_date", formatMALDate(time.Time(d)))
 }

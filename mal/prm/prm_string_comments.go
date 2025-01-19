@@ -9,6 +9,7 @@ type Comments string
 func (c Comments) UpdateMyAnimeListStatusApply(v *url.Values) {
 	v.Set("comments", string(c))
 }
+
 func (c Comments) UpdateMyMangaListStatusApply(v *url.Values) {
 	v.Set("comments", string(c))
 }

@@ -63,7 +63,7 @@ func ExampleSite_User_updatemyliststatus() {
 		opts.NumEpisodesWatched(73),
 		opts.Score(8),
 		opts.Comments("You wa shock!"),
-		opts.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
+		opts.StartDate(time.Date(2022, 0o2, 20, 0, 0, 0, 0, time.UTC)),
 		opts.FinishDate(time.Time{}), // Remove an existing date.
 	)
 	if err != nil {

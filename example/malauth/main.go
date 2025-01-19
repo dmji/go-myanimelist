@@ -149,7 +149,7 @@ func cacheToken(token oauth2.Token) error {
 	if err != nil {
 		return fmt.Errorf("marshaling token %s: %v", token.AccessToken, err)
 	}
-	err = os.WriteFile(cacheName, b, 0644)
+	err = os.WriteFile(cacheName, b, 0o644)
 	if err != nil {
 		return fmt.Errorf("writing token %s to file %q: %v", token.AccessToken, cacheName, err)
 	}

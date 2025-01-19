@@ -11,18 +11,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Install Go
-      uses: actions/setup-go@v5.0.1
-      with:
-        go-version: stable
+      - name: Install Go
+        uses: actions/setup-go@v5.0.1
+        with:
+          go-version: stable
 
-    - name: Checkout code
-      uses: actions/checkout@v4.1.5
+      - name: Checkout code
+        uses: actions/checkout@v4.1.5
 
-    - name: Mod verify
-      run: go mod verify
+      - name: Mod verify
+        run: go mod verify
 
-    - name: Run all tests including integration tests
-      run: |
-        cd test
-        go test -v --client-id=${{ secrets.MAL_CLIENT_ID }} --oauth2-token='${{ secrets.MAL_OAUTH2_TOKEN }}'
+      - name: Run all tests including integration tests
+        run: |
+          cd test
+          go test -v --client-id=${{ secrets.MAL_CLIENT_ID }} --oauth2-token='${{ secrets.MAL_OAUTH2_TOKEN }}'

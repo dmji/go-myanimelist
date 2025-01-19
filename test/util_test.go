@@ -32,7 +32,6 @@ func mockServer() (url string, mux *http.ServeMux, teardown func()) {
 // configured to talk to that test server. Tests should register handlers on
 // mux which provide mock responses for the API method being tested.
 func setup(cls ...*http.Client) (client *mal.Site, mux *http.ServeMux, teardown func()) {
-
 	// client is the MyAnimeList client being tested and is configured to use
 	// test server.
 	var httpClient *http.Client = nil

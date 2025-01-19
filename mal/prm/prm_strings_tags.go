@@ -12,6 +12,7 @@ type Tags []string
 func (t Tags) UpdateMyAnimeListStatusApply(v *url.Values) {
 	v.Set("tags", strings.Join(t, ","))
 }
+
 func (t Tags) UpdateMyMangaListStatusApply(v *url.Values) {
 	v.Set("tags", strings.Join(t, ","))
 }

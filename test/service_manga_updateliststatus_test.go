@@ -29,6 +29,7 @@ func TestUserServiceMangaListError(t *testing.T) {
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "User.MangaList")
 	testErrorResponse(t, err, malhttp.ErrorResponse{Message: "mal is down", Err: "internal"})
 }
+
 func TestMangaServiceUpdateMyListStatus(t *testing.T) {
 	client, mux, teardown := setup()
 	defer teardown()
@@ -68,7 +69,7 @@ func TestMangaServiceUpdateMyListStatus(t *testing.T) {
 		opts.RereadValue.VeryLow(),
 		opts.Tags("foo", "bar"),
 		opts.Comments("comments"),
-		opts.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
+		opts.StartDate(time.Date(2022, 0o2, 20, 0, 0, 0, 0, time.UTC)),
 		opts.FinishDate(time.Time{}),
 	)
 	if err != nil {
@@ -86,7 +87,7 @@ func TestMangaServiceUpdateMyListStatus(t *testing.T) {
 		RereadValue:     1,
 		Tags:            []string{"foo", "bar"},
 		Comments:        "comments",
-		UpdatedAt:       time.Date(2018, 04, 25, 15, 59, 52, 0, time.UTC),
+		UpdatedAt:       time.Date(2018, 0o4, 25, 15, 59, 52, 0, time.UTC),
 		StartDate:       "2022-02-20",
 		FinishDate:      "",
 	}

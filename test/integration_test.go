@@ -133,7 +133,7 @@ func testUpdateUserAnimeList(ctx context.Context, t *testing.T, client *mal.Site
 			prm.RewatchValue(1),
 			prm.Score(1),
 			prm.Tags{"foo", "bar"},
-			prm.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
+			prm.StartDate(time.Date(2022, 0o2, 20, 0, 0, 0, 0, time.UTC)),
 			prm.FinishDate(time.Time{}),
 		); err != nil {
 			t.Fatalf("Anime.UpdateMyListStatus(%d) returned err: %v", id, err)
@@ -211,7 +211,7 @@ func testUpdateUserMangaList(ctx context.Context, t *testing.T, client *mal.Site
 			prm.RereadValue(1),
 			prm.Score(1),
 			prm.Tags{"foo", "bar"},
-			prm.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
+			prm.StartDate(time.Date(2022, 0o2, 20, 0, 0, 0, 0, time.UTC)),
 			prm.FinishDate(time.Time{}),
 		); err != nil {
 			t.Fatalf("Manga.UpdateMyListStatus(%d) returned err: %v", id, err)

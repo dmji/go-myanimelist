@@ -9,6 +9,7 @@ type Score int
 func (s Score) UpdateMyAnimeListStatusApply(v *url.Values) {
 	v.Set("score", itoa(int(s)))
 }
+
 func (s Score) UpdateMyMangaListStatusApply(v *url.Values) {
 	v.Set("score", itoa(int(s)))
 }

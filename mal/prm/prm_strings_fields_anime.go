@@ -1,7 +1,6 @@
 package prm
 
-type AnimeFields struct {
-}
+type AnimeFields struct{}
 
 func (f AnimeFields) ID(p ...string) string {
 	return "id" + argJoin(p...)

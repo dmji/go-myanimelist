@@ -63,7 +63,7 @@ func ExampleSite_Manga_updatemyliststatus() {
 		opts.NumVolumesRead(1),
 		opts.NumChaptersRead(5),
 		opts.Comments("Migi"),
-		opts.StartDate(time.Date(2022, 02, 20, 0, 0, 0, 0, time.UTC)),
+		opts.StartDate(time.Date(2022, 0o2, 20, 0, 0, 0, 0, time.UTC)),
 		opts.FinishDate(time.Time{}), // Remove an existing date.
 	)
 	if err != nil {

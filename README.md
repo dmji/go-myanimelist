@@ -68,7 +68,7 @@ func (c *clientIDTransport) RoundTrip(req *http.Request) (*http.Response, error)
 
 func main() {
 	publicInfoClient := &http.Client{
-		// Create client ID from https://myanimelist.net/apiconfig. 
+		// Create client ID from https://myanimelist.net/apiconfig.
 		Transport: &clientIDTransport{ClientID: "<Your application client ID>"},
 	}
 
@@ -77,7 +77,7 @@ func main() {
 }
 ```
 
-*(see: example/public_data_only/main.go)*
+_(see: example/public_data_only/main.go)_
 
 ### Authenticating using OAuth2
 
@@ -99,7 +99,7 @@ const storedToken = `
 oauth2Token := new(oauth2.Token)
 _ = json.Unmarshal([]byte(storedToken), oauth2Token)
 
-// Create client ID and secret from https://myanimelist.net/apiconfig. 
+// Create client ID and secret from https://myanimelist.net/apiconfig.
 //
 // Secret is currently optional if you choose App Type 'other'.
 oauth2Conf := &oauth2.Config{
@@ -138,7 +138,7 @@ After registering your application, you can run the example and pass the client
 ID and client secret through flags:
 
     cd example/malauth
-	go run main.go democlient.go --client-id=... --client-secret=...
+    go run main.go democlient.go --client-id=... --client-secret=...
 
     or
 
@@ -204,7 +204,7 @@ anime, _, err := c.User.AnimeList(ctx, "@me",
 )
 // ...
 
-// Get the authenticated user's manga list's second page, sort by score, 
+// Get the authenticated user's manga list's second page, sort by score,
 // include list status, comments and tags.
 opts := c.User.MangaListOptions
 manga, _, err := c.User.MangaList(ctx, "@me",
@@ -298,7 +298,7 @@ To get anime or manga based on a certain ranking:
 
 ```go
 opts := c.Anime.RankingOptions
-anime, _, err := c.Anime.Ranking(ctx, 
+anime, _, err := c.Anime.Ranking(ctx,
 	opts.AnimeRanking.ByPopularity(),
 	opts.Fields(
 		opts.AnimeFields.Rank(),
@@ -406,7 +406,7 @@ time. Check the authentication section to learn how to get one.
 By default the integration tests are skipped when an oauth2 token is not
 provided. To run all tests including the integration tests:
 
-`go test --client-id='<your app client ID>``' --oauth2-token='<your oauth2 token>``'`
+` go test --client-id='<your app client ID>``' --oauth2-token='<your oauth2 token>``' `
 
 ## License
 

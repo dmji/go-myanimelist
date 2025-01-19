@@ -11,7 +11,7 @@ type AnimeListOptionProvider struct {
 	SortAnimeList
 	AnimeStatus
 	UserListFields
-	//AnimeFields
+	// AnimeFields
 }
 
 func (s AnimeListOptionProvider) NSFW(v bool) NSFW {

@@ -10,8 +10,7 @@ type PagingOption interface {
 	PagingApply(v *url.Values)
 }
 
-type PagingOptionProvider struct {
-}
+type PagingOptionProvider struct{}
 
 func (s PagingOptionProvider) Limit(v int) Limit   { return NewLimit(v) }
 func (s PagingOptionProvider) Offset(v int) Offset { return Offset(v) }
