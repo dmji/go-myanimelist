@@ -3,35 +3,35 @@ package mal_test
 import (
 	"testing"
 
-	"github.com/dmji/go-myanimelist/mal/prm"
+	"github.com/dmji/go-myanimelist/mal_opt"
 )
 
 func TestOptionAnimeSeason(t *testing.T) {
-	p := new(prm.AnimeSeason)
+	p := new(mal_opt.AnimeSeason)
 	tests := []struct {
 		name string
-		in   func() prm.AnimeSeason
-		out  prm.AnimeSeason
+		in   func() mal_opt.AnimeSeason
+		out  mal_opt.AnimeSeason
 	}{
 		{
 			name: "Winter",
 			in:   p.Winter,
-			out:  prm.AnimeSeasonWinter,
+			out:  mal_opt.AnimeSeasonWinter,
 		},
 		{
 			name: "Spring",
 			in:   p.Spring,
-			out:  prm.AnimeSeasonSpring,
+			out:  mal_opt.AnimeSeasonSpring,
 		},
 		{
 			name: "Summer",
 			in:   p.Summer,
-			out:  prm.AnimeSeasonSummer,
+			out:  mal_opt.AnimeSeasonSummer,
 		},
 		{
 			name: "Fall",
 			in:   p.Fall,
-			out:  prm.AnimeSeasonFall,
+			out:  mal_opt.AnimeSeasonFall,
 		},
 	}
 

@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/dmji/go-myanimelist/mal/maltype"
+	"github.com/dmji/go-myanimelist/mal_type"
 )
 
 func TestAnimeServiceSuggested(t *testing.T) {
@@ -49,7 +49,7 @@ func TestAnimeServiceSuggested(t *testing.T) {
 	if err != nil {
 		t.Errorf("Anime.Suggested returned error: %v", err)
 	}
-	want := []maltype.Anime{{ID: 1}, {ID: 2}}
+	want := []mal_type.Anime{{ID: 1}, {ID: 2}}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("Anime.Suggested returned\nhave: %+v\n\nwant: %+v", got, want)
 	}

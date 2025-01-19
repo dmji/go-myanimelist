@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/dmji/go-myanimelist/mal/malhttp"
-	"github.com/dmji/go-myanimelist/mal/maltype"
-	"github.com/dmji/go-myanimelist/mal/prm"
+	"github.com/dmji/go-myanimelist/mal_client"
+	"github.com/dmji/go-myanimelist/mal_opt"
+	"github.com/dmji/go-myanimelist/mal_type"
 )
 
 // UserService handles communication with the user related methods of the
@@ -17,15 +17,15 @@ import (
 // https://myanimelist.net/apiconfig/references/api/v2#operation/users_user_id_animelist_get
 // https://myanimelist.net/apiconfig/references/api/v2#operation/users_user_id_mangalist_get
 type UserService struct {
-	client *malhttp.Client
+	client *mal_client.Client
 
-	AnimeListOptions prm.AnimeListOptionProvider
-	MangaListOptions prm.MangaListOptionProvider
-	MyInfoOptions    prm.MyInfoOptionProvider
+	AnimeListOptions mal_opt.AnimeListOptionProvider
+	MangaListOptions mal_opt.MangaListOptionProvider
+	MyInfoOptions    mal_opt.MyInfoOptionProvider
 }
 
 // NewUserService returns a new UserService.
-func NewUserService(client *malhttp.Client) *UserService {
+func NewUserService(client *mal_client.Client) *UserService {
 	return &UserService{
 		client: client,
 	}
@@ -33,9 +33,9 @@ func NewUserService(client *malhttp.Client) *UserService {
 
 // MyInfo returns information about the authenticated user.
 // Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/users_user_id_get
-func (s *UserService) MyInfo(ctx context.Context, options ...prm.MyInfoOption) (*maltype.User, *malhttp.Response, error) {
-	u := new(maltype.User)
-	rawOptions := optionsToFuncs(options, func(t prm.MyInfoOption) func(*url.Values) { return t.MyInfoApply })
+func (s *UserService) MyInfo(ctx context.Context, options ...mal_opt.MyInfoOption) (*mal_type.User, *mal_client.Response, error) {
+	u := new(mal_type.User)
+	rawOptions := optionsToFuncs(options, func(t mal_opt.MyInfoOption) func(*url.Values) { return t.MyInfoApply })
 	resp, err := s.client.RequestGet(ctx, "users/@me", u, rawOptions...)
 	if err != nil {
 		return nil, resp, err
@@ -47,8 +47,8 @@ func (s *UserService) MyInfo(ctx context.Context, options ...prm.MyInfoOption) (
 // The manga can be sorted and filtered using the MangaStatus and SortMangaList
 // option functions respectively.
 // Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/users_user_id_mangalist_get
-func (s *UserService) MangaList(ctx context.Context, username string, options ...prm.MangaListOption) ([]maltype.UserManga, *malhttp.Response, error) {
-	rawOptions := optionsToFuncs(options, func(t prm.MangaListOption) func(*url.Values) { return t.MangaListApply })
+func (s *UserService) MangaList(ctx context.Context, username string, options ...mal_opt.MangaListOption) ([]mal_type.UserManga, *mal_client.Response, error) {
+	rawOptions := optionsToFuncs(options, func(t mal_opt.MangaListOption) func(*url.Values) { return t.MangaListApply })
 	list, resp, err := s.client.RequestMangaList(ctx, fmt.Sprintf("users/%s/mangalist", username), rawOptions...)
 	if err != nil {
 		return nil, resp, err
@@ -60,8 +60,8 @@ func (s *UserService) MangaList(ctx context.Context, username string, options ..
 // The anime can be sorted and filtered using the AnimeStatus and SortAnimeList
 // option functions respectively.
 // Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/users_user_id_animelist_get
-func (s *UserService) AnimeList(ctx context.Context, username string, options ...prm.AnimeListOption) ([]maltype.UserAnime, *malhttp.Response, error) {
-	rawOptions := optionsToFuncs(options, func(t prm.AnimeListOption) func(*url.Values) { return t.AnimeListApply })
+func (s *UserService) AnimeList(ctx context.Context, username string, options ...mal_opt.AnimeListOption) ([]mal_type.UserAnime, *mal_client.Response, error) {
+	rawOptions := optionsToFuncs(options, func(t mal_opt.AnimeListOption) func(*url.Values) { return t.AnimeListApply })
 	list, resp, err := s.client.RequestAnimeList(ctx, fmt.Sprintf("users/%s/animelist", username), rawOptions...)
 	if err != nil {
 		return nil, resp, err

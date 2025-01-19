@@ -5,11 +5,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/dmji/go-myanimelist/mal/prm"
+	"github.com/dmji/go-myanimelist/mal_opt"
 )
 
 func TestOptionAnimeFields(t *testing.T) {
-	af := prm.AnimeFields{}
+	af := mal_opt.AnimeFields{}
 	tests := []struct {
 		name string
 		in   []string
@@ -1394,7 +1394,7 @@ func TestOptionAnimeFields(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			v := url.Values{}
-			prm.NewFields(tt.in...).Apply(&v)
+			mal_opt.NewFields(tt.in...).Apply(&v)
 			got := v.Encode()
 			got = strings.ReplaceAll(got, "%2C", ",")
 			got = strings.ReplaceAll(got, "%7B", "{")

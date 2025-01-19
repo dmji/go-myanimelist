@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/dmji/go-myanimelist/mal/malhttp"
-	"github.com/dmji/go-myanimelist/mal/maltype"
-	"github.com/dmji/go-myanimelist/mal/prm"
+	"github.com/dmji/go-myanimelist/mal_client"
+	"github.com/dmji/go-myanimelist/mal_opt"
+	"github.com/dmji/go-myanimelist/mal_type"
 )
 
 // ForumService handles communication with the forum related methods of the
@@ -15,14 +15,14 @@ import (
 //
 // https://myanimelist.net/apiconfig/references/api/v2#tag/forum
 type ForumService struct {
-	client *malhttp.Client
+	client *mal_client.Client
 
-	TopicsOptions       prm.TopicsOptionProvider
-	TopicDetailsOptions prm.PagingOptionProvider
+	TopicsOptions       mal_opt.TopicsOptionProvider
+	TopicDetailsOptions mal_opt.PagingOptionProvider
 }
 
 // NewForumService returns a new ForumService.
-func NewForumService(client *malhttp.Client) *ForumService {
+func NewForumService(client *mal_client.Client) *ForumService {
 	return &ForumService{
 		client: client,
 	}
@@ -36,8 +36,8 @@ const (
 
 // Boards returns the forum boards.
 // Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/forum_boards_get
-func (s *ForumService) Boards(ctx context.Context) (*maltype.Forum, *malhttp.Response, error) {
-	f := new(maltype.Forum)
+func (s *ForumService) Boards(ctx context.Context) (*mal_type.Forum, *mal_client.Response, error) {
+	f := new(mal_type.Forum)
 	resp, err := s.client.RequestGet(ctx, boardsEndpoint, f)
 	if err != nil {
 		return nil, resp, err
@@ -47,11 +47,11 @@ func (s *ForumService) Boards(ctx context.Context) (*maltype.Forum, *malhttp.Res
 
 // TopicDetails returns details about the forum topic specified by topicID.
 // Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/forum_topic_get
-func (s *ForumService) TopicDetails(ctx context.Context, topicID int, options ...prm.PagingOption) (maltype.TopicDetails, *malhttp.Response, error) {
-	rawOptions := optionsToFuncs(options, func(t prm.PagingOption) func(*url.Values) { return t.PagingApply })
+func (s *ForumService) TopicDetails(ctx context.Context, topicID int, options ...mal_opt.PagingOption) (mal_type.TopicDetails, *mal_client.Response, error) {
+	rawOptions := optionsToFuncs(options, func(t mal_opt.PagingOption) func(*url.Values) { return t.PagingApply })
 	topicDetails, resp, err := s.client.RequestTopicDetails(ctx, fmt.Sprintf("%s/%d", topicEndpoint, topicID), rawOptions...)
 	if err != nil {
-		return maltype.TopicDetails{}, resp, err
+		return mal_type.TopicDetails{}, resp, err
 	}
 	return topicDetails, resp, nil
 }
@@ -59,8 +59,8 @@ func (s *ForumService) TopicDetails(ctx context.Context, topicID int, options ..
 // Topics returns the forum's topics. Make sure to pass at least the Query
 // option or you will get an API error.
 // Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/forum_topics_get
-func (s *ForumService) Topics(ctx context.Context, options ...prm.TopicsOption) ([]maltype.Topic, *malhttp.Response, error) {
-	rawOptions := optionsToFuncs(options, func(t prm.TopicsOption) func(*url.Values) { return t.TopicsApply })
+func (s *ForumService) Topics(ctx context.Context, options ...mal_opt.TopicsOption) ([]mal_type.Topic, *mal_client.Response, error) {
+	rawOptions := optionsToFuncs(options, func(t mal_opt.TopicsOption) func(*url.Values) { return t.TopicsApply })
 	topics, resp, err := s.client.RequestTopics(ctx, topicsEndpoint, rawOptions...)
 	if err != nil {
 		return nil, resp, err

@@ -7,8 +7,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/dmji/go-myanimelist/mal/malhttp"
-	"github.com/dmji/go-myanimelist/mal/maltype"
+	"github.com/dmji/go-myanimelist/mal_client"
+	"github.com/dmji/go-myanimelist/mal_type"
 )
 
 func TestAnimeServiceDetails(t *testing.T) {
@@ -32,7 +32,7 @@ func TestAnimeServiceDetails(t *testing.T) {
 	if err != nil {
 		t.Errorf("Anime.Details returned error: %v", err)
 	}
-	want := &maltype.Anime{ID: 1}
+	want := &mal_type.Anime{ID: 1}
 	if got := a; !reflect.DeepEqual(got, want) {
 		t.Errorf("Anime.Details returned\nhave: %+v\n\nwant: %+v", got, want)
 	}
@@ -52,5 +52,5 @@ func TestAnimeServiceDetailsError(t *testing.T) {
 	if err == nil {
 		t.Fatal("Anime.Details expected not found error, got no error.")
 	}
-	testErrorResponse(t, err, malhttp.ErrorResponse{Message: "anime deleted", Err: "not_found"})
+	testErrorResponse(t, err, mal_client.ErrorResponse{Message: "anime deleted", Err: "not_found"})
 }

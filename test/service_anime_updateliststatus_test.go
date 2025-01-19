@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dmji/go-myanimelist/mal/malhttp"
-	"github.com/dmji/go-myanimelist/mal/maltype"
+	"github.com/dmji/go-myanimelist/mal_client"
+	"github.com/dmji/go-myanimelist/mal_type"
 )
 
 func TestAnimeServiceUpdateMyListStatus(t *testing.T) {
@@ -56,7 +56,7 @@ func TestAnimeServiceUpdateMyListStatus(t *testing.T) {
 		t.Errorf("Anime.UpdateMyListStatus returned error: %v", err)
 	}
 
-	want := &maltype.AnimeListStatus{
+	want := &mal_type.AnimeListStatus{
 		Status:             opts.AnimeStatus.Completed(),
 		IsRewatching:       true,
 		Score:              8,
@@ -90,5 +90,5 @@ func TestAnimeServiceUpdateMyListStatusError(t *testing.T) {
 		t.Fatal("Anime.UpdateMyListStatus expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "Anime.UpdateMyListStatus")
-	testErrorResponse(t, err, malhttp.ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, mal_client.ErrorResponse{Message: "mal is down", Err: "internal"})
 }

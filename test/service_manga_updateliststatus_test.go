@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dmji/go-myanimelist/mal/malhttp"
-	"github.com/dmji/go-myanimelist/mal/maltype"
+	"github.com/dmji/go-myanimelist/mal_client"
+	"github.com/dmji/go-myanimelist/mal_type"
 )
 
 func TestUserServiceMangaListError(t *testing.T) {
@@ -27,7 +27,7 @@ func TestUserServiceMangaListError(t *testing.T) {
 		t.Fatal("User.MangaList expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "User.MangaList")
-	testErrorResponse(t, err, malhttp.ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, mal_client.ErrorResponse{Message: "mal is down", Err: "internal"})
 }
 
 func TestMangaServiceUpdateMyListStatus(t *testing.T) {
@@ -76,7 +76,7 @@ func TestMangaServiceUpdateMyListStatus(t *testing.T) {
 		t.Errorf("Manga.UpdateMyListStatus returned error: %v", err)
 	}
 
-	want := &maltype.MangaListStatus{
+	want := &mal_type.MangaListStatus{
 		Status:          opts.MangaStatus.Completed(),
 		IsRereading:     true,
 		Score:           8,
@@ -111,5 +111,5 @@ func TestMangaServiceUpdateMyListStatusError(t *testing.T) {
 		t.Fatal("Manga.UpdateMyListStatus expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "Manga.UpdateMyListStatus")
-	testErrorResponse(t, err, malhttp.ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, mal_client.ErrorResponse{Message: "mal is down", Err: "internal"})
 }

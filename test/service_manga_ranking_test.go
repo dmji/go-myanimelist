@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/dmji/go-myanimelist/mal/maltype"
+	"github.com/dmji/go-myanimelist/mal_type"
 )
 
 func TestMangaServiceRanking(t *testing.T) {
@@ -51,7 +51,7 @@ func TestMangaServiceRanking(t *testing.T) {
 	if err != nil {
 		t.Errorf("Manga.Ranking returned error: %v", err)
 	}
-	want := []maltype.Manga{{ID: 1}, {ID: 2}}
+	want := []mal_type.Manga{{ID: 1}, {ID: 2}}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("Manga.Ranking returned\nhave: %+v\n\nwant: %+v", got, want)
 	}

@@ -3,68 +3,68 @@ package mal_test
 import (
 	"testing"
 
-	"github.com/dmji/go-myanimelist/mal/prm"
+	"github.com/dmji/go-myanimelist/mal_opt"
 )
 
 func TestOptionMangaRanking(t *testing.T) {
 	tests := []struct {
 		name string
-		in   func(prm.MangaRanking) prm.MangaRanking
-		out  prm.MangaRanking
+		in   func(mal_opt.MangaRanking) mal_opt.MangaRanking
+		out  mal_opt.MangaRanking
 	}{
 		{
 			name: "All",
-			in:   prm.MangaRanking.All,
-			out:  prm.MangaRankingAll,
+			in:   mal_opt.MangaRanking.All,
+			out:  mal_opt.MangaRankingAll,
 		},
 		{
 			name: "Manga",
-			in:   prm.MangaRanking.Manga,
-			out:  prm.MangaRankingManga,
+			in:   mal_opt.MangaRanking.Manga,
+			out:  mal_opt.MangaRankingManga,
 		},
 		{
 			name: "Oneshots",
-			in:   prm.MangaRanking.Oneshots,
-			out:  prm.MangaRankingOneshots,
+			in:   mal_opt.MangaRanking.Oneshots,
+			out:  mal_opt.MangaRankingOneshots,
 		},
 		{
 			name: "Doujinshi",
-			in:   prm.MangaRanking.Doujinshi,
-			out:  prm.MangaRankingDoujinshi,
+			in:   mal_opt.MangaRanking.Doujinshi,
+			out:  mal_opt.MangaRankingDoujinshi,
 		},
 		{
 			name: "LightNovels",
-			in:   prm.MangaRanking.LightNovels,
-			out:  prm.MangaRankingLightNovels,
+			in:   mal_opt.MangaRanking.LightNovels,
+			out:  mal_opt.MangaRankingLightNovels,
 		},
 		{
 			name: "Novels",
-			in:   prm.MangaRanking.Novels,
-			out:  prm.MangaRankingNovels,
+			in:   mal_opt.MangaRanking.Novels,
+			out:  mal_opt.MangaRankingNovels,
 		},
 		{
 			name: "Manhwa",
-			in:   prm.MangaRanking.Manhwa,
-			out:  prm.MangaRankingManhwa,
+			in:   mal_opt.MangaRanking.Manhwa,
+			out:  mal_opt.MangaRankingManhwa,
 		},
 		{
 			name: "Manhua",
-			in:   prm.MangaRanking.Manhua,
-			out:  prm.MangaRankingManhua,
+			in:   mal_opt.MangaRanking.Manhua,
+			out:  mal_opt.MangaRankingManhua,
 		},
 		{
 			name: "ByPopularity",
-			in:   prm.MangaRanking.ByPopularity,
-			out:  prm.MangaRankingByPopularity,
+			in:   mal_opt.MangaRanking.ByPopularity,
+			out:  mal_opt.MangaRankingByPopularity,
 		},
 		{
 			name: "Favorite",
-			in:   prm.MangaRanking.Favorite,
-			out:  prm.MangaRankingFavorite,
+			in:   mal_opt.MangaRanking.Favorite,
+			out:  mal_opt.MangaRankingFavorite,
 		},
 	}
 
-	p := new(prm.MangaRanking)
+	p := new(mal_opt.MangaRanking)
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := tt.in(*p)

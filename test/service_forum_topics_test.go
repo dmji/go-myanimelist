@@ -7,9 +7,9 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/dmji/go-myanimelist/mal/malhttp"
-	"github.com/dmji/go-myanimelist/mal/maltype"
-	"github.com/dmji/go-myanimelist/mal/prm"
+	"github.com/dmji/go-myanimelist/mal_client"
+	"github.com/dmji/go-myanimelist/mal_opt"
+	"github.com/dmji/go-myanimelist/mal_type"
 )
 
 func TestForumServiceTopics(t *testing.T) {
@@ -44,8 +44,8 @@ func TestForumServiceTopics(t *testing.T) {
 	got, resp, err := client.Forum.Topics(ctx,
 		opts.BoardID(1),
 		opts.SubboardID(1),
-		prm.Limit(10),
-		prm.Offset(0),
+		mal_opt.Limit(10),
+		mal_opt.Offset(0),
 		opts.SortTopics.Recent(),
 		opts.Query("foo"),
 		opts.TopicUserName("bar"),
@@ -55,7 +55,7 @@ func TestForumServiceTopics(t *testing.T) {
 		t.Errorf("Forum.Topics returned error: %v", err)
 	}
 
-	want := []maltype.Topic{{ID: 1}, {ID: 2}}
+	want := []mal_type.Topic{{ID: 1}, {ID: 2}}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("Forum.Topics returned\nhave: %+v\n\nwant: %+v", got, want)
 	}
@@ -77,5 +77,5 @@ func TestForumServiceTopicsError(t *testing.T) {
 		t.Fatal("Forum.Topics expected internal error, got no error.")
 	}
 	testResponseStatusCode(t, resp, http.StatusInternalServerError, "Forum.Topics")
-	testErrorResponse(t, err, malhttp.ErrorResponse{Message: "mal is down", Err: "internal"})
+	testErrorResponse(t, err, mal_client.ErrorResponse{Message: "mal is down", Err: "internal"})
 }

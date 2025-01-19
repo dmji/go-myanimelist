@@ -1,16 +1,15 @@
 package mal
 
 import (
-	"context"
 	"net/http"
 	"net/url"
 
-	"github.com/dmji/go-myanimelist/mal/malhttp"
+	"github.com/dmji/go-myanimelist/mal_client"
 )
 
 // Site manages communication with the MyAnimeList API.
 type Site struct {
-	client *malhttp.Client
+	client *mal_client.Client
 
 	Anime *AnimeService
 	Manga *MangaService
@@ -31,7 +30,7 @@ func NewSite(httpClient *http.Client, baseURL *string) (*Site, error) {
 		httpClient = &http.Client{}
 	}
 	if baseURL == nil {
-		defaultURL := malhttp.DefaultBaseURL
+		defaultURL := mal_client.DefaultBaseURL
 		baseURL = &defaultURL
 	}
 
@@ -40,7 +39,7 @@ func NewSite(httpClient *http.Client, baseURL *string) (*Site, error) {
 		return nil, err
 	}
 
-	c := malhttp.NewClient(httpClient, baseRelURL)
+	c := mal_client.NewClient(httpClient, baseRelURL)
 	return &Site{
 		client: c,
 		User:   NewUserService(c),
@@ -48,22 +47,4 @@ func NewSite(httpClient *http.Client, baseURL *string) (*Site, error) {
 		Manga:  NewMangaService(c),
 		Forum:  NewForumService(c),
 	}, nil
-}
-
-// HTTPDriver is the interface that wraps the Do and NewRequest methods.
-//
-// Hack to http.client, not recommend to use
-type HTTPDriver interface {
-	Do(ctx context.Context, req *http.Request, v interface{}) (*malhttp.Response, error)
-	NewRequest(method, urlStr string, urlOptions ...func(v *url.Values)) (*http.Request, error)
-}
-
-// DirectRequest returns the underlying http.client interface
-func (c *Site) DirectRequest() HTTPDriver {
-	return c.client
-}
-
-// BaseURL returns the base url of the http.client active request url. By default, this is reference to server MyAnimeList API
-func (c *Site) BaseURL() string {
-	return c.client.BaseURL.String()
 }

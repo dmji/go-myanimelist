@@ -3,7 +3,7 @@ package mal
 import (
 	"net/url"
 
-	"github.com/dmji/go-myanimelist/mal/prm"
+	"github.com/dmji/go-myanimelist/mal_opt"
 )
 
 func optionsToFuncs[T any](options []T, fn func(t T) func(*url.Values)) []func(v *url.Values) {
@@ -14,8 +14,8 @@ func optionsToFuncs[T any](options []T, fn func(t T) func(*url.Values)) []func(v
 	return rawOptions
 }
 
-func detailsOptionsToFuncs(options []prm.DetailsOption) []func(v *url.Values) {
-	fn := func(t prm.DetailsOption) func(*url.Values) { return t.DetailsApply }
+func detailsOptionsToFuncs(options []mal_opt.DetailsOption) []func(v *url.Values) {
+	fn := func(t mal_opt.DetailsOption) func(*url.Values) { return t.DetailsApply }
 
 	rawOptions := make([]func(v *url.Values), len(options))
 	for i := range options {
@@ -24,8 +24,8 @@ func detailsOptionsToFuncs(options []prm.DetailsOption) []func(v *url.Values) {
 	return rawOptions
 }
 
-func optionFromQuery(query string) prm.OptionFunc {
-	return prm.OptionFunc(func(v *url.Values) {
+func optionFromQuery(query string) mal_opt.OptionFunc {
+	return mal_opt.OptionFunc(func(v *url.Values) {
 		v.Set("q", query)
 	})
 }

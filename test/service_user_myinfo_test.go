@@ -7,8 +7,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/dmji/go-myanimelist/mal/malhttp"
-	"github.com/dmji/go-myanimelist/mal/maltype"
+	"github.com/dmji/go-myanimelist/mal_client"
+	"github.com/dmji/go-myanimelist/mal_type"
 )
 
 func TestUserServiceMyInfo(t *testing.T) {
@@ -34,7 +34,7 @@ func TestUserServiceMyInfo(t *testing.T) {
 	if err != nil {
 		t.Errorf("User.MyInfo returned error: %v", err)
 	}
-	want := &maltype.User{ID: 1}
+	want := &mal_type.User{ID: 1}
 	if got := u; !reflect.DeepEqual(got, want) {
 		t.Errorf("User.MyInfo returned\nhave: %+v\n\nwant: %+v", got, want)
 	}
@@ -54,5 +54,5 @@ func TestUserServiceMyInfoError(t *testing.T) {
 	if err == nil {
 		t.Fatal("User.MyInfo expected not found error, got no error.")
 	}
-	testErrorResponse(t, err, malhttp.ErrorResponse{Err: "not_found"})
+	testErrorResponse(t, err, mal_client.ErrorResponse{Err: "not_found"})
 }

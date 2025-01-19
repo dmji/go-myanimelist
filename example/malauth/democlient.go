@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/dmji/go-myanimelist/mal"
-	"github.com/dmji/go-myanimelist/mal/prm"
+	"github.com/dmji/go-myanimelist/mal_opt"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )
@@ -354,10 +354,10 @@ func (c *demoClient) animeRanking(ctx context.Context) {
 		return
 	}
 
-	rankings := []prm.AnimeRanking{
-		prm.AnimeRankingAiring,
-		prm.AnimeRankingAll,
-		prm.AnimeRankingByPopularity,
+	rankings := []mal_opt.AnimeRanking{
+		mal_opt.AnimeRankingAiring,
+		mal_opt.AnimeRankingAll,
+		mal_opt.AnimeRankingByPopularity,
 	}
 
 	opts := c.Anime.RankingOptions

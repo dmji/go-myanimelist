@@ -3,43 +3,43 @@ package mal_test
 import (
 	"testing"
 
-	"github.com/dmji/go-myanimelist/mal/prm"
+	"github.com/dmji/go-myanimelist/mal_opt"
 )
 
 func TestOptionMangaStatus(t *testing.T) {
 	tests := []struct {
 		name string
-		in   func(prm.MangaStatus) prm.MangaStatus
-		out  prm.MangaStatus
+		in   func(mal_opt.MangaStatus) mal_opt.MangaStatus
+		out  mal_opt.MangaStatus
 	}{
 		{
 			name: "Reading",
-			in:   prm.MangaStatus.Reading,
-			out:  prm.MangaStatusReading,
+			in:   mal_opt.MangaStatus.Reading,
+			out:  mal_opt.MangaStatusReading,
 		},
 		{
 			name: "Completed",
-			in:   prm.MangaStatus.Completed,
-			out:  prm.MangaStatusCompleted,
+			in:   mal_opt.MangaStatus.Completed,
+			out:  mal_opt.MangaStatusCompleted,
 		},
 		{
 			name: "OnHold",
-			in:   prm.MangaStatus.OnHold,
-			out:  prm.MangaStatusOnHold,
+			in:   mal_opt.MangaStatus.OnHold,
+			out:  mal_opt.MangaStatusOnHold,
 		},
 		{
 			name: "Dropped",
-			in:   prm.MangaStatus.Dropped,
-			out:  prm.MangaStatusDropped,
+			in:   mal_opt.MangaStatus.Dropped,
+			out:  mal_opt.MangaStatusDropped,
 		},
 		{
 			name: "PlanToRead",
-			in:   prm.MangaStatus.PlanToRead,
-			out:  prm.MangaStatusPlanToRead,
+			in:   mal_opt.MangaStatus.PlanToRead,
+			out:  mal_opt.MangaStatusPlanToRead,
 		},
 	}
 
-	p := new(prm.MangaStatus)
+	p := new(mal_opt.MangaStatus)
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := tt.in(*p)

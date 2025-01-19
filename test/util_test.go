@@ -10,7 +10,7 @@ import (
 	"testing"
 
 	"github.com/dmji/go-myanimelist/mal"
-	"github.com/dmji/go-myanimelist/mal/malhttp"
+	"github.com/dmji/go-myanimelist/mal_client"
 )
 
 type urlValues map[string]string
@@ -84,9 +84,9 @@ func testContentType(t *testing.T, r *http.Request, want string) {
 	}
 }
 
-func testErrorResponse(t *testing.T, err error, want malhttp.ErrorResponse) {
+func testErrorResponse(t *testing.T, err error, want mal_client.ErrorResponse) {
 	t.Helper()
-	errResp := &malhttp.ErrorResponse{}
+	errResp := &mal_client.ErrorResponse{}
 	if !errors.As(err, &errResp) {
 		t.Fatalf("err is type %T, want type *ErrorResponse.", err)
 	}
@@ -98,7 +98,7 @@ func testErrorResponse(t *testing.T, err error, want malhttp.ErrorResponse) {
 	}
 }
 
-func testResponseOffset(t *testing.T, resp *malhttp.Response, next, prev int, prefix string) {
+func testResponseOffset(t *testing.T, resp *mal_client.Response, next, prev int, prefix string) {
 	t.Helper()
 	if resp == nil {
 		t.Fatalf("%s resp is nil, want NextOffset=%d and PrevOffset=%d", prefix, next, prev)
@@ -111,7 +111,7 @@ func testResponseOffset(t *testing.T, resp *malhttp.Response, next, prev int, pr
 	}
 }
 
-func testResponseStatusCode(t *testing.T, resp *malhttp.Response, code int, prefix string) {
+func testResponseStatusCode(t *testing.T, resp *mal_client.Response, code int, prefix string) {
 	t.Helper()
 	if resp == nil {
 		t.Fatalf("%s resp is nil, want StatusCode=%d", prefix, code)

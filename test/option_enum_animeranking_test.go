@@ -3,63 +3,63 @@ package mal_test
 import (
 	"testing"
 
-	"github.com/dmji/go-myanimelist/mal/prm"
+	"github.com/dmji/go-myanimelist/mal_opt"
 )
 
 func TestOptionAnimeRanking(t *testing.T) {
 	tests := []struct {
 		name string
-		in   func(prm.AnimeRanking) prm.AnimeRanking
-		out  prm.AnimeRanking
+		in   func(mal_opt.AnimeRanking) mal_opt.AnimeRanking
+		out  mal_opt.AnimeRanking
 	}{
 		{
 			name: "All",
-			in:   prm.AnimeRanking.All,
-			out:  prm.AnimeRankingAll,
+			in:   mal_opt.AnimeRanking.All,
+			out:  mal_opt.AnimeRankingAll,
 		},
 		{
 			name: "Airing",
-			in:   prm.AnimeRanking.Airing,
-			out:  prm.AnimeRankingAiring,
+			in:   mal_opt.AnimeRanking.Airing,
+			out:  mal_opt.AnimeRankingAiring,
 		},
 		{
 			name: "Upcoming",
-			in:   prm.AnimeRanking.Upcoming,
-			out:  prm.AnimeRankingUpcoming,
+			in:   mal_opt.AnimeRanking.Upcoming,
+			out:  mal_opt.AnimeRankingUpcoming,
 		},
 		{
 			name: "TV",
-			in:   prm.AnimeRanking.TV,
-			out:  prm.AnimeRankingTV,
+			in:   mal_opt.AnimeRanking.TV,
+			out:  mal_opt.AnimeRankingTV,
 		},
 		{
 			name: "OVA",
-			in:   prm.AnimeRanking.OVA,
-			out:  prm.AnimeRankingOVA,
+			in:   mal_opt.AnimeRanking.OVA,
+			out:  mal_opt.AnimeRankingOVA,
 		},
 		{
 			name: "Movie",
-			in:   prm.AnimeRanking.Movie,
-			out:  prm.AnimeRankingMovie,
+			in:   mal_opt.AnimeRanking.Movie,
+			out:  mal_opt.AnimeRankingMovie,
 		},
 		{
 			name: "Special",
-			in:   prm.AnimeRanking.Special,
-			out:  prm.AnimeRankingSpecial,
+			in:   mal_opt.AnimeRanking.Special,
+			out:  mal_opt.AnimeRankingSpecial,
 		},
 		{
 			name: "ByPopularity",
-			in:   prm.AnimeRanking.ByPopularity,
-			out:  prm.AnimeRankingByPopularity,
+			in:   mal_opt.AnimeRanking.ByPopularity,
+			out:  mal_opt.AnimeRankingByPopularity,
 		},
 		{
 			name: "Favorite",
-			in:   prm.AnimeRanking.Favorite,
-			out:  prm.AnimeRankingFavorite,
+			in:   mal_opt.AnimeRanking.Favorite,
+			out:  mal_opt.AnimeRankingFavorite,
 		},
 	}
 
-	p := new(prm.AnimeRanking)
+	p := new(mal_opt.AnimeRanking)
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := tt.in(*p)
