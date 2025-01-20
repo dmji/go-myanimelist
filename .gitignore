@@ -6,3 +6,5 @@ cover
 *.exe
 auth
 !auth/
+
+.vscode
