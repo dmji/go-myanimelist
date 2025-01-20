@@ -56,7 +56,7 @@ func run() error {
 		return err
 	}
 
-	malc, err := mal.NewSite(tokenClient, nil)
+	malc, err := mal.NewSite(mal.WithCustomClientUrl(tokenClient, nil))
 	if err != nil {
 		return err
 	}

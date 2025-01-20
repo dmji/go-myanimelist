@@ -15,7 +15,7 @@ import (
 // This is how the MyAnimeList requires to receive the data when adding or
 // updating entries.
 func (c *Client) NewRequest(method, urlStr string, urlOptions ...func(v *url.Values)) (*http.Request, error) {
-	u, err := c.BaseURL.Parse(urlStr)
+	u, err := c.baseURL.Parse(urlStr)
 	if err != nil {
 		return nil, err
 	}

@@ -12,7 +12,7 @@ import (
 )
 
 func TestForumServiceBoards(t *testing.T) {
-	client, mux, teardown := setup()
+	_, client, mux, teardown := setup()
 	defer teardown()
 
 	mux.HandleFunc("/forum/boards", func(w http.ResponseWriter, r *http.Request) {
@@ -64,7 +64,7 @@ func TestForumServiceBoards(t *testing.T) {
 }
 
 func TestForumServiceBoardsError(t *testing.T) {
-	client, mux, teardown := setup()
+	_, client, mux, teardown := setup()
 	defer teardown()
 
 	mux.HandleFunc("/forum/boards", func(w http.ResponseWriter, r *http.Request) {

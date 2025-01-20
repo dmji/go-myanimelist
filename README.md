@@ -386,11 +386,11 @@ See package examples:
 
 To run all unit tests:
 
-`go test .\test\... -cover -coverpkg='./mal/...'`
+`go test .\... -cover -coverpkg='./mal,./mal_client,./mal_opt,./mal_type'`
 
 To see test coverage in your browser:
 
-`go test .\test\... -coverpkg='./mal/...' -covermode=count -coverprofile=count && go tool cover -html count`
+`go test .\... -coverpkg='./mal,./mal_client,./mal_opt,./mal_type' -covermode=count -coverprofile=count && go tool cover -html count`
 
 ## Integration Testing
 

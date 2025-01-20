@@ -12,6 +12,7 @@ func (c *Client) RequestGet(ctx context.Context, path string, v interface{}, opt
 	if err != nil {
 		return nil, err
 	}
+
 	q := req.URL.Query()
 	fillValues(&q, options...)
 	req.URL.RawQuery = q.Encode()

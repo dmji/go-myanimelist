@@ -13,7 +13,7 @@ import (
 )
 
 func TestUserServiceMangaListError(t *testing.T) {
-	client, mux, teardown := setup()
+	_, client, mux, teardown := setup()
 	defer teardown()
 
 	mux.HandleFunc("/users/foo/mangalist", func(w http.ResponseWriter, r *http.Request) {
@@ -31,7 +31,7 @@ func TestUserServiceMangaListError(t *testing.T) {
 }
 
 func TestMangaServiceUpdateMyListStatus(t *testing.T) {
-	client, mux, teardown := setup()
+	_, client, mux, teardown := setup()
 	defer teardown()
 
 	mux.HandleFunc("/manga/1/my_list_status", func(w http.ResponseWriter, r *http.Request) {
@@ -97,7 +97,7 @@ func TestMangaServiceUpdateMyListStatus(t *testing.T) {
 }
 
 func TestMangaServiceUpdateMyListStatusError(t *testing.T) {
-	client, mux, teardown := setup()
+	_, client, mux, teardown := setup()
 	defer teardown()
 
 	mux.HandleFunc("/manga/1/my_list_status", func(w http.ResponseWriter, r *http.Request) {

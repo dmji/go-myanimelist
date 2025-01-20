@@ -12,7 +12,7 @@ import (
 )
 
 func TestMangaServiceList(t *testing.T) {
-	client, mux, teardown := setup()
+	_, client, mux, teardown := setup()
 	defer teardown()
 
 	mux.HandleFunc("/manga", func(w http.ResponseWriter, r *http.Request) {
@@ -61,7 +61,7 @@ func TestMangaServiceList(t *testing.T) {
 }
 
 func TestMangaServiceListError(t *testing.T) {
-	client, mux, teardown := setup()
+	_, client, mux, teardown := setup()
 	defer teardown()
 
 	mux.HandleFunc("/manga", func(w http.ResponseWriter, r *http.Request) {

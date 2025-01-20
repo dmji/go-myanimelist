@@ -13,7 +13,7 @@ import (
 )
 
 func TestAnimeServiceList(t *testing.T) {
-	client, mux, teardown := setup()
+	_, client, mux, teardown := setup()
 	defer teardown()
 
 	mux.HandleFunc("/anime", func(w http.ResponseWriter, r *http.Request) {
@@ -98,7 +98,7 @@ func TestAnimeServiceListParsePagingError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			client, mux, teardown := setup()
+			_, client, mux, teardown := setup()
 			defer teardown()
 
 			mux.HandleFunc("/anime", func(w http.ResponseWriter, r *http.Request) {
@@ -119,7 +119,7 @@ func TestAnimeServiceListParsePagingError(t *testing.T) {
 }
 
 func TestAnimeServiceListError(t *testing.T) {
-	client, mux, teardown := setup()
+	_, client, mux, teardown := setup()
 	defer teardown()
 
 	mux.HandleFunc("/anime", func(w http.ResponseWriter, r *http.Request) {

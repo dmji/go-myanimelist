@@ -11,7 +11,7 @@ import (
 )
 
 func TestMangaServiceRanking(t *testing.T) {
-	client, mux, teardown := setup()
+	_, client, mux, teardown := setup()
 	defer teardown()
 
 	mux.HandleFunc("/manga/ranking", func(w http.ResponseWriter, r *http.Request) {

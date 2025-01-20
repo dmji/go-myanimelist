@@ -17,7 +17,7 @@ func ExampleSite_Manga_list() {
 	server := newStubServer()
 	defer server.Close()
 
-	c, err := mal.NewSite(nil, &server.URL)
+	c, err := mal.NewSite(mal.WithCustomClientUrl(nil, &server.URL))
 	if err != nil {
 		fmt.Printf("Site creation error: %v", err)
 		return
@@ -54,7 +54,7 @@ func ExampleSite_Manga_details() {
 	server := newStubServer()
 	defer server.Close()
 
-	c, err := mal.NewSite(nil, &server.URL)
+	c, err := mal.NewSite(mal.WithCustomClientUrl(nil, &server.URL))
 	if err != nil {
 		fmt.Printf("Site creation error: %v", err)
 		return
@@ -119,7 +119,7 @@ func ExampleSite_Manga_ranking() {
 	server := newStubServer()
 	defer server.Close()
 
-	c, err := mal.NewSite(nil, &server.URL)
+	c, err := mal.NewSite(mal.WithCustomClientUrl(nil, &server.URL))
 	if err != nil {
 		fmt.Printf("Site creation error: %v", err)
 		return
@@ -155,7 +155,7 @@ func ExampleSite_Manga_deletemylistitem() {
 	server := newStubServer()
 	defer server.Close()
 
-	c, err := mal.NewSite(nil, &server.URL)
+	c, err := mal.NewSite(mal.WithCustomClientUrl(nil, &server.URL))
 	if err != nil {
 		fmt.Printf("Site creation error: %v", err)
 		return

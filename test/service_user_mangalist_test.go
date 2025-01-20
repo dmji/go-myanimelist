@@ -11,7 +11,7 @@ import (
 )
 
 func TestUserServiceMangaList(t *testing.T) {
-	client, mux, teardown := setup()
+	_, client, mux, teardown := setup()
 	defer teardown()
 
 	mux.HandleFunc("/users/foo/mangalist", func(w http.ResponseWriter, r *http.Request) {

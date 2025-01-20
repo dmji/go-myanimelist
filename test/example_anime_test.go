@@ -19,7 +19,7 @@ func ExampleSite_Anime_list() {
 	server := newStubServer()
 	defer server.Close()
 
-	c, err := mal.NewSite(nil, &server.URL)
+	c, err := mal.NewSite(mal.WithCustomClientUrl(nil, &server.URL))
 	if err != nil {
 		fmt.Printf("Site creation error: %v", err)
 		return
@@ -56,7 +56,7 @@ func ExampleSite_Anime_details() {
 	server := newStubServer()
 	defer server.Close()
 
-	c, err := mal.NewSite(nil, &server.URL)
+	c, err := mal.NewSite(mal.WithCustomClientUrl(nil, &server.URL))
 	if err != nil {
 		fmt.Printf("Site creation error: %v", err)
 		return
@@ -123,7 +123,7 @@ func ExampleSite_Anime_ranking() {
 	server := newStubServer()
 	defer server.Close()
 
-	c, err := mal.NewSite(nil, &server.URL)
+	c, err := mal.NewSite(mal.WithCustomClientUrl(nil, &server.URL))
 	if err != nil {
 		fmt.Printf("Site creation error: %v", err)
 		return
@@ -162,7 +162,7 @@ func ExampleSite_Anime_seasonal() {
 	server := newStubServer()
 	defer server.Close()
 
-	c, err := mal.NewSite(nil, &server.URL)
+	c, err := mal.NewSite(mal.WithCustomClientUrl(nil, &server.URL))
 	if err != nil {
 		fmt.Printf("Site creation error: %v", err)
 		return
@@ -199,7 +199,7 @@ func ExampleSite_Anime_suggested() {
 	server := newStubServer()
 	defer server.Close()
 
-	c, err := mal.NewSite(nil, &server.URL)
+	c, err := mal.NewSite(mal.WithCustomClientUrl(nil, &server.URL))
 	if err != nil {
 		fmt.Printf("Site creation error: %v", err)
 		return
@@ -234,7 +234,7 @@ func ExampleSite_Anime_deletemylistttem() {
 	server := newStubServer()
 	defer server.Close()
 
-	c, err := mal.NewSite(nil, &server.URL)
+	c, err := mal.NewSite(mal.WithCustomClientUrl(nil, &server.URL))
 	if err != nil {
 		fmt.Printf("Site creation error: %v", err)
 		return

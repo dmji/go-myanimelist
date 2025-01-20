@@ -10,13 +10,20 @@ import (
 	"github.com/dmji/go-myanimelist/mal_type"
 )
 
+type clientManga interface {
+	RequestGet(ctx context.Context, path string, v interface{}, options ...func(v *url.Values)) (*mal_client.Response, error)
+	UpdateMyListStatus(ctx context.Context, path string, id int, v interface{}, options ...func(v *url.Values)) (*mal_client.Response, error)
+	DeleteMyListItem(ctx context.Context, path string, animeID int) (*mal_client.Response, error)
+	RequestMangaList(ctx context.Context, path string, options ...func(v *url.Values)) ([]mal_type.UserManga, *mal_client.Response, error)
+}
+
 // MangaService handles communication with the manga related methods of the
 // MyAnimeList API:
 //
 // https://myanimelist.net/apiconfig/references/api/v2#tag/manga
 // https://myanimelist.net/apiconfig/references/api/v2#tag/user-mangalist
 type MangaService struct {
-	client *mal_client.Client
+	client clientManga
 
 	DetailsOptions            mal_opt.DetailsOptionProvider
 	ListOptions               mal_opt.OptionalParamProvider
@@ -25,7 +32,7 @@ type MangaService struct {
 }
 
 // NewMangaService returns a new MangaService.
-func NewMangaService(client *mal_client.Client) *MangaService {
+func NewMangaService(client clientManga) *MangaService {
 	return &MangaService{
 		client: client,
 	}
@@ -35,7 +42,7 @@ func NewMangaService(client *mal_client.Client) *MangaService {
 // user specific data by using the optional field.
 // Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/manga_get
 func (s *MangaService) List(ctx context.Context, search string, options ...mal_opt.OptionalParam) ([]mal_type.Manga, *mal_client.Response, error) {
-	options = append(options, optionFromQuery(search))
+	options = append(options, withOptionFromQuery(search))
 	return s.list(ctx, "manga", options...)
 }
 

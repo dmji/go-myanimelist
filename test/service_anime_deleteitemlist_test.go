@@ -9,7 +9,7 @@ import (
 )
 
 func TestAnimeServiceDeleteMyListItem(t *testing.T) {
-	client, mux, teardown := setup()
+	_, client, mux, teardown := setup()
 	defer teardown()
 
 	mux.HandleFunc("/anime/1/my_list_status", func(w http.ResponseWriter, r *http.Request) {
@@ -25,7 +25,7 @@ func TestAnimeServiceDeleteMyListItem(t *testing.T) {
 }
 
 func TestAnimeServiceDeleteMyListItemError(t *testing.T) {
-	client, mux, teardown := setup()
+	_, client, mux, teardown := setup()
 	defer teardown()
 
 	mux.HandleFunc("/anime/1/my_list_status", func(w http.ResponseWriter, r *http.Request) {

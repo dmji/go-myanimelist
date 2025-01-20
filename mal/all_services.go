@@ -1,15 +1,26 @@
 package mal
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 
 	"github.com/dmji/go-myanimelist/mal_client"
 )
 
+type client interface {
+	Do(ctx context.Context, req *http.Request, v interface{}) (*mal_client.Response, error)
+	NewRequest(method, urlStr string, urlOptions ...func(v *url.Values)) (*http.Request, error)
+
+	clientAnime
+	clientManga
+	clientUser
+	clientForum
+}
+
 // Site manages communication with the MyAnimeList API.
 type Site struct {
-	client *mal_client.Client
+	client client
 
 	Anime *AnimeService
 	Manga *MangaService
@@ -25,26 +36,22 @@ type Site struct {
 // perform the authentication for you. Such a client is provided by the
 // golang.org/x/oauth2 package. Check out the example directory of the project
 // for a full authentication example.
-func NewSite(httpClient *http.Client, baseURL *string) (*Site, error) {
-	if httpClient == nil {
-		httpClient = &http.Client{}
+func NewSite(opts ...fnOptionApply) (*Site, error) {
+	opt := &initOptions{}
+	for _, fn := range opts {
+		if err := fn(opt); err != nil {
+			return nil, err
+		}
 	}
-	if baseURL == nil {
-		defaultURL := mal_client.DefaultBaseURL
-		baseURL = &defaultURL
-	}
-
-	baseRelURL, err := url.Parse(*baseURL)
-	if err != nil {
+	if err := opt.initEmptyFields(); err != nil {
 		return nil, err
 	}
 
-	c := mal_client.NewClient(httpClient, baseRelURL)
 	return &Site{
-		client: c,
-		User:   NewUserService(c),
-		Anime:  NewAnimeService(c),
-		Manga:  NewMangaService(c),
-		Forum:  NewForumService(c),
+		client: opt.c,
+		User:   NewUserService(opt.c),
+		Anime:  NewAnimeService(opt.c),
+		Manga:  NewMangaService(opt.c),
+		Forum:  NewForumService(opt.c),
 	}, nil
 }

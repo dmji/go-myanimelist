@@ -13,7 +13,7 @@ import (
 )
 
 func TestAnimeServiceUpdateMyListStatus(t *testing.T) {
-	client, mux, teardown := setup()
+	_, client, mux, teardown := setup()
 	defer teardown()
 
 	mux.HandleFunc("/anime/1/my_list_status", func(w http.ResponseWriter, r *http.Request) {
@@ -76,7 +76,7 @@ func TestAnimeServiceUpdateMyListStatus(t *testing.T) {
 }
 
 func TestAnimeServiceUpdateMyListStatusError(t *testing.T) {
-	client, mux, teardown := setup()
+	_, client, mux, teardown := setup()
 	defer teardown()
 
 	mux.HandleFunc("/anime/1/my_list_status", func(w http.ResponseWriter, r *http.Request) {

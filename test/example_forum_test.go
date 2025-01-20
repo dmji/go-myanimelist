@@ -15,7 +15,7 @@ func ExampleSite_Forum_boards() {
 	server := newStubServer()
 	defer server.Close()
 
-	c, err := mal.NewSite(nil, &server.URL)
+	c, err := mal.NewSite(mal.WithCustomClientUrl(nil, &server.URL))
 	if err != nil {
 		fmt.Printf("Site creation error: %v", err)
 		return
@@ -76,7 +76,7 @@ func ExampleSite_Forum_topics() {
 	server := newStubServer()
 	defer server.Close()
 
-	c, err := mal.NewSite(nil, &server.URL)
+	c, err := mal.NewSite(mal.WithCustomClientUrl(nil, &server.URL))
 	if err != nil {
 		fmt.Printf("Site creation error: %v", err)
 		return
@@ -108,7 +108,7 @@ func ExampleSite_Forum_topicdetails() {
 	server := newStubServer()
 	defer server.Close()
 
-	c, err := mal.NewSite(nil, &server.URL)
+	c, err := mal.NewSite(mal.WithCustomClientUrl(nil, &server.URL))
 	if err != nil {
 		fmt.Printf("Site creation error: %v", err)
 		return

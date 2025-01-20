@@ -12,7 +12,7 @@ import (
 )
 
 func TestUserServiceMyInfo(t *testing.T) {
-	client, mux, teardown := setup()
+	_, client, mux, teardown := setup()
 	defer teardown()
 
 	mux.HandleFunc("/users/@me", func(w http.ResponseWriter, r *http.Request) {
@@ -41,7 +41,7 @@ func TestUserServiceMyInfo(t *testing.T) {
 }
 
 func TestUserServiceMyInfoError(t *testing.T) {
-	client, mux, teardown := setup()
+	_, client, mux, teardown := setup()
 	defer teardown()
 
 	mux.HandleFunc("/users/@me", func(w http.ResponseWriter, r *http.Request) {

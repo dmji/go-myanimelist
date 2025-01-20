@@ -8,13 +8,8 @@ import (
 	"strconv"
 )
 
-type listWithPagination[T any] struct {
-	Data   T      `json:"data"`
-	Paging paging `json:"paging"`
-}
-
 type pagination interface {
-	pagination() paging
+	Pagination() paging
 }
 
 func (c *Client) requestPagedItem(ctx context.Context, path string, p pagination, options ...func(v *url.Values)) (*Response, error) {
@@ -32,7 +27,7 @@ func (c *Client) requestPagedItem(ctx context.Context, path string, p pagination
 		return resp, err
 	}
 
-	prev, next, err := parsePaging(p.pagination())
+	prev, next, err := parsePaging(p.Pagination())
 	if err != nil {
 		return resp, err
 	}

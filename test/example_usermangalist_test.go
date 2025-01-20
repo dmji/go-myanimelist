@@ -16,7 +16,7 @@ func ExampleSite_User_mangalist() {
 	server := newStubServer()
 	defer server.Close()
 
-	c, err := mal.NewSite(nil, &server.URL)
+	c, err := mal.NewSite(mal.WithCustomClientUrl(nil, &server.URL))
 	if err != nil {
 		fmt.Printf("Site creation error: %v", err)
 		return
@@ -51,7 +51,7 @@ func ExampleSite_Manga_updatemyliststatus() {
 	server := newStubServer()
 	defer server.Close()
 
-	c, err := mal.NewSite(nil, &server.URL)
+	c, err := mal.NewSite(mal.WithCustomClientUrl(nil, &server.URL))
 	if err != nil {
 		fmt.Printf("Site creation error: %v", err)
 		return

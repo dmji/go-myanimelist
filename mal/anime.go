@@ -10,13 +10,20 @@ import (
 	"github.com/dmji/go-myanimelist/mal_type"
 )
 
+type clientAnime interface {
+	RequestGet(ctx context.Context, path string, v interface{}, options ...func(v *url.Values)) (*mal_client.Response, error)
+	UpdateMyListStatus(ctx context.Context, path string, id int, v interface{}, options ...func(v *url.Values)) (*mal_client.Response, error)
+	DeleteMyListItem(ctx context.Context, path string, animeID int) (*mal_client.Response, error)
+	RequestAnimeList(ctx context.Context, path string, options ...func(v *url.Values)) ([]mal_type.UserAnime, *mal_client.Response, error)
+}
+
 // AnimeService handles communication with the anime related methods of the
 // MyAnimeList API:
 //
 // https://myanimelist.net/apiconfig/references/api/v2#tag/anime
 // https://myanimelist.net/apiconfig/references/api/v2#tag/user-animelist
 type AnimeService struct {
-	client *mal_client.Client
+	client clientAnime
 
 	DetailsOptions            mal_opt.DetailsOptionProvider
 	ListOptions               mal_opt.OptionalParamProvider
@@ -27,7 +34,7 @@ type AnimeService struct {
 }
 
 // NewAnimeService returns a new AnimeService.
-func NewAnimeService(client *mal_client.Client) *AnimeService {
+func NewAnimeService(client clientAnime) *AnimeService {
 	return &AnimeService{
 		client: client,
 	}
@@ -39,7 +46,7 @@ func NewAnimeService(client *mal_client.Client) *AnimeService {
 // user specific data by using the optional field.
 // Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/anime_get
 func (s *AnimeService) List(ctx context.Context, search string, options ...mal_opt.OptionalParam) ([]mal_type.Anime, *mal_client.Response, error) {
-	options = append(options, optionFromQuery(search))
+	options = append(options, withOptionFromQuery(search))
 	rawOptions := optionsToFuncs(options, func(t mal_opt.OptionalParam) func(*url.Values) { return t.Apply })
 	return s.list(ctx, "anime", rawOptions...)
 }

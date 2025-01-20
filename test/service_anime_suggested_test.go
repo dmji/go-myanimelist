@@ -11,7 +11,7 @@ import (
 )
 
 func TestAnimeServiceSuggested(t *testing.T) {
-	client, mux, teardown := setup()
+	_, client, mux, teardown := setup()
 	defer teardown()
 
 	mux.HandleFunc("/anime/suggestions", func(w http.ResponseWriter, r *http.Request) {

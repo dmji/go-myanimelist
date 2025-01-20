@@ -10,6 +10,12 @@ import (
 	"github.com/dmji/go-myanimelist/mal_type"
 )
 
+type clientUser interface {
+	RequestGet(ctx context.Context, path string, v interface{}, options ...func(v *url.Values)) (*mal_client.Response, error)
+	RequestMangaList(ctx context.Context, path string, options ...func(v *url.Values)) ([]mal_type.UserManga, *mal_client.Response, error)
+	RequestAnimeList(ctx context.Context, path string, options ...func(v *url.Values)) ([]mal_type.UserAnime, *mal_client.Response, error)
+}
+
 // UserService handles communication with the user related methods of the
 // MyAnimeList API:
 //
@@ -17,7 +23,7 @@ import (
 // https://myanimelist.net/apiconfig/references/api/v2#operation/users_user_id_animelist_get
 // https://myanimelist.net/apiconfig/references/api/v2#operation/users_user_id_mangalist_get
 type UserService struct {
-	client *mal_client.Client
+	client clientUser
 
 	AnimeListOptions mal_opt.AnimeListOptionProvider
 	MangaListOptions mal_opt.MangaListOptionProvider
@@ -25,7 +31,7 @@ type UserService struct {
 }
 
 // NewUserService returns a new UserService.
-func NewUserService(client *mal_client.Client) *UserService {
+func NewUserService(client clientUser) *UserService {
 	return &UserService{
 		client: client,
 	}

@@ -24,7 +24,7 @@ func detailsOptionsToFuncs(options []mal_opt.DetailsOption) []func(v *url.Values
 	return rawOptions
 }
 
-func optionFromQuery(query string) mal_opt.OptionFunc {
+func withOptionFromQuery(query string) mal_opt.OptionFunc {
 	return mal_opt.OptionFunc(func(v *url.Values) {
 		v.Set("q", query)
 	})

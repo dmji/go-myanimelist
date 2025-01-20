@@ -27,7 +27,7 @@ func main() {
 		Transport: &clientIDTransport{ClientID: "<Your application client ID>"},
 	}
 
-	c, err := mal.NewSite(publicInfoClient, nil)
+	c, err := mal.NewSite(mal.WithCustomClientUrl(publicInfoClient, nil))
 	if err != nil {
 		panic(err)
 	}

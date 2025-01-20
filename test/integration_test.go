@@ -57,7 +57,7 @@ func setupIntegration(ctx context.Context, t *testing.T) (*mal.Site, error) {
 		},
 	}
 
-	return mal.NewSite(conf.Client(ctx, token), nil)
+	return mal.NewSite(mal.WithCustomClientUrl(conf.Client(ctx, token), nil))
 }
 
 func TestIntegration(t *testing.T) {

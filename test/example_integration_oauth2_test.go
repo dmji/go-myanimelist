@@ -68,7 +68,7 @@ func Example_oAuth2() {
 	ctx := context.Background()
 	oauth2Client := newOAuth2Client(ctx)
 
-	c, err := mal.NewSite(oauth2Client, nil)
+	c, err := mal.NewSite(mal.WithCustomClientUrl(oauth2Client, nil))
 	if err != nil {
 		fmt.Printf("Site creation error: %v", err)
 		return

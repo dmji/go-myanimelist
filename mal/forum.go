@@ -10,19 +10,25 @@ import (
 	"github.com/dmji/go-myanimelist/mal_type"
 )
 
+type clientForum interface {
+	RequestGet(ctx context.Context, path string, v interface{}, options ...func(v *url.Values)) (*mal_client.Response, error)
+	RequestTopicDetails(ctx context.Context, path string, options ...func(v *url.Values)) (mal_type.TopicDetails, *mal_client.Response, error)
+	RequestTopics(ctx context.Context, path string, options ...func(v *url.Values)) ([]mal_type.Topic, *mal_client.Response, error)
+}
+
 // ForumService handles communication with the forum related methods of the
 // MyAnimeList API:
 //
 // https://myanimelist.net/apiconfig/references/api/v2#tag/forum
 type ForumService struct {
-	client *mal_client.Client
+	client clientForum
 
 	TopicsOptions       mal_opt.TopicsOptionProvider
 	TopicDetailsOptions mal_opt.PagingOptionProvider
 }
 
 // NewForumService returns a new ForumService.
-func NewForumService(client *mal_client.Client) *ForumService {
+func NewForumService(client clientForum) *ForumService {
 	return &ForumService{
 		client: client,
 	}

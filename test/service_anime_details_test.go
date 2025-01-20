@@ -12,7 +12,7 @@ import (
 )
 
 func TestAnimeServiceDetails(t *testing.T) {
-	client, mux, teardown := setup()
+	_, client, mux, teardown := setup()
 	defer teardown()
 
 	mux.HandleFunc("/anime/1", func(w http.ResponseWriter, r *http.Request) {
@@ -39,7 +39,7 @@ func TestAnimeServiceDetails(t *testing.T) {
 }
 
 func TestAnimeServiceDetailsError(t *testing.T) {
-	client, mux, teardown := setup()
+	_, client, mux, teardown := setup()
 	defer teardown()
 
 	mux.HandleFunc("/anime/1", func(w http.ResponseWriter, r *http.Request) {
