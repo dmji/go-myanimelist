@@ -88,7 +88,7 @@ func TestIntegration(t *testing.T) {
 func testGetUserInfo(ctx context.Context, t *testing.T, client *mal.Site) (username string) {
 	t.Helper()
 	// Get user info to find the username.
-	info, _, err := client.User.MyInfo(ctx)
+	info, _, err := client.User.MyInfo(ctx, nil)
 	if err != nil {
 		t.Fatal("User.MyInfo returned err:", err)
 	}

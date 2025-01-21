@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/dmji/go-myanimelist/mal_client"
+	"github.com/dmji/go-myanimelist/mal_prm"
 	"github.com/dmji/go-myanimelist/mal_type"
 )
 
@@ -24,12 +25,13 @@ func TestUserServiceMyInfo(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	opts := client.User.MyInfoOptions
 	u, _, err := client.User.MyInfo(ctx,
-		opts.Fields(
-			opts.UserFields.TimeZone(),
-			opts.UserFields.IsSupporter(),
-		),
+		&mal_prm.UserMyInfoRequestParameters{
+			Fields: []mal_prm.UserField{
+				mal_prm.UserFieldTypeTimeZone.UserField(),
+				mal_prm.UserFieldTypeIsSupporter.UserField(),
+			},
+		},
 	)
 	if err != nil {
 		t.Errorf("User.MyInfo returned error: %v", err)
@@ -50,7 +52,7 @@ func TestUserServiceMyInfoError(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	_, _, err := client.User.MyInfo(ctx)
+	_, _, err := client.User.MyInfo(ctx, &mal_prm.UserMyInfoRequestParameters{})
 	if err == nil {
 		t.Fatal("User.MyInfo expected not found error, got no error.")
 	}

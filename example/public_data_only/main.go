@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/dmji/go-myanimelist/mal"
+	"github.com/dmji/go-myanimelist/mal_prm"
 )
 
 type clientIDTransport struct {
@@ -33,8 +34,13 @@ func main() {
 	}
 
 	ctx := context.Background()
-	p := c.User.MyInfoOptions
-	user, _, err := c.User.MyInfo(ctx, p.Fields(p.ID()))
+	user, _, err := c.User.MyInfo(ctx, &mal_prm.UserMyInfoRequestParameters{
+		Fields: []mal_prm.UserField{
+			{
+				Field: mal_prm.UserFieldTypeID,
+			},
+		},
+	})
 	if err != nil {
 		fmt.Printf("User is not available without autorization. Error: %v\n", err)
 	} else {

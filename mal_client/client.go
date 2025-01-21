@@ -3,6 +3,8 @@ package mal_client
 import (
 	"net/http"
 	"net/url"
+
+	"github.com/dmji/qs"
 )
 
 const (
@@ -12,8 +14,9 @@ const (
 
 // Client manages communication with the MyAnimeList API.
 type Client struct {
-	client  *http.Client
-	baseURL *url.URL
+	client       *http.Client
+	baseURL      *url.URL
+	urlMarshaler *qs.QSMarshaler
 }
 
 // BaseURL returns the base url of the http.client active request url. By default, this is reference to server MyAnimeList API
@@ -23,9 +26,14 @@ func (c *Client) BaseURL() string {
 
 // NewClient returns a new MyAnimeList API client. The httpClient parameter
 func NewClient(httpClient *http.Client, baseURL *url.URL) *Client {
+	urlMarshaler := qs.NewMarshaler(&qs.MarshalOptions{},
+		qs.WithMarshalOptionSliceSeparator(qs.OptionSliceSeparatorComma),
+	)
+
 	return &Client{
-		client:  httpClient,
-		baseURL: baseURL,
+		client:       httpClient,
+		baseURL:      baseURL,
+		urlMarshaler: urlMarshaler,
 	}
 }
 

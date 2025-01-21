@@ -1,27 +1,7 @@
 package mal
 
-import (
-	"context"
-	"net/http"
-	"net/url"
-
-	"github.com/dmji/go-myanimelist/mal_client"
-)
-
-type client interface {
-	Do(ctx context.Context, req *http.Request, v interface{}) (*mal_client.Response, error)
-	NewRequest(method, urlStr string, urlOptions ...func(v *url.Values)) (*http.Request, error)
-
-	clientAnime
-	clientManga
-	clientUser
-	clientForum
-}
-
 // Site manages communication with the MyAnimeList API.
 type Site struct {
-	client client
-
 	Anime *AnimeService
 	Manga *MangaService
 	User  *UserService
@@ -48,10 +28,9 @@ func NewSite(opts ...fnOptionApply) (*Site, error) {
 	}
 
 	return &Site{
-		client: opt.c,
-		User:   NewUserService(opt.c),
-		Anime:  NewAnimeService(opt.c),
-		Manga:  NewMangaService(opt.c),
-		Forum:  NewForumService(opt.c),
+		User:  NewUserService(opt.c),
+		Anime: NewAnimeService(opt.c),
+		Manga: NewMangaService(opt.c),
+		Forum: NewForumService(opt.c),
 	}, nil
 }

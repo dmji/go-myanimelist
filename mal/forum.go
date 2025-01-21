@@ -11,6 +11,7 @@ import (
 )
 
 type clientForum interface {
+	RequestGetWithBody(ctx context.Context, path string, v interface{}, q interface{}) (*mal_client.Response, error)
 	RequestGet(ctx context.Context, path string, v interface{}, options ...func(v *url.Values)) (*mal_client.Response, error)
 	RequestTopicDetails(ctx context.Context, path string, options ...func(v *url.Values)) (mal_type.TopicDetails, *mal_client.Response, error)
 	RequestTopics(ctx context.Context, path string, options ...func(v *url.Values)) ([]mal_type.Topic, *mal_client.Response, error)

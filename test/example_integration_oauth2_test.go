@@ -74,7 +74,7 @@ func Example_oAuth2() {
 		return
 	}
 
-	user, _, err := c.User.MyInfo(ctx)
+	user, _, err := c.User.MyInfo(ctx, nil)
 	if err != nil {
 		fmt.Printf("User.MyInfo error: %v", err)
 		return

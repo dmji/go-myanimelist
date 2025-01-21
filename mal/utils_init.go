@@ -7,6 +7,13 @@ import (
 	"github.com/dmji/go-myanimelist/mal_client"
 )
 
+type client interface {
+	clientAnime
+	clientManga
+	clientUser
+	clientForum
+}
+
 type initOptions struct {
 	c client
 }

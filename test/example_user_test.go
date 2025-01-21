@@ -21,7 +21,7 @@ func ExampleSite_User_myinfo() {
 		return
 	}
 
-	user, _, err := c.User.MyInfo(ctx)
+	user, _, err := c.User.MyInfo(ctx, nil)
 	if err != nil {
 		fmt.Printf("User.MyInfo error: %v", err)
 		return

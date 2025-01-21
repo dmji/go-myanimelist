@@ -11,6 +11,7 @@ import (
 )
 
 type clientManga interface {
+	RequestGetWithBody(ctx context.Context, path string, v interface{}, q interface{}) (*mal_client.Response, error)
 	RequestGet(ctx context.Context, path string, v interface{}, options ...func(v *url.Values)) (*mal_client.Response, error)
 	UpdateMyListStatus(ctx context.Context, path string, id int, v interface{}, options ...func(v *url.Values)) (*mal_client.Response, error)
 	DeleteMyListItem(ctx context.Context, path string, animeID int) (*mal_client.Response, error)

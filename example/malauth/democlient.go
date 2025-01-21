@@ -60,7 +60,7 @@ func (c *demoClient) userMyInfo(ctx context.Context) {
 	if c.err != nil {
 		return
 	}
-	u, _, err := c.User.MyInfo(ctx)
+	u, _, err := c.User.MyInfo(ctx, nil)
 	if err != nil {
 		c.err = err
 		return

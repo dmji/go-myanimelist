@@ -7,11 +7,12 @@ import (
 
 	"github.com/dmji/go-myanimelist/mal_client"
 	"github.com/dmji/go-myanimelist/mal_opt"
+	"github.com/dmji/go-myanimelist/mal_prm"
 	"github.com/dmji/go-myanimelist/mal_type"
 )
 
 type clientUser interface {
-	RequestGet(ctx context.Context, path string, v interface{}, options ...func(v *url.Values)) (*mal_client.Response, error)
+	RequestGetWithBody(ctx context.Context, path string, v interface{}, q interface{}) (*mal_client.Response, error)
 	RequestMangaList(ctx context.Context, path string, options ...func(v *url.Values)) ([]mal_type.UserManga, *mal_client.Response, error)
 	RequestAnimeList(ctx context.Context, path string, options ...func(v *url.Values)) ([]mal_type.UserAnime, *mal_client.Response, error)
 }
@@ -27,7 +28,6 @@ type UserService struct {
 
 	AnimeListOptions mal_opt.AnimeListOptionProvider
 	MangaListOptions mal_opt.MangaListOptionProvider
-	MyInfoOptions    mal_opt.MyInfoOptionProvider
 }
 
 // NewUserService returns a new UserService.
@@ -39,10 +39,13 @@ func NewUserService(client clientUser) *UserService {
 
 // MyInfo returns information about the authenticated user.
 // Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/users_user_id_get
-func (s *UserService) MyInfo(ctx context.Context, options ...mal_opt.MyInfoOption) (*mal_type.User, *mal_client.Response, error) {
+func (s *UserService) MyInfo(ctx context.Context, opts *mal_prm.UserMyInfoRequestParameters) (*mal_type.User, *mal_client.Response, error) {
+	if opts == nil {
+		opts = &mal_prm.UserMyInfoRequestParameters{}
+	}
+
 	u := new(mal_type.User)
-	rawOptions := optionsToFuncs(options, func(t mal_opt.MyInfoOption) func(*url.Values) { return t.MyInfoApply })
-	resp, err := s.client.RequestGet(ctx, "users/@me", u, rawOptions...)
+	resp, err := s.client.RequestGetWithBody(ctx, "users/@me", u, opts)
 	if err != nil {
 		return nil, resp, err
 	}
