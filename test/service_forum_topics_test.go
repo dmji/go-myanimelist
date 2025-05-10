@@ -72,7 +72,7 @@ func TestForumServiceTopicsError(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	_, resp, err := client.Forum.Topics(ctx)
+	_, resp, err := client.Forum.Topics(ctx, nil)
 	if err == nil {
 		t.Fatal("Forum.Topics expected internal error, got no error.")
 	}

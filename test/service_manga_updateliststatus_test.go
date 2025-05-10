@@ -22,7 +22,7 @@ func TestUserServiceMangaListError(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	_, resp, err := client.User.MangaList(ctx, "foo")
+	_, resp, err := client.User.MangaList(ctx, "foo", nil)
 	if err == nil {
 		t.Fatal("User.MangaList expected internal error, got no error.")
 	}

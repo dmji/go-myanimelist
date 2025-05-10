@@ -25,7 +25,7 @@ func (c *clientIDTransport) RoundTrip(req *http.Request) (*http.Response, error)
 func main() {
 	publicInfoClient := &http.Client{
 		// Create client ID from https://myanimelist.net/apiconfig.
-		Transport: &clientIDTransport{ClientID: "<Your application client ID>"},
+		Transport: &clientIDTransport{ClientID: "b9cbb74688f2c32bed5e0864c6b5d0b3"},
 	}
 
 	c, err := mal.NewSite(mal.WithCustomClientUrl(publicInfoClient, nil))
@@ -47,12 +47,13 @@ func main() {
 		fmt.Printf("User ID: %d\n", user.ID)
 	}
 
-	li := c.Anime.DetailsOptions
 	desc, _, err := c.Anime.Details(ctx, 2019,
-		li.Fields(
-			li.AnimeFields.Title(),
-			li.AnimeFields.Genres(),
-		),
+		&mal_prm.AnimeDetailsRequestParameters{
+			Fields: []mal_prm.AnimeField{
+				mal_prm.AnimeFieldTypeTitle.AnimeField(),
+				mal_prm.AnimeFieldTypeGenres.AnimeField(),
+			},
+		},
 	)
 	if err != nil {
 		fmt.Printf("Anime is not available. Error: %v\n", err)

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/dmji/go-myanimelist/mal"
+	"github.com/dmji/go-myanimelist/mal_prm"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )
@@ -60,17 +61,18 @@ func ExampleSite_Manga_details() {
 		return
 	}
 
-	opts := c.Manga.DetailsOptions
 	m, _, err := c.Manga.Details(ctx, 401,
-		opts.Fields(
-			opts.MangaFields.AlternativeTitles(),
-			opts.MangaFields.MediaType(),
-			opts.MangaFields.NumVolumes(),
-			opts.MangaFields.NumChapters(),
-			opts.MangaFields.Authors("last_name", "first_name"),
-			opts.MangaFields.Genres(),
-			opts.MangaFields.Status(),
-		),
+		&mal_prm.MangaDetailsRequestParameters{
+			Fields: []mal_prm.MangaField{
+				mal_prm.MangaFieldTypeAlternativeTitles.MangaField(),
+				mal_prm.MangaFieldTypeMediaType.MangaField(),
+				mal_prm.MangaFieldTypeNumVolumes.MangaField(),
+				mal_prm.MangaFieldTypeNumChapters.MangaField(),
+				mal_prm.MangaFieldTypeAuthors.MangaField("last_name", "first_name"),
+				mal_prm.MangaFieldTypeGenres.MangaField(),
+				mal_prm.MangaFieldTypeStatus.MangaField(),
+			},
+		},
 	)
 	if err != nil {
 		fmt.Printf("Manga.Details error: %v", err)
@@ -127,7 +129,7 @@ func ExampleSite_Manga_ranking() {
 
 	opts := c.Manga.RankingOptions
 	manga, _, err := c.Manga.Ranking(ctx,
-		opts.MangaRanking.ByPopularity(),
+		mal_prm.MangaRankingByPopularity,
 		opts.Fields("rank", "popularity"),
 		opts.Limit(6),
 	)

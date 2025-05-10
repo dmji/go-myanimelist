@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/dmji/go-myanimelist/mal"
-	"github.com/dmji/go-myanimelist/mal_opt"
+	"github.com/dmji/go-myanimelist/mal_prm"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )
@@ -123,18 +123,19 @@ func (c *demoClient) animeDetails(ctx context.Context) {
 		return
 	}
 
-	opts := c.Anime.DetailsOptions
 	a, _, err := c.Anime.Details(ctx, 967,
-		opts.Fields(
-			opts.AnimeFields.AlternativeTitles(),
-			opts.AnimeFields.MediaType(),
-			opts.AnimeFields.NumEpisodes(),
-			opts.AnimeFields.StartSeason(),
-			opts.AnimeFields.Source(),
-			opts.AnimeFields.Genres(),
-			opts.AnimeFields.Studios(),
-			opts.AnimeFields.AverageEpisodeDuration(),
-		),
+		&mal_prm.AnimeDetailsRequestParameters{
+			Fields: []mal_prm.AnimeField{
+				mal_prm.AnimeFieldTypeAlternativeTitles.AnimeField(),
+				mal_prm.AnimeFieldTypeMediaType.AnimeField(),
+				mal_prm.AnimeFieldTypeNumEpisodes.AnimeField(),
+				mal_prm.AnimeFieldTypeStartSeason.AnimeField(),
+				mal_prm.AnimeFieldTypeSource.AnimeField(),
+				mal_prm.AnimeFieldTypeGenres.AnimeField(),
+				mal_prm.AnimeFieldTypeStudios.AnimeField(),
+				mal_prm.AnimeFieldTypeAverageEpisodeDuration.AnimeField(),
+			},
+		},
 	)
 	if err != nil {
 		c.err = err
@@ -170,17 +171,18 @@ func (c *demoClient) mangaDetails(ctx context.Context) {
 		return
 	}
 
-	opts := c.Manga.DetailsOptions
 	m, _, err := c.Manga.Details(ctx, 401,
-		opts.Fields(
-			opts.MangaFields.AlternativeTitles(),
-			opts.MangaFields.MediaType(),
-			opts.MangaFields.NumVolumes(),
-			opts.MangaFields.NumChapters(),
-			opts.MangaFields.Authors("last_name", "first_name"),
-			opts.MangaFields.Genres(),
-			opts.MangaFields.Status(),
-		),
+		&mal_prm.MangaDetailsRequestParameters{
+			Fields: []mal_prm.MangaField{
+				mal_prm.MangaFieldTypeAlternativeTitles.MangaField(),
+				mal_prm.MangaFieldTypeMediaType.MangaField(),
+				mal_prm.MangaFieldTypeNumVolumes.MangaField(),
+				mal_prm.MangaFieldTypeNumChapters.MangaField(),
+				mal_prm.MangaFieldTypeAuthors.MangaField("last_name", "first_name"),
+				mal_prm.MangaFieldTypeGenres.MangaField(),
+				mal_prm.MangaFieldTypeStatus.MangaField(),
+			},
+		},
 	)
 	if err != nil {
 		c.err = err
@@ -248,12 +250,15 @@ func (c *demoClient) userAnimeList(ctx context.Context) {
 		return
 	}
 
-	opts := c.User.AnimeListOptions
 	anime, _, err := c.User.AnimeList(ctx, "@me",
-		opts.Fields(opts.UserListFields.ListStatus()),
-		opts.AnimeStatus.Watching(),
-		opts.SortAnimeList.ByListUpdatedAt(),
-		opts.Limit(5),
+		&mal_prm.UserAnimeListRequestParameters{
+			Fields: []mal_prm.AnimeField{
+				mal_prm.AnimeFieldTypeListStatus.AnimeField(),
+			},
+			Limit:  5,
+			Sort:   mal_prm.SortAnimeListByListUpdatedAt,
+			Status: mal_prm.AnimeStatusWatching,
+		},
 	)
 	if err != nil {
 		c.err = err
@@ -269,12 +274,15 @@ func (c *demoClient) userMangaList(ctx context.Context) {
 		return
 	}
 
-	opts := c.User.MangaListOptions
 	manga, _, err := c.User.MangaList(ctx, "@me",
-		opts.SortMangaList.ByListScore(),
-		opts.Fields(opts.UserListFields.ListStatus("comments", "tags")),
-		opts.Limit(5),
-		opts.Offset(1),
+		&mal_prm.UserMangaListRequestParameters{
+			Fields: []mal_prm.MangaField{
+				mal_prm.MangaFieldTypeListStatus.MangaField("comments", "tags"),
+			},
+			Limit:  5,
+			Offset: 1,
+			Sort:   mal_prm.SortMangaListByListScore,
+		},
 	)
 	if err != nil {
 		c.err = err
@@ -354,14 +362,13 @@ func (c *demoClient) animeRanking(ctx context.Context) {
 		return
 	}
 
-	rankings := []mal_opt.AnimeRanking{
-		mal_opt.AnimeRankingAiring,
-		mal_opt.AnimeRankingAll,
-		mal_opt.AnimeRankingByPopularity,
+	rankings := []mal_prm.AnimeRanking{
+		mal_prm.AnimeRankingAiring,
+		mal_prm.AnimeRankingAll,
+		mal_prm.AnimeRankingByPopularity,
 	}
 
 	opts := c.Anime.RankingOptions
-	opts.AnimeRanking.ByPopularity()
 	for _, r := range rankings {
 		fmt.Println("Ranking:", r)
 		anime, _, err := c.Anime.Ranking(ctx, r,
@@ -388,7 +395,7 @@ func (c *demoClient) mangaRanking(ctx context.Context) {
 
 	opts := c.Manga.RankingOptions
 	manga, _, err := c.Manga.Ranking(ctx,
-		opts.MangaRanking.ByPopularity(),
+		mal_prm.MangaRankingByPopularity,
 		opts.Fields(
 			opts.AnimeFields.Rank(),
 			opts.AnimeFields.Popularity(),

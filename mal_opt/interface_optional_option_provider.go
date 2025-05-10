@@ -9,11 +9,8 @@ type OptionalParam interface {
 }
 
 type OptionalParamProvider struct {
-	AnimeRanking
-	MangaRanking
-
-	AnimeFields
-	MangaFields
+	AnimeFields // moved
+	MangaFields // moved
 }
 
 func (s OptionalParamProvider) Limit(v int) Limit {

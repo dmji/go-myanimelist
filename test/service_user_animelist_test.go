@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/dmji/go-myanimelist/mal_client"
+	"github.com/dmji/go-myanimelist/mal_prm"
 	"github.com/dmji/go-myanimelist/mal_type"
 )
 
@@ -20,7 +21,7 @@ func TestUserServiceAnimeList(t *testing.T) {
 		testURLValues(t, r, urlValues{
 			"status": "completed",
 			"sort":   "anime_id",
-			"fields": "foo,bar",
+			"fields": "id,genres",
 			"limit":  "10",
 			"offset": "0",
 			"nsfw":   "true",
@@ -50,14 +51,18 @@ func TestUserServiceAnimeList(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	opts := client.User.AnimeListOptions
 	got, resp, err := client.User.AnimeList(ctx, "foo",
-		opts.AnimeStatus.Completed(),
-		opts.SortAnimeList.ByAnimeID(),
-		opts.Fields("foo", "bar"),
-		opts.Limit(10),
-		opts.Offset(0),
-		opts.NSFW(true),
+		&mal_prm.UserAnimeListRequestParameters{
+			Fields: []mal_prm.AnimeField{
+				mal_prm.AnimeFieldTypeID.AnimeField(),
+				mal_prm.AnimeFieldTypeGenres.AnimeField(),
+			},
+			Limit:  10,
+			Offset: 0,
+			Sort:   mal_prm.SortAnimeListByAnimeID,
+			Status: mal_prm.AnimeStatusCompleted,
+			NSFW:   true,
+		},
 	)
 	if err != nil {
 		t.Errorf("User.AnimeList returned error: %v", err)
@@ -88,13 +93,16 @@ func TestUserServiceAnimeListError(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	opts := client.User.AnimeListOptions
 	_, resp, err := client.User.AnimeList(ctx, "foo",
-		opts.AnimeStatus.Completed(),
-		opts.SortAnimeList.ByAnimeID(),
-		opts.Fields("foo", "bar"),
-		opts.Limit(10),
-		opts.Offset(0),
+		&mal_prm.UserAnimeListRequestParameters{
+			Fields: []mal_prm.AnimeField{
+				mal_prm.AnimeFieldTypeID.AnimeField(),
+				mal_prm.AnimeFieldTypeGenres.AnimeField(),
+			},
+			Limit:  10,
+			Sort:   mal_prm.SortAnimeListByAnimeID,
+			Status: mal_prm.AnimeStatusCompleted,
+		},
 	)
 	if err == nil {
 		t.Fatal("User.AnimeList expected internal error, got no error.")

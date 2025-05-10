@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/dmji/go-myanimelist/mal"
+	"github.com/dmji/go-myanimelist/mal_prm"
 )
 
 func ExampleSite_User_mangalist() {
@@ -22,14 +23,15 @@ func ExampleSite_User_mangalist() {
 		return
 	}
 
-	opts := c.User.MangaListOptions
 	manga, _, err := c.User.MangaList(ctx, "@me",
-		opts.Fields(
-			opts.UserListFields.ListStatus(),
-			opts.UserListFields.Node(),
-		),
-		opts.SortMangaList.ByListUpdatedAt(),
-		opts.Limit(2),
+		&mal_prm.UserMangaListRequestParameters{
+			Fields: []mal_prm.MangaField{
+				mal_prm.MangaFieldTypeListStatus.MangaField(),
+				mal_prm.MangaFieldTypeNode.MangaField(),
+			},
+			Limit: 2,
+			Sort:  mal_prm.SortMangaListByListUpdatedAt,
+		},
 	)
 	if err != nil {
 		fmt.Printf("User.MangaList error: %v", err)

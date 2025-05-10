@@ -12,6 +12,4 @@ import (
 type NSFW bool
 
 func (n NSFW) SeasonalAnimeApply(v *url.Values) { n.Apply(v) }
-func (n NSFW) AnimeListApply(v *url.Values)     { n.Apply(v) }
-func (n NSFW) MangaListApply(v *url.Values)     { n.Apply(v) }
 func (n NSFW) Apply(v *url.Values)              { v.Set("nsfw", strconv.FormatBool(bool(n))) }

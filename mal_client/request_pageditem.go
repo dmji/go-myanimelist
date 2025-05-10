@@ -12,15 +12,18 @@ type pagination interface {
 	Pagination() paging
 }
 
-func (c *Client) requestPagedItem(ctx context.Context, path string, p pagination, options ...func(v *url.Values)) (*Response, error) {
+func (c *Client) requestPagedItem(ctx context.Context, path string, p pagination, qdata interface{}) (*Response, error) {
 	req, err := c.NewRequest(http.MethodGet, path)
 	if err != nil {
 		return nil, err
 	}
 
-	q := req.URL.Query()
-	fillValues(&q, options...)
-	req.URL.RawQuery = q.Encode()
+	if qdata != nil {
+		req.URL.RawQuery, err = c.urlMarshaler.Marshal(qdata)
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	resp, err := c.Do(ctx, req, p)
 	if err != nil {

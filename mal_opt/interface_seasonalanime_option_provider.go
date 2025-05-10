@@ -11,8 +11,8 @@ type SeasonalAnimeOption interface {
 type SeasonalAnimeOptionProvider struct {
 	AnimeSeason
 
-	AnimeFields
-	MangaFields
+	AnimeFields // moved
+	MangaFields // moved
 	SortSeasonalAnime
 }
 

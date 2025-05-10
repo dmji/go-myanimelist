@@ -2,15 +2,15 @@ package mal_client
 
 import (
 	"context"
-	"net/url"
 
+	"github.com/dmji/go-myanimelist/mal_prm"
 	"github.com/dmji/go-myanimelist/mal_type"
 )
 
 // RequestAnimeList sends a GET request to the specified URL.
-func (c *Client) RequestAnimeList(ctx context.Context, path string, options ...func(v *url.Values)) ([]mal_type.UserAnime, *Response, error) {
+func (c *Client) RequestAnimeList(ctx context.Context, path string, opts interface{}) ([]mal_type.UserAnime, *Response, error) {
 	p := new(listWithPagination[[]mal_type.UserAnime])
-	resp, err := c.requestPagedItem(ctx, path, p, options...)
+	resp, err := c.requestPagedItem(ctx, path, p, opts)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -18,9 +18,9 @@ func (c *Client) RequestAnimeList(ctx context.Context, path string, options ...f
 }
 
 // RequestMangaList sends a GET request to the specified URL.
-func (c *Client) RequestMangaList(ctx context.Context, path string, options ...func(v *url.Values)) ([]mal_type.UserManga, *Response, error) {
+func (c *Client) RequestMangaList(ctx context.Context, path string, opts *mal_prm.UserMangaListRequestParameters) ([]mal_type.UserManga, *Response, error) {
 	p := new(listWithPagination[[]mal_type.UserManga])
-	resp, err := c.requestPagedItem(ctx, path, p, options...)
+	resp, err := c.requestPagedItem(ctx, path, p, opts)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -28,10 +28,10 @@ func (c *Client) RequestMangaList(ctx context.Context, path string, options ...f
 }
 
 // RequestTopicDetails sends a GET request to the specified URL.
-func (c *Client) RequestTopicDetails(ctx context.Context, path string, options ...func(v *url.Values)) (mal_type.TopicDetails, *Response, error) {
+func (c *Client) RequestTopicDetails(ctx context.Context, path string, opts *mal_prm.ForumTopicDetailsRequestParameters) (mal_type.TopicDetails, *Response, error) {
 	p := new(listWithPagination[mal_type.TopicDetails])
 
-	resp, err := c.requestPagedItem(ctx, path, p, options...)
+	resp, err := c.requestPagedItem(ctx, path, p, opts)
 	if err != nil {
 		return mal_type.TopicDetails{}, resp, err
 	}
@@ -39,9 +39,9 @@ func (c *Client) RequestTopicDetails(ctx context.Context, path string, options .
 }
 
 // RequestTopics sends a GET request to the specified URL.
-func (c *Client) RequestTopics(ctx context.Context, path string, options ...func(v *url.Values)) ([]mal_type.Topic, *Response, error) {
+func (c *Client) RequestTopics(ctx context.Context, path string, opts *mal_prm.ForumTopicsRequestParameters) ([]mal_type.Topic, *Response, error) {
 	p := new(listWithPagination[[]mal_type.Topic])
-	resp, err := c.requestPagedItem(ctx, path, p, options...)
+	resp, err := c.requestPagedItem(ctx, path, p, opts)
 	if err != nil {
 		return nil, resp, err
 	}

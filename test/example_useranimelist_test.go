@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/dmji/go-myanimelist/mal"
+	"github.com/dmji/go-myanimelist/mal_prm"
 )
 
 func ExampleSite_User_animelist() {
@@ -22,11 +23,14 @@ func ExampleSite_User_animelist() {
 		return
 	}
 
-	opts := c.User.AnimeListOptions
 	anime, _, err := c.User.AnimeList(ctx, "@me",
-		opts.Fields(opts.UserListFields.ListStatus()),
-		opts.SortAnimeList.ByListUpdatedAt(),
-		opts.Limit(5),
+		&mal_prm.UserAnimeListRequestParameters{
+			Fields: []mal_prm.AnimeField{
+				mal_prm.AnimeFieldTypeListStatus.AnimeField(),
+			},
+			Limit: 5,
+			Sort:  mal_prm.SortAnimeListByListUpdatedAt,
+		},
 	)
 	if err != nil {
 		fmt.Printf("User.AnimeList error: %v", err)

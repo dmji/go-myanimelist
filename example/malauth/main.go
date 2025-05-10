@@ -82,7 +82,7 @@ func authenticate(ctx context.Context, clientID, clientSecret, state string) (*h
 			AuthStyle: oauth2.AuthStyleInParams,
 		},
 	}
-
+	
 	oauth2Token, err := loadCachedToken()
 	if err == nil {
 		refreshedToken, err := conf.TokenSource(ctx, oauth2Token).Token()

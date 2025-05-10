@@ -7,6 +7,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/dmji/go-myanimelist/mal_prm"
 	"github.com/dmji/go-myanimelist/mal_type"
 )
 
@@ -19,7 +20,7 @@ func TestUserServiceMangaList(t *testing.T) {
 		testURLValues(t, r, urlValues{
 			"status": "completed",
 			"sort":   "manga_id",
-			"fields": "foo,bar",
+			"fields": "id,list_status",
 			"limit":  "10",
 			"offset": "0",
 			"nsfw":   "true",
@@ -49,14 +50,17 @@ func TestUserServiceMangaList(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	opts := client.User.MangaListOptions
 	got, resp, err := client.User.MangaList(ctx, "foo",
-		opts.MangaStatus.Completed(),
-		opts.SortMangaList.ByMangaID(),
-		opts.Fields("foo", "bar"),
-		opts.Limit(10),
-		opts.Offset(0),
-		opts.NSFW(true),
+		&mal_prm.UserMangaListRequestParameters{
+			Fields: []mal_prm.MangaField{
+				mal_prm.MangaFieldTypeID.MangaField(),
+				mal_prm.MangaFieldTypeListStatus.MangaField(),
+			},
+			Status: mal_prm.MangaStatusCompleted,
+			Sort:   mal_prm.SortMangaListByMangaID,
+			Limit:  10,
+			NSFW:   true,
+		},
 	)
 	if err != nil {
 		t.Errorf("User.MangaList returned error: %v", err)

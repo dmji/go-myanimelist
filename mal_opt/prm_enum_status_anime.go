@@ -25,7 +25,6 @@ const (
 	AnimeStatusPlanToWatch AnimeStatus = "plan_to_watch"
 )
 
-func (s AnimeStatus) AnimeListApply(v *url.Values)               { v.Set("status", string(s)) }
 func (s AnimeStatus) UpdateMyAnimeListStatusApply(v *url.Values) { v.Set("status", string(s)) }
 
 func (n AnimeStatus) Watching() AnimeStatus    { return AnimeStatusWatching }

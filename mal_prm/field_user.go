@@ -1,10 +1,8 @@
 package mal_prm
 
-//go:generate go run github.com/dmji/go-stringer@latest -type=UserFieldType -trimprefix=UserFieldType -output user_field_string.go -nametransform=snake_case_lower -fromstringgenfn -marshaljson -marshalqs -marshalqspkg=github.com/dmji/qs -outputtransform=snake_case_lower
+import qs "github.com/dmji/qs"
 
-import (
-	qs "github.com/dmji/qs"
-)
+//go:generate go run github.com/dmji/go-stringer@latest -type=UserFieldType -trimprefix=UserFieldType -output field_user_string.go -nametransform=snake_case_lower -fromstringgenfn -marshaljson -marshalqs -marshalqspkg=github.com/dmji/qs -outputtransform=snake_case_lower
 
 type UserFieldType uint8
 

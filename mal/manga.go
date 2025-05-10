@@ -7,15 +7,15 @@ import (
 
 	"github.com/dmji/go-myanimelist/mal_client"
 	"github.com/dmji/go-myanimelist/mal_opt"
+	"github.com/dmji/go-myanimelist/mal_prm"
 	"github.com/dmji/go-myanimelist/mal_type"
 )
 
 type clientManga interface {
-	RequestGetWithBody(ctx context.Context, path string, v interface{}, q interface{}) (*mal_client.Response, error)
-	RequestGet(ctx context.Context, path string, v interface{}, options ...func(v *url.Values)) (*mal_client.Response, error)
-	UpdateMyListStatus(ctx context.Context, path string, id int, v interface{}, options ...func(v *url.Values)) (*mal_client.Response, error)
+	RequestGet(ctx context.Context, path string, v interface{}, q interface{}) (*mal_client.Response, error)
+	UpdateMyListStatus(ctx context.Context, path string, id int, v interface{}, opts *mal_prm.UserMangaListRequestParameters) (*mal_client.Response, error)
 	DeleteMyListItem(ctx context.Context, path string, animeID int) (*mal_client.Response, error)
-	RequestMangaList(ctx context.Context, path string, options ...func(v *url.Values)) ([]mal_type.UserManga, *mal_client.Response, error)
+	RequestMangaList(ctx context.Context, path string, opts *mal_prm.UserMangaListRequestParameters) ([]mal_type.UserManga, *mal_client.Response, error)
 }
 
 // MangaService handles communication with the manga related methods of the
@@ -26,7 +26,6 @@ type clientManga interface {
 type MangaService struct {
 	client clientManga
 
-	DetailsOptions            mal_opt.DetailsOptionProvider
 	ListOptions               mal_opt.OptionalParamProvider
 	RankingOptions            mal_opt.OptionalParamProvider
 	UpdateMyListStatusOptions mal_opt.UpdateMyMangaListStatusOptionProvider
@@ -50,10 +49,13 @@ func (s *MangaService) List(ctx context.Context, search string, options ...mal_o
 // Details returns details about a manga. By default, few manga fields are
 // populated. Use the Fields option to specify which fields should be included.
 // Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/manga_manga_id_get
-func (s *MangaService) Details(ctx context.Context, mangaID int, options ...mal_opt.DetailsOption) (*mal_type.Manga, *mal_client.Response, error) {
+func (s *MangaService) Details(ctx context.Context, mangaID int, opts *mal_prm.MangaDetailsRequestParameters) (*mal_type.Manga, *mal_client.Response, error) {
+	if opts == nil {
+		opts = &mal_prm.MangaDetailsRequestParameters{}
+	}
+
 	m := new(mal_type.Manga)
-	rawOptions := detailsOptionsToFuncs(options)
-	resp, err := s.client.RequestGet(ctx, fmt.Sprintf("manga/%d", mangaID), m, rawOptions...)
+	resp, err := s.client.RequestGet(ctx, fmt.Sprintf("manga/%d", mangaID), m, opts)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -63,11 +65,11 @@ func (s *MangaService) Details(ctx context.Context, mangaID int, options ...mal_
 // Ranking allows an authenticated user to receive the top manga based on a
 // certain ranking.
 // Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/manga_ranking_get
-func (s *MangaService) Ranking(ctx context.Context, ranking mal_opt.MangaRanking, options ...mal_opt.OptionalParam) ([]mal_type.Manga, *mal_client.Response, error) {
+func (s *MangaService) Ranking(ctx context.Context, ranking mal_prm.MangaRanking, options ...mal_opt.OptionalParam) ([]mal_type.Manga, *mal_client.Response, error) {
 	options = append(
 		options,
 		mal_opt.OptionFunc(func(v *url.Values) {
-			v.Set("ranking_type", string(ranking))
+			v.Set("ranking_type", ranking.String())
 		}))
 	return s.list(ctx, "manga/ranking", options...)
 }

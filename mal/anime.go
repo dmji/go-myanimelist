@@ -7,14 +7,15 @@ import (
 
 	"github.com/dmji/go-myanimelist/mal_client"
 	"github.com/dmji/go-myanimelist/mal_opt"
+	"github.com/dmji/go-myanimelist/mal_prm"
 	"github.com/dmji/go-myanimelist/mal_type"
 )
 
 type clientAnime interface {
-	RequestGet(ctx context.Context, path string, v interface{}, options ...func(v *url.Values)) (*mal_client.Response, error)
+	RequestGet(ctx context.Context, path string, v interface{}, q interface{}) (*mal_client.Response, error)
 	UpdateMyListStatus(ctx context.Context, path string, id int, v interface{}, options ...func(v *url.Values)) (*mal_client.Response, error)
 	DeleteMyListItem(ctx context.Context, path string, animeID int) (*mal_client.Response, error)
-	RequestAnimeList(ctx context.Context, path string, options ...func(v *url.Values)) ([]mal_type.UserAnime, *mal_client.Response, error)
+	RequestAnimeList(ctx context.Context, path string, opts *mal_prm.UserAnimeListRequestParameters) ([]mal_type.UserAnime, *mal_client.Response, error)
 }
 
 // AnimeService handles communication with the anime related methods of the
@@ -25,7 +26,6 @@ type clientAnime interface {
 type AnimeService struct {
 	client clientAnime
 
-	DetailsOptions            mal_opt.DetailsOptionProvider
 	ListOptions               mal_opt.OptionalParamProvider
 	SuggestedOptions          mal_opt.OptionalParamProvider
 	RankingOptions            mal_opt.OptionalParamProvider
@@ -56,10 +56,13 @@ func (s *AnimeService) List(ctx context.Context, search string, options ...mal_o
 // Details returns details about an anime. By default, few anime fields are
 // populated. Use the Fields option to specify which fields should be included.
 // Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/anime_anime_id_get
-func (s *AnimeService) Details(ctx context.Context, animeID int, options ...mal_opt.DetailsOption) (*mal_type.Anime, *mal_client.Response, error) {
+func (s *AnimeService) Details(ctx context.Context, animeID int, opts *mal_prm.AnimeDetailsRequestParameters) (*mal_type.Anime, *mal_client.Response, error) {
+	if opts == nil {
+		opts = &mal_prm.AnimeDetailsRequestParameters{}
+	}
+
 	a := new(mal_type.Anime)
-	rawOptions := detailsOptionsToFuncs(options)
-	resp, err := s.client.RequestGet(ctx, fmt.Sprintf("anime/%d", animeID), a, rawOptions...)
+	resp, err := s.client.RequestGet(ctx, fmt.Sprintf("anime/%d", animeID), a, opts)
 	if err != nil {
 		return nil, resp, err
 	}
@@ -71,11 +74,11 @@ func (s *AnimeService) Details(ctx context.Context, animeID int, options ...mal_
 // Ranking allows an authenticated user to receive the top anime based on a
 // certain ranking.
 // Reference API docs: https://myanimelist.net/apiconfig/references/api/v2#operation/anime_ranking_get
-func (s *AnimeService) Ranking(ctx context.Context, ranking mal_opt.AnimeRanking, options ...mal_opt.OptionalParam) ([]mal_type.Anime, *mal_client.Response, error) {
+func (s *AnimeService) Ranking(ctx context.Context, ranking mal_prm.AnimeRanking, options ...mal_opt.OptionalParam) ([]mal_type.Anime, *mal_client.Response, error) {
 	options = append(
 		options,
 		mal_opt.OptionFunc(func(v *url.Values) {
-			v.Set("ranking_type", string(ranking))
+			v.Set("ranking_type", ranking.String())
 		}),
 	)
 	rawOptions := optionsToFuncs(options, func(t mal_opt.OptionalParam) func(*url.Values) { return t.Apply })

@@ -25,7 +25,6 @@ const (
 	MangaStatusPlanToRead MangaStatus = "plan_to_read"
 )
 
-func (s MangaStatus) MangaListApply(v *url.Values)               { v.Set("status", string(s)) }
 func (s MangaStatus) UpdateMyMangaListStatusApply(v *url.Values) { v.Set("status", string(s)) }
 
 func (n MangaStatus) Reading() MangaStatus    { return MangaStatusReading }

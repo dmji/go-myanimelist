@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/dmji/go-myanimelist/mal"
+	"github.com/dmji/go-myanimelist/mal_prm"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )
@@ -62,18 +63,20 @@ func ExampleSite_Anime_details() {
 		return
 	}
 
-	opts := c.Anime.DetailsOptions
 	a, _, err := c.Anime.Details(ctx, 967,
-		opts.Fields(
-			opts.AnimeFields.AlternativeTitles(),
-			opts.AnimeFields.MediaType(),
-			opts.AnimeFields.NumEpisodes(),
-			opts.AnimeFields.StartSeason(),
-			opts.AnimeFields.Source(),
-			opts.AnimeFields.Genres(),
-			opts.AnimeFields.Studios(),
-			opts.AnimeFields.AverageEpisodeDuration(),
-		))
+		&mal_prm.AnimeDetailsRequestParameters{
+			Fields: []mal_prm.AnimeField{
+				mal_prm.AnimeFieldTypeAlternativeTitles.AnimeField(),
+				mal_prm.AnimeFieldTypeMediaType.AnimeField(),
+				mal_prm.AnimeFieldTypeNumEpisodes.AnimeField(),
+				mal_prm.AnimeFieldTypeStartSeason.AnimeField(),
+				mal_prm.AnimeFieldTypeSource.AnimeField(),
+				mal_prm.AnimeFieldTypeGenres.AnimeField(),
+				mal_prm.AnimeFieldTypeStudios.AnimeField(),
+				mal_prm.AnimeFieldTypeAverageEpisodeDuration.AnimeField(),
+			},
+		},
+	)
 	if err != nil {
 		fmt.Printf("Anime.Details error: %v", err)
 		return
@@ -131,7 +134,7 @@ func ExampleSite_Anime_ranking() {
 
 	opts := c.Anime.RankingOptions
 	anime, _, err := c.Anime.Ranking(ctx,
-		opts.AnimeRanking.Airing(),
+		mal_prm.AnimeRankingAiring,
 		opts.Fields(
 			opts.AnimeFields.Rank(),
 			opts.AnimeFields.Popularity(),

@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/dmji/go-myanimelist/mal_client"
+	"github.com/dmji/go-myanimelist/mal_prm"
 	"github.com/dmji/go-myanimelist/mal_type"
 )
 
@@ -18,7 +19,7 @@ func TestMangaServiceDetails(t *testing.T) {
 	mux.HandleFunc("/manga/1", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
 		testURLValues(t, r, urlValues{
-			"fields": "foo,bar",
+			"fields": "id,genres",
 		})
 		testBody(t, r, "")
 		fmt.Fprint(w, `{"id":1}`)
@@ -26,7 +27,14 @@ func TestMangaServiceDetails(t *testing.T) {
 
 	ctx := context.Background()
 
-	a, _, err := client.Manga.Details(ctx, 1, client.Manga.DetailsOptions.Fields("foo", "bar"))
+	a, _, err := client.Manga.Details(ctx, 1,
+		&mal_prm.MangaDetailsRequestParameters{
+			Fields: []mal_prm.MangaField{
+				mal_prm.MangaFieldTypeID.MangaField(),
+				mal_prm.MangaFieldTypeGenres.MangaField(),
+			},
+		},
+	)
 	if err != nil {
 		t.Errorf("Manga.Details returned error: %v", err)
 	}
@@ -46,7 +54,7 @@ func TestMangaServiceDetailsError(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	_, _, err := client.Manga.Details(ctx, 1)
+	_, _, err := client.Manga.Details(ctx, 1, nil)
 	if err == nil {
 		t.Fatal("Manga.Details expected not found error, got no error.")
 	}

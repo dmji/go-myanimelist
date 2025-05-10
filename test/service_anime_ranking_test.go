@@ -7,6 +7,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/dmji/go-myanimelist/mal_prm"
 	"github.com/dmji/go-myanimelist/mal_type"
 )
 
@@ -43,7 +44,7 @@ func TestAnimeServiceRanking(t *testing.T) {
 
 	ctx := context.Background()
 	opts := client.Anime.RankingOptions
-	got, resp, err := client.Anime.Ranking(ctx, opts.AnimeRanking.All(),
+	got, resp, err := client.Anime.Ranking(ctx, mal_prm.AnimeRankingAll,
 		opts.Fields("foo", "bar"),
 		opts.Limit(10),
 		opts.Offset(0),

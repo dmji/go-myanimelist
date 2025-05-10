@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/dmji/go-myanimelist/mal_client"
+	"github.com/dmji/go-myanimelist/mal_prm"
 	"github.com/dmji/go-myanimelist/mal_type"
 )
 
@@ -18,7 +19,7 @@ func TestAnimeServiceDetails(t *testing.T) {
 	mux.HandleFunc("/anime/1", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
 		testURLValues(t, r, urlValues{
-			"fields": "foo,bar",
+			"fields": "id,genres",
 		})
 		testBody(t, r, "")
 		fmt.Fprint(w, `{"id":1}`)
@@ -27,7 +28,12 @@ func TestAnimeServiceDetails(t *testing.T) {
 	ctx := context.Background()
 
 	a, _, err := client.Anime.Details(ctx, 1,
-		client.Anime.DetailsOptions.Fields("foo,bar"),
+		&mal_prm.AnimeDetailsRequestParameters{
+			Fields: []mal_prm.AnimeField{
+				mal_prm.AnimeFieldTypeID.AnimeField(),
+				mal_prm.AnimeFieldTypeGenres.AnimeField(),
+			},
+		},
 	)
 	if err != nil {
 		t.Errorf("Anime.Details returned error: %v", err)
@@ -48,7 +54,7 @@ func TestAnimeServiceDetailsError(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	_, _, err := client.Anime.Details(ctx, 1)
+	_, _, err := client.Anime.Details(ctx, 1, nil)
 	if err == nil {
 		t.Fatal("Anime.Details expected not found error, got no error.")
 	}

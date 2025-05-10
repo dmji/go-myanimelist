@@ -1,6 +1,8 @@
 package mal_prm
 
-import "strings"
+import (
+	"strings"
+)
 
 func argJoin(v ...string) string {
 	if len(v) == 0 {

@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/dmji/go-myanimelist/mal_client"
+	"github.com/dmji/go-myanimelist/mal_prm"
 	"github.com/dmji/go-myanimelist/mal_type"
 )
 
@@ -36,10 +37,11 @@ func TestForumServiceTopicDetails(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	opts := client.Forum.TopicDetailsOptions
 	got, resp, err := client.Forum.TopicDetails(ctx, 1,
-		opts.Limit(10),
-		opts.Offset(0),
+		&mal_prm.ForumTopicDetailsRequestParameters{
+			Limit:  10,
+			Offset: 0,
+		},
 	)
 	if err != nil {
 		t.Errorf("Forum.TopicDetails returned error: %v", err)
@@ -64,7 +66,7 @@ func TestForumServiceTopicDetailsError(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	_, resp, err := client.Forum.TopicDetails(ctx, 1)
+	_, resp, err := client.Forum.TopicDetails(ctx, 1, nil)
 	if err == nil {
 		t.Fatal("Forum.TopicDetails expected internal error, got no error.")
 	}

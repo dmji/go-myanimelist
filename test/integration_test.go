@@ -10,6 +10,7 @@ import (
 
 	"github.com/dmji/go-myanimelist/mal"
 	"github.com/dmji/go-myanimelist/mal_opt"
+	"github.com/dmji/go-myanimelist/mal_prm"
 	"github.com/dmji/go-myanimelist/mal_type"
 	"golang.org/x/oauth2"
 )
@@ -101,7 +102,7 @@ func testGetUserInfo(ctx context.Context, t *testing.T, client *mal.Site) (usern
 func testUpdateUserAnimeList(ctx context.Context, t *testing.T, client *mal.Site, username string) {
 	// Get anime list for test account.
 	const me = "@me"
-	list, _, err := client.User.AnimeList(ctx, me)
+	list, _, err := client.User.AnimeList(ctx, me, nil)
 	if err != nil {
 		t.Fatalf("User.AnimeList(%q) returned err: %s", me, err)
 	}
@@ -142,7 +143,11 @@ func testUpdateUserAnimeList(ctx context.Context, t *testing.T, client *mal.Site
 
 	// Get anime list of test account for a second time.
 	list, _, err = client.User.AnimeList(ctx, me,
-		mal_opt.Fields{"list_status{num_times_rewatched, rewatch_value, priority, comments, tags}"},
+		&mal_prm.UserAnimeListRequestParameters{
+			Fields: []mal_prm.AnimeField{
+				mal_prm.AnimeFieldTypeListStatus.AnimeField("num_times_rewatched", "rewatch_value", "priority", "comments", "tags"),
+			},
+		},
 	)
 	if err != nil {
 		t.Fatalf("User.AnimeList(%q) after additions returned err: %s", me, err)
@@ -178,7 +183,7 @@ func testUpdateUserAnimeList(ctx context.Context, t *testing.T, client *mal.Site
 func testUpdateUserMangaList(ctx context.Context, t *testing.T, client *mal.Site, username string) {
 	// Get manga list for test account.
 	const me = "@me"
-	list, _, err := client.User.MangaList(ctx, me)
+	list, _, err := client.User.MangaList(ctx, me, nil)
 	if err != nil {
 		t.Fatalf("User.MangaList(%q) returned err: %s", me, err)
 	}
@@ -220,7 +225,11 @@ func testUpdateUserMangaList(ctx context.Context, t *testing.T, client *mal.Site
 
 	// Get manga list of test account for a second time.
 	list, _, err = client.User.MangaList(ctx, me,
-		mal_opt.Fields{"list_status{num_times_reread, reread_value, priority, comments, tags}"},
+		&mal_prm.UserMangaListRequestParameters{
+			Fields: []mal_prm.MangaField{
+				mal_prm.MangaFieldTypeListStatus.MangaField("num_times_reread", "reread_value", "priority", "comments", "tags"),
+			},
+		},
 	)
 	if err != nil {
 		t.Fatalf("User.MangaList(%q) after additions returned err: %s", me, err)
@@ -263,12 +272,12 @@ func testAnimeMethods(ctx context.Context, t *testing.T, client *mal.Site) {
 		t.Fatal("Anime.List returned 0 anime")
 	}
 
-	_, _, err = client.Anime.Details(ctx, list[0].ID)
+	_, _, err = client.Anime.Details(ctx, list[0].ID, nil)
 	if err != nil {
 		t.Errorf("Anime.Details returned error: %v", err)
 	}
 
-	_, _, err = client.Anime.Ranking(ctx, mal_opt.AnimeRankingAll, mal_opt.Limit(2))
+	_, _, err = client.Anime.Ranking(ctx, mal_prm.AnimeRankingAll, mal_opt.Limit(2))
 	if err != nil {
 		t.Errorf("Anime.Ranking returned error: %v", err)
 	}
@@ -294,12 +303,12 @@ func testMangaMethods(ctx context.Context, t *testing.T, client *mal.Site) {
 		t.Fatal("Manga.List returned 0 anime")
 	}
 
-	_, _, err = client.Manga.Details(ctx, list[0].ID)
+	_, _, err = client.Manga.Details(ctx, list[0].ID, nil)
 	if err != nil {
 		t.Errorf("Manga.Details returned error: %v", err)
 	}
 
-	_, _, err = client.Manga.Ranking(ctx, mal_opt.MangaRankingAll, mal_opt.Limit(2))
+	_, _, err = client.Manga.Ranking(ctx, mal_prm.MangaRankingAll, mal_opt.Limit(2))
 	if err != nil {
 		t.Errorf("Manga.Ranking returned error: %v", err)
 	}
