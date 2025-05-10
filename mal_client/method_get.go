@@ -8,7 +8,7 @@ import (
 )
 
 // RequestAnimeList sends a GET request to the specified URL.
-func (c *Client) RequestAnimeList(ctx context.Context, path string, opts interface{}) ([]mal_type.UserAnime, *Response, error) {
+func (c *Client) RequestAnimeList(ctx context.Context, path string, opts *mal_prm.UserAnimeListRequestParameters) ([]mal_type.UserAnime, *Response, error) {
 	p := new(listWithPagination[[]mal_type.UserAnime])
 	resp, err := c.requestPagedItem(ctx, path, p, opts)
 	if err != nil {

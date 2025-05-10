@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/dmji/go-myanimelist/mal_client"
-	"github.com/dmji/go-myanimelist/mal_opt"
+	"github.com/dmji/go-myanimelist/mal_prm"
 	"github.com/dmji/go-myanimelist/mal_type"
 )
 
@@ -40,16 +40,16 @@ func TestForumServiceTopics(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	opts := client.Forum.TopicsOptions
 	got, resp, err := client.Forum.Topics(ctx,
-		opts.BoardID(1),
-		opts.SubboardID(1),
-		mal_opt.Limit(10),
-		mal_opt.Offset(0),
-		opts.SortTopics.Recent(),
-		opts.Query("foo"),
-		opts.TopicUserName("bar"),
-		opts.UserName("baz"),
+		&mal_prm.ForumTopicsRequestParameters{
+			BoardID:       1,
+			SubboardID:    1,
+			Query:         "foo",
+			TopicUserName: "bar",
+			UserName:      "baz",
+			Limit:         10,
+			Sort:          mal_prm.SortTopicsRecent,
+		},
 	)
 	if err != nil {
 		t.Errorf("Forum.Topics returned error: %v", err)

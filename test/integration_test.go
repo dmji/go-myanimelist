@@ -320,7 +320,17 @@ func testForumMethods(ctx context.Context, t *testing.T, client *mal.Site) {
 		t.Errorf("Forum.Boards returned error: %v", err)
 	}
 
-	topics, _, err := client.Forum.Topics(ctx, mal_opt.Query("kiseijuu"), mal_opt.Limit(2))
+	topics, _, err := client.Forum.Topics(ctx, &mal_prm.ForumTopicsRequestParameters{
+		BoardID:       0,
+		SubboardID:    0,
+		Query:         "kiseijuu",
+		TopicUserName: "",
+		UserName:      "",
+		Limit:         2,
+		Offset:        0,
+		Sort:          0,
+	},
+	)
 	if err != nil {
 		t.Errorf("Forum.Topics returned error: %v", err)
 	}
@@ -328,7 +338,11 @@ func testForumMethods(ctx context.Context, t *testing.T, client *mal.Site) {
 		t.Fatal("Forum.Topics returned 0 topics")
 	}
 
-	_, _, err = client.Forum.TopicDetails(ctx, topics[0].ID, mal_opt.Limit(2))
+	_, _, err = client.Forum.TopicDetails(
+		ctx,
+		topics[0].ID,
+		&mal_prm.ForumTopicDetailsRequestParameters{Limit: 2},
+	)
 	if err != nil {
 		t.Errorf("Forum.TopicDetails returned error: %v", err)
 	}

@@ -483,11 +483,12 @@ func (c *demoClient) forumTopics(ctx context.Context) {
 		return
 	}
 
-	opts := c.Forum.TopicsOptions
 	topics, _, err := c.Forum.Topics(ctx,
-		opts.Query("JoJo opening"),
-		opts.SortTopics.Recent(),
-		opts.Limit(2),
+		&mal_prm.ForumTopicsRequestParameters{
+			Query: "JoJo opening",
+			Limit: 2,
+			Sort:  mal_prm.SortTopicsRecent,
+		},
 	)
 	if err != nil {
 		c.err = err
@@ -502,8 +503,11 @@ func (c *demoClient) forumTopicDetails(ctx context.Context) {
 	if c.err != nil {
 		return
 	}
-	opts := c.Forum.TopicDetailsOptions
-	topicDetails, _, err := c.Forum.TopicDetails(ctx, 1877721, opts.Limit(3), opts.Offset(0))
+	topicDetails, _, err := c.Forum.TopicDetails(ctx,
+		1877721, &mal_prm.ForumTopicDetailsRequestParameters{
+			Limit: 3,
+		},
+	)
 	if err != nil {
 		c.err = err
 		return
